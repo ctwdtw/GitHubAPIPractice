@@ -28,6 +28,7 @@ class RemoteUserProfileLoader {
         case connectivity
         case invalidData
         case notModified
+        case loaderHasDeallocated
     }
     
     let session: Session
@@ -39,18 +40,25 @@ class RemoteUserProfileLoader {
         self.session = session
     }
     
-    static var nonModifiedStatusCode: Int {
+    var nonModifiedStatusCode: Int {
         304
     }
     
-    func load(complete: @escaping (Result<[UserProfile], Error>) -> Void) {
-        session.request(url).validate(statusCode: [200]).responseDecodable(of: [RemoteUserProfile].self) { response in
+    typealias LoadFeedResult = Result<[UserProfile], Error>
+    typealias LoadFeedComplete = (LoadFeedResult) -> Void
+ 
+    func load(complete: @escaping LoadFeedComplete) {
+        session.request(url).validate(statusCode: [200]).responseDecodable(of: [RemoteUserProfile].self) {  [weak self] response in
+            guard let self = self else {
+                complete(.failure(.loaderHasDeallocated))
+                return
+            }
             
             if let remoteProfiles = response.value {
                 let profiles = remoteProfiles.map { UserProfile(id: $0.id, login: $0.login, avatarUrl: $0.avatar_url, siteAdmin: $0.site_admin) }
                 complete(.success(profiles))
                 
-            } else if response.response?.statusCode == RemoteUserProfileLoader.nonModifiedStatusCode {
+            } else if response.response?.statusCode == self.nonModifiedStatusCode {
                 complete(.failure(.notModified))
                 
             } else if let error = response.error {
@@ -151,6 +159,28 @@ class LoadUserProfileFromRemoteUseCaseTests: XCTestCase {
         })
     }
     
+    func test__load__delivers_loaderHasDeallocated_error_on_sut_deinit_before_session_complete() {
+        var sut: RemoteUserProfileLoader? = makeSUT()
+
+        let exp = expectation(description: "wait for result")
+        
+        var receivedError: Error?
+        sut?.load { result in
+            exp.fulfill()
+            do {
+                _ = try result.get()
+                
+            } catch {
+                receivedError = error
+            }
+        }
+
+        sut = nil
+
+        wait(for: [exp], timeout: 1.0)
+        XCTAssertEqual(receivedError as NSError?, RemoteUserProfileLoader.Error.loaderHasDeallocated as NSError?)
+    }
+    
     private func assertThat(_ sut: RemoteUserProfileLoader, receive expectedResult: Result<[UserProfile], RemoteUserProfileLoader.Error>?, onStubbedReturns: () -> Void, file: StaticString = #filePath, line: UInt = #line) {
         onStubbedReturns()
         
@@ -243,6 +273,7 @@ class LoadUserProfileFromRemoteUseCaseTests: XCTestCase {
                 client?.urlProtocol(self, didFailWithError: error)
             }
             
+            URLProtocolStub.requestObserver = nil
             client?.urlProtocolDidFinishLoading(self)
         }
         
