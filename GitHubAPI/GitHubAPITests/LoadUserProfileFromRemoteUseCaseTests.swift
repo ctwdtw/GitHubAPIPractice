@@ -192,6 +192,15 @@ class LoadUserProfileFromRemoteUseCaseTests: XCTestCase {
         XCTAssertEqual(receivedError as NSError?, RemoteUserProfileLoader.Error.loaderHasDeallocated as NSError?)
     }
     
+    func makeSUT(url: URL? = nil) -> RemoteUserProfileLoader {
+        let url = url == nil ? anyURL() : url!
+        let config = URLSessionConfiguration.af.default
+        config.protocolClasses = [URLProtocolStub.self] + (config.protocolClasses ?? [])
+        let session = Session(configuration: config)
+        return RemoteUserProfileLoader(url: url, session: session)
+    }
+    
+    //MARK: - helpers
     private func assertThat(_ sut: RemoteUserProfileLoader, receive expectedResult: LoadUserProfileResult?, onStubbedReturns: () -> Void, file: StaticString = #filePath, line: UInt = #line) {
         onStubbedReturns()
         
@@ -234,14 +243,6 @@ class LoadUserProfileFromRemoteUseCaseTests: XCTestCase {
         return (model, json)
     }
     
-    func makeSUT(url: URL? = nil) -> RemoteUserProfileLoader {
-        let url = url == nil ? anyURL() : url!
-        let config = URLSessionConfiguration.af.default
-        config.protocolClasses = [URLProtocolStub.self] + (config.protocolClasses ?? [])
-        let session = Session(configuration: config)
-        return RemoteUserProfileLoader(url: url, session: session)
-    }
-    
     private func anyNSError() -> NSError {
         NSError(domain: "any-ns-error", code: -1, userInfo: nil)
     }
@@ -254,6 +255,7 @@ class LoadUserProfileFromRemoteUseCaseTests: XCTestCase {
         HTTPURLResponse(url: anyURL(), statusCode: statusCode, httpVersion: httpVersion, headerFields: headerFields)!
     }
     
+    //MARK: - test doubles
     private class URLProtocolStub: URLProtocol {
         
         static var requestObserver: ((URLRequest?) -> Void)?
