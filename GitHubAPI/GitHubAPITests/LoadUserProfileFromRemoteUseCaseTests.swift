@@ -9,6 +9,20 @@ import XCTest
 import GitHubAPI
 import Alamofire
 
+typealias LoadUserProfileResult = Result<PaginatedUserProfile, RemoteUserProfileLoader.Error>
+typealias LoadUserProfileComplete = (LoadUserProfileResult) -> Void
+
+struct PaginatedUserProfile {
+    let profiles: [UserProfile]
+    let loadMore: (() -> ((@escaping LoadUserProfileComplete) -> Void))?
+    
+    init(profiles: [UserProfile], loadMore: (() -> ((@escaping LoadUserProfileComplete) -> Void))? = nil) {
+        self.profiles = profiles
+        self.loadMore = loadMore
+    }
+    
+}
+
 struct UserProfile: Equatable {
     let id: Int
     let login: String
@@ -44,25 +58,22 @@ class RemoteUserProfileLoader {
         304
     }
     
-    typealias LoadFeedResult = Result<[UserProfile], Error>
-    typealias LoadFeedComplete = (LoadFeedResult) -> Void
- 
-    func load(complete: @escaping LoadFeedComplete) {
+    func load(complete: @escaping LoadUserProfileComplete) {
         session.request(url).validate(statusCode: [200]).responseDecodable(of: [RemoteUserProfile].self) {  [weak self] response in
             guard let self = self else {
-                complete(.failure(.loaderHasDeallocated))
+                complete(.failure( .loaderHasDeallocated))
                 return
             }
             
             if let remoteProfiles = response.value {
                 let profiles = remoteProfiles.map { UserProfile(id: $0.id, login: $0.login, avatarUrl: $0.avatar_url, siteAdmin: $0.site_admin) }
-                complete(.success(profiles))
+                let pageProfiles = PaginatedUserProfile(profiles: profiles)
+                complete(.success(pageProfiles))
                 
             } else if response.response?.statusCode == self.nonModifiedStatusCode {
                 complete(.failure(.notModified))
                 
             } else if let error = response.error {
-                
                 if error.isSessionTaskError {
                     complete(.failure(.connectivity))
                     
@@ -154,7 +165,7 @@ class LoadUserProfileFromRemoteUseCaseTests: XCTestCase {
         let (model2, json2) = makeUserProfile()
         let data = makeUserProfilesJSON(profiles: [json1, json2])
         
-        assertThat(sut, receive: .success([model1, model2]), onStubbedReturns: {
+        assertThat(sut, receive: .success(PaginatedUserProfile(profiles:[model1, model2])), onStubbedReturns: {
             URLProtocolStub.stub(data: data, response: anyHTTPURLResponse(statusCode: 200), error: nil)
         })
     }
@@ -181,11 +192,11 @@ class LoadUserProfileFromRemoteUseCaseTests: XCTestCase {
         XCTAssertEqual(receivedError as NSError?, RemoteUserProfileLoader.Error.loaderHasDeallocated as NSError?)
     }
     
-    private func assertThat(_ sut: RemoteUserProfileLoader, receive expectedResult: Result<[UserProfile], RemoteUserProfileLoader.Error>?, onStubbedReturns: () -> Void, file: StaticString = #filePath, line: UInt = #line) {
+    private func assertThat(_ sut: RemoteUserProfileLoader, receive expectedResult: LoadUserProfileResult?, onStubbedReturns: () -> Void, file: StaticString = #filePath, line: UInt = #line) {
         onStubbedReturns()
         
         let exp = expectation(description: "wait for result")
-        var receivedResult: Result<[UserProfile], RemoteUserProfileLoader.Error>?
+        var receivedResult: LoadUserProfileResult?
         sut.load { result in
             exp.fulfill()
             receivedResult = result
@@ -195,8 +206,8 @@ class LoadUserProfileFromRemoteUseCaseTests: XCTestCase {
         
         switch (receivedResult, expectedResult) {
             
-        case (let .success(receivedProfiles), let .success(expectedProfiles)):
-            XCTAssertEqual(receivedProfiles, expectedProfiles, file: file, line: line)
+        case (let .success(receivedPaginatedProfiles), let .success(expectedPaginatedProfiles)):
+            XCTAssertEqual(receivedPaginatedProfiles.profiles, expectedPaginatedProfiles.profiles, file: file, line: line)
             
         case (let .failure(receivedError), let .failure(expectedError)):
             XCTAssertEqual(receivedError as NSError?, expectedError as NSError?, file: file, line: line)
