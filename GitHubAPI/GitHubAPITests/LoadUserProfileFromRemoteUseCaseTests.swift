@@ -122,21 +122,10 @@ class LoadUserProfileFromRemoteUseCaseTests: XCTestCase {
     func test__loadFromURL__request_with_url() {
         let url = URL(string: "https://my-url.com")!
         let sut = makeSUT(url: url)
-        let exp = expectation(description: "wait for request")
         
-        var observedRequest: URLRequest?
-        URLProtocolStub.requestObserver = { request in
-            exp.fulfill()
-            observedRequest = request
-        }
-        
-        sut.load { _ in }
-        
-        wait(for: [exp], timeout: 1.0)
-        XCTAssertEqual(observedRequest?.url, url)
-        XCTAssertEqual(observedRequest?.httpMethod, "GET")
+        assertThat(sut.load(complete:), request: url, httpMethod: "GET")
     }
-    
+
     func test__load__delivers_connectivity_error_on_stubbed_error() {
         let sut = makeSUT()
         
@@ -223,35 +212,19 @@ class LoadUserProfileFromRemoteUseCaseTests: XCTestCase {
         XCTAssertEqual(receivedError as NSError?, RemoteUserProfileLoader.Error.loaderHasDeallocated as NSError?)
     }
     
-    func test__loadMoreAction__request_next_url() {
+    func test__loadMoreAction__request_next_url() throws {
         let sut = makeSUT()
         let data = makeUserProfilesJSON(profiles: [])
-        URLProtocolStub.stub(data: data, response: anyHTTPURLResponse(statusCode: 200, headerFields: nextLinkHeader()), error: nil)
-        let firstLoadExp = expectation(description: "wait for load result")
-        
-        var receivedResult: LoadUserProfileResult?
-        sut.load { result in
-            firstLoadExp.fulfill()
-            receivedResult = result
-        }
-        
-        wait(for: [firstLoadExp], timeout: 1.0)
+            
+        let receivedResult = assertThat(sut.load(complete:), receive: .success([]), onStubbedReturns:  {
+            URLProtocolStub.stub(data: data, response: anyHTTPURLResponse(statusCode: 200, headerFields: nextLinkHeader()), error: nil)
+        })
         
         let nextData = makeUserProfilesJSON(profiles: [])
         URLProtocolStub.stub(data: nextData, response: anyHTTPURLResponse(statusCode: 200, headerFields: nil), error: nil)
         
-        let nextRequestExp = expectation(description: "wait for next request")
-        var observedRequest: URLRequest??
-        URLProtocolStub.requestObserver = { request in
-            observedRequest = request
-            nextRequestExp.fulfill()
-        }
-
-        let loadMoreAction = (try! receivedResult?.get())?.loadMore
-        loadMoreAction?() { _ in }
-        
-        wait(for: [nextRequestExp], timeout: 1.0)
-        XCTAssertEqual(observedRequest??.url?.absoluteString, "https://api.github.com/user/repos?page=3&per_page=100")
+        let loadMoreAction = try XCTUnwrap((try? receivedResult?.get().loadMore))
+        assertThat(loadMoreAction, request: URL(string: "https://api.github.com/user/repos?page=3&per_page=100")!)
     }
     
     func test__loadMoreAction__deliversAggregatedUserProfiles() throws {
@@ -284,6 +257,22 @@ class LoadUserProfileFromRemoteUseCaseTests: XCTestCase {
     }
     
     //MARK: - helpers
+    private func assertThat(_ loadAction: LoadMoreAction, request url: URL, httpMethod: String = "GET") {
+        let exp = expectation(description: "wait for request")
+        
+        var observedRequest: URLRequest?
+        URLProtocolStub.requestObserver = { request in
+            exp.fulfill()
+            observedRequest = request
+        }
+        
+        loadAction { _ in }
+        
+        wait(for: [exp], timeout: 1.0)
+        XCTAssertEqual(observedRequest?.url, url)
+        XCTAssertEqual(observedRequest?.httpMethod, httpMethod)
+    }
+    
     @discardableResult
     private func assertThat(_ loadAction: LoadMoreAction, receive expectedProfileResult: Result<[UserProfile], RemoteUserProfileLoader.Error>?, onStubbedReturns: () -> Void, file: StaticString = #filePath, line: UInt = #line) -> LoadUserProfileResult? {
         onStubbedReturns()
