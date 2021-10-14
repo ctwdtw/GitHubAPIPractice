@@ -10,17 +10,6 @@ public typealias PaginatedUserProfileResult = Result<PaginatedUserProfile, Remot
 public typealias PaginatedLoadUserProfileComplete = (PaginatedUserProfileResult) -> Void
 public typealias PaginatedLoadMoreAction = ((@escaping PaginatedLoadUserProfileComplete) -> Void)
 
-public struct PaginatedUserProfile {
-    public let profiles: [UserProfile]
-    public let loadMore: PaginatedLoadMoreAction?
-    
-    public init(profiles: [UserProfile], loadMore: PaginatedLoadMoreAction? = nil) {
-        self.profiles = profiles
-        self.loadMore = loadMore
-    }
-    
-}
-
 public  class PaginatedUserProfileAdapter {
     private let adaptee: RemoteUserProfileLoader
     

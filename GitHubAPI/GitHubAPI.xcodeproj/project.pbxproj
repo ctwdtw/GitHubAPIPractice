@@ -13,6 +13,9 @@
 		63DE083427187FDD0000C5EA /* URLProtocolStub.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63DE083327187FDD0000C5EA /* URLProtocolStub.swift */; };
 		63DE08362718828B0000C5EA /* RemoteUserProfileLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63DE08352718828B0000C5EA /* RemoteUserProfileLoader.swift */; };
 		63DE0838271882D80000C5EA /* PaginatedUserProfileAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63DE0837271882D80000C5EA /* PaginatedUserProfileAdapter.swift */; };
+		63DE083A271891E20000C5EA /* UserProfileMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63DE0839271891E20000C5EA /* UserProfileMapper.swift */; };
+		63DE083C2718928B0000C5EA /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63DE083B2718928B0000C5EA /* UserProfile.swift */; };
+		63DE083E271892A60000C5EA /* PaginatedUserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63DE083D271892A60000C5EA /* PaginatedUserProfile.swift */; };
 		63F55393270FF2A30002FA50 /* GitHubAPI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63F5538A270FF2A30002FA50 /* GitHubAPI.framework */; };
 		63F55398270FF2A30002FA50 /* LoadUserProfileFromRemoteUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63F55397270FF2A30002FA50 /* LoadUserProfileFromRemoteUseCaseTests.swift */; };
 		63F55399270FF2A30002FA50 /* GitHubAPI.h in Headers */ = {isa = PBXBuildFile; fileRef = 63F5538D270FF2A30002FA50 /* GitHubAPI.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -35,6 +38,9 @@
 		63DE083327187FDD0000C5EA /* URLProtocolStub.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLProtocolStub.swift; sourceTree = "<group>"; };
 		63DE08352718828B0000C5EA /* RemoteUserProfileLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteUserProfileLoader.swift; sourceTree = "<group>"; };
 		63DE0837271882D80000C5EA /* PaginatedUserProfileAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaginatedUserProfileAdapter.swift; sourceTree = "<group>"; };
+		63DE0839271891E20000C5EA /* UserProfileMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileMapper.swift; sourceTree = "<group>"; };
+		63DE083B2718928B0000C5EA /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
+		63DE083D271892A60000C5EA /* PaginatedUserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaginatedUserProfile.swift; sourceTree = "<group>"; };
 		63F5538A270FF2A30002FA50 /* GitHubAPI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = GitHubAPI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		63F5538D270FF2A30002FA50 /* GitHubAPI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GitHubAPI.h; sourceTree = "<group>"; };
 		63F55392270FF2A30002FA50 /* GitHubAPITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GitHubAPITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -92,7 +98,10 @@
 			isa = PBXGroup;
 			children = (
 				63F5538D270FF2A30002FA50 /* GitHubAPI.h */,
+				63DE083B2718928B0000C5EA /* UserProfile.swift */,
+				63DE0839271891E20000C5EA /* UserProfileMapper.swift */,
 				63DE08352718828B0000C5EA /* RemoteUserProfileLoader.swift */,
+				63DE083D271892A60000C5EA /* PaginatedUserProfile.swift */,
 				63DE0837271882D80000C5EA /* PaginatedUserProfileAdapter.swift */,
 			);
 			path = GitHubAPI;
@@ -307,8 +316,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				63DE083C2718928B0000C5EA /* UserProfile.swift in Sources */,
+				63DE083A271891E20000C5EA /* UserProfileMapper.swift in Sources */,
 				63DE0838271882D80000C5EA /* PaginatedUserProfileAdapter.swift in Sources */,
 				63DE08362718828B0000C5EA /* RemoteUserProfileLoader.swift in Sources */,
+				63DE083E271892A60000C5EA /* PaginatedUserProfile.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
