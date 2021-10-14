@@ -9,6 +9,77 @@ import XCTest
 import GitHubAPI
 import Alamofire
 
+class UserProfileMapper {
+    var validStatusCodes: [Int] {
+        return [200]
+    }
+    
+    var nonModifiedStatusCode: Int {
+        304
+    }
+    
+    private let session: Session
+    
+    private var currentProfiles: [UserProfile]
+    
+    init(session: Session, currentProfiles: [UserProfile] = []) {
+        self.session = session
+        self.currentProfiles = currentProfiles
+    }
+    
+    func map(_ response: DataResponse<[RemoteUserProfileLoader.RemoteUserProfile], AFError>) -> LoadUserProfileResult {
+        if let remoteProfiles = response.value {
+            
+            let profiles = remoteProfiles.map { UserProfile(id: $0.id, login: $0.login, avatarUrl: $0.avatar_url, siteAdmin: $0.site_admin) }
+            
+            var loadMore: LoadMoreAction?
+            if let link = response.response!.headers.value(for: "Link"), let url = self.nextURL(from: link) {
+                loadMore = RemoteUserProfileLoader(url: url, session: session, mapper: self).load(complete:)
+            }
+            
+            let pageProfiles = PaginatedUserProfile(
+                profiles: currentProfiles + profiles,
+                loadMore: loadMore
+            )
+            self.currentProfiles = profiles
+            
+            return .success(pageProfiles)
+            
+        } else if response.response?.statusCode == self.nonModifiedStatusCode {
+            return .failure(.notModified)
+            
+        } else if let error = response.error {
+            if error.isSessionTaskError {
+                return .failure(.connectivity)
+                
+            } else {
+                return .failure(.invalidData)
+                
+            }
+            
+        } else {
+            return .failure(.unexpected)
+        }
+    }
+    
+    private func nextURL(from linkHeader: String) -> URL? {
+        guard let nextLink = linkHeader.split(separator: ",").filter({ $0.contains("next") }).first else {
+            return nil
+        }
+        
+        guard let range = nextLink.range(of: "(?<=\\<).+?(?=\\>)", options: .regularExpression) else {
+            return nil
+        }
+        
+        guard let url = URL(string: String(nextLink[range])) else {
+            return nil
+        }
+        
+        return url
+    }
+    
+}
+
 typealias LoadUserProfileResult = Result<PaginatedUserProfile, RemoteUserProfileLoader.Error>
 typealias LoadUserProfileComplete = (LoadUserProfileResult) -> Void
 typealias LoadMoreAction = ((@escaping LoadUserProfileComplete) -> Void)
@@ -44,78 +115,34 @@ class RemoteUserProfileLoader {
         case invalidData
         case notModified
         case loaderHasDeallocated
+        case unexpected
     }
-    
-    let session: Session
     
     let url: URL
     
-    init(url: URL, session: Session = .default, currentProfiles: [UserProfile] = []) {
+    let session: Session
+    
+    private let mapper: UserProfileMapper
+    
+    init(url: URL, session: Session = .default, mapper: UserProfileMapper) {
         self.url = url
         self.session = session
-        self.currentProfiles = currentProfiles
+        self.mapper = mapper
     }
-    
-    var nonModifiedStatusCode: Int {
-        304
-    }
-    
-    private var currentProfiles: [UserProfile]
     
     func load(complete: @escaping LoadUserProfileComplete) {
-        session.request(url).validate(statusCode: [200]).responseDecodable(of: [RemoteUserProfile].self) {  [weak self, session, currentProfiles] response in
+        session.request(url).validate(statusCode: mapper.validStatusCodes).responseDecodable(of: [RemoteUserProfile].self) {  [weak self] response in
+            
             guard let self = self else {
                 complete(.failure( .loaderHasDeallocated))
                 return
             }
             
-            if let remoteProfiles = response.value {
-                let profiles = remoteProfiles.map { UserProfile(id: $0.id, login: $0.login, avatarUrl: $0.avatar_url, siteAdmin: $0.site_admin) }
-                
-                var loadMore: LoadMoreAction?
-                if let link = response.response!.headers.value(for: "Link"), let url = self.nextURL(from: link) {
-                    loadMore = RemoteUserProfileLoader(url: url, session: session, currentProfiles: profiles).load(complete:)
-                }
-                
-                let pageProfiles = PaginatedUserProfile(
-                    profiles: currentProfiles + profiles,
-                    loadMore: loadMore
-                )
-                self.currentProfiles = profiles
-                complete(.success(pageProfiles))
-                
-            } else if response.response?.statusCode == self.nonModifiedStatusCode {
-                complete(.failure(.notModified))
-                
-            } else if let error = response.error {
-                if error.isSessionTaskError {
-                    complete(.failure(.connectivity))
-                    
-                } else {
-                    complete(.failure(.invalidData))
-                    
-                }
-                
-            }
+            let result = self.mapper.map(response)
+            
+            complete(result)
         }
     }
-    
-    private func nextURL(from linkHeader: String) -> URL? {
-        guard let nextLink = linkHeader.split(separator: ",").filter({ $0.contains("next") }).first else {
-            return nil
-        }
-        
-        guard let range = nextLink.range(of: "(?<=\\<).+?(?=\\>)", options: .regularExpression) else {
-            return nil
-        }
-        
-        guard let url = URL(string: String(nextLink[range])) else {
-            return nil
-        }
-        
-        return url
-    }
-    
 }
 
 class LoadUserProfileFromRemoteUseCaseTests: XCTestCase {
@@ -230,7 +257,7 @@ class LoadUserProfileFromRemoteUseCaseTests: XCTestCase {
         let config = URLSessionConfiguration.af.default
         config.protocolClasses = [URLProtocolStub.self] + (config.protocolClasses ?? [])
         let session = Session(configuration: config)
-        return RemoteUserProfileLoader(url: url, session: session)
+        return RemoteUserProfileLoader(url: url, session: session, mapper: UserProfileMapper(session: session))
     }
     
     //MARK: - helpers
