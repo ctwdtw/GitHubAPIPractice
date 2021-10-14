@@ -127,67 +127,84 @@ class LoadUserProfileFromRemoteUseCaseTests: XCTestCase {
     }
 
     func test__load__delivers_connectivity_error_on_stubbed_error() {
-        let sut = makeSUT()
+        let sut = makeSUT().stub(data: nil, response: nil, error: anyNSError())
         
-        assertThat(sut.load(complete:), receive: .failure(.connectivity), onStubbedReturns: {
-            URLProtocolStub.stub(data: nil, response: nil, error: anyNSError())
-        })
+        assertThat(sut.load(complete:), receive: .failure(.connectivity))
     }
     
     func test__load___delivers_invalidData_error_on_un_contracted_status_code() {
-        let sut = makeSUT()
+        let sut = makeSUT().stub(data: nil, response: anyHTTPURLResponse(statusCode: 199), error: nil)
         
-        assertThat(sut.load(complete:), receive: .failure(.invalidData), onStubbedReturns: {
-            URLProtocolStub.stub(data: nil, response: anyHTTPURLResponse(statusCode: 199), error: nil)
-        })
+        assertThat(sut.load(complete:), receive: .failure(.invalidData))
     }
     
     func test__load__delivers_invalidData_error_on_non_json() {
-        let sut = makeSUT()
-        
-        assertThat(sut.load(complete:), receive: .failure(.invalidData), onStubbedReturns: {
-            let non_json = "any-non-json".data(using: .utf8)!
-            URLProtocolStub.stub(data: non_json, response: anyHTTPURLResponse(statusCode: 200), error: nil)
-        })
+        let data = "any-non-json".data(using: .utf8)!
+        let sut = makeSUT().stub(data: data, response: anyHTTPURLResponse(statusCode: 200), error: nil)
+    
+        assertThat(sut.load(complete:), receive: .failure(.invalidData))
     }
     
     func test__load__delivers_invalidData_error_on_un_contracted_json() {
-        let sut = makeSUT()
+        let data = "{\"key\": \"value\"}".data(using: .utf8)!
+        let sut = makeSUT().stub(data: data, response: anyHTTPURLResponse(statusCode: 200), error: nil)
         
-        assertThat(sut.load(complete:), receive: .failure(.invalidData), onStubbedReturns: {
-            let un_contracted_json = "{\"key\": \"value\"}".data(using: .utf8)!
-            URLProtocolStub.stub(data: un_contracted_json, response: anyHTTPURLResponse(statusCode: 200), error: nil)
-        })
+        assertThat(sut.load(complete:), receive: .failure(.invalidData))
     }
     
     func test__load__delivers_nonModified_error_on_304_status_code() {
-        let sut = makeSUT()
+        let sut = makeSUT().stub(data: nil, response: anyHTTPURLResponse(statusCode: 304), error: nil)
         
-        assertThat(sut.load(complete:), receive: .failure(.notModified), onStubbedReturns: {
-            URLProtocolStub.stub(data: nil, response: anyHTTPURLResponse(statusCode: 304), error: nil)
-        })
+        assertThat(sut.load(complete:), receive: .failure(.notModified))
     }
     
     func test__load__delivers_invalidData_on_valid_jsons_with_non_contracted_status_code() {
-        let sut = makeSUT()
         let (_, json1) = makeUserProfile()
         let (_, json2) = makeUserProfile()
         let data = makeUserProfilesJSON(profiles: [json1, json2])
+        let sut = makeSUT().stub(data: data, response: anyHTTPURLResponse(statusCode: 199), error: nil)
         
-        assertThat(sut.load(complete:), receive: .failure(.invalidData), onStubbedReturns: {
-            URLProtocolStub.stub(data: data, response: anyHTTPURLResponse(statusCode: 199), error: nil)
-        })
+        assertThat(sut.load(complete:), receive: .failure(.invalidData))
     }
     
     func test__load__delivers_userProfiles_on_valid_json() {
-        let sut = makeSUT()
         let (model1, json1) = makeUserProfile()
         let (model2, json2) = makeUserProfile()
         let data = makeUserProfilesJSON(profiles: [json1, json2])
+        let sut = makeSUT().stub(data: data, response: anyHTTPURLResponse(statusCode: 200), error: nil)
         
-        assertThat(sut.load(complete:), receive: .success([model1, model2]), onStubbedReturns: {
-            URLProtocolStub.stub(data: data, response: anyHTTPURLResponse(statusCode: 200), error: nil)
-        })
+        assertThat(sut.load(complete:), receive: .success([model1, model2]))
+    }
+    
+    func test__loadMoreAction__request_next_url() throws {
+        let link = "<https://api.github.com/user/repos?page=3&per_page=100>; rel=\"next\", <https://api.github.com/user/repos?page=50&per_page=100>; rel=\"last\""
+        let data = makeUserProfilesJSON(profiles: [])
+        let sut = makeSUT().stub(data: data, response: anyHTTPURLResponse(statusCode: 200, headerFields: nextLinkHeader(link: link)), error: nil)
+        
+        let receivedResult = assertThat(sut.load(complete:), receive: .success([]))
+        let loadMoreAction = try XCTUnwrap((try? receivedResult?.get().loadMore))
+        
+        let nextData = makeUserProfilesJSON(profiles: [])
+        sut.stub(data: nextData, response: anyHTTPURLResponse(statusCode: 200, headerFields: nil), error: nil)
+        
+        assertThat(loadMoreAction, request: URL(string: "https://api.github.com/user/repos?page=3&per_page=100")!)
+    }
+    
+    func test__loadMoreAction__deliversAggregatedUserProfiles() throws {
+        let (model1, json1) = makeUserProfile()
+        let (model2, json2) = makeUserProfile()
+        let data = makeUserProfilesJSON(profiles: [json1, json2])
+        let sut = makeSUT().stub(data: data, response: anyHTTPURLResponse(statusCode: 200, headerFields: nextLinkHeader()), error: nil)
+        
+        let receivedResult = assertThat(sut.load(complete:), receive: .success([model1, model2]))
+        let loadMoreAction = try XCTUnwrap((try? receivedResult?.get().loadMore))
+        
+        let (model3, json3) = makeUserProfile()
+        let (model4, json4) = makeUserProfile()
+        let nextData = makeUserProfilesJSON(profiles: [json3, json4])
+        sut.stub(data: nextData, response: anyHTTPURLResponse(statusCode: 200, headerFields: nil), error: nil)
+        
+        assertThat(loadMoreAction, receive: .success([model1, model2, model3, model4]))
     }
     
     func test__load__delivers_loaderHasDeallocated_error_on_sut_deinit_before_session_complete() {
@@ -211,42 +228,7 @@ class LoadUserProfileFromRemoteUseCaseTests: XCTestCase {
         wait(for: [exp], timeout: 1.0)
         XCTAssertEqual(receivedError as NSError?, RemoteUserProfileLoader.Error.loaderHasDeallocated as NSError?)
     }
-    
-    func test__loadMoreAction__request_next_url() throws {
-        let sut = makeSUT()
-        let data = makeUserProfilesJSON(profiles: [])
-            
-        let receivedResult = assertThat(sut.load(complete:), receive: .success([]), onStubbedReturns:  {
-            URLProtocolStub.stub(data: data, response: anyHTTPURLResponse(statusCode: 200, headerFields: nextLinkHeader()), error: nil)
-        })
-        
-        let nextData = makeUserProfilesJSON(profiles: [])
-        URLProtocolStub.stub(data: nextData, response: anyHTTPURLResponse(statusCode: 200, headerFields: nil), error: nil)
-        
-        let loadMoreAction = try XCTUnwrap((try? receivedResult?.get().loadMore))
-        assertThat(loadMoreAction, request: URL(string: "https://api.github.com/user/repos?page=3&per_page=100")!)
-    }
-    
-    func test__loadMoreAction__deliversAggregatedUserProfiles() throws {
-        let (model1, json1) = makeUserProfile()
-        let (model2, json2) = makeUserProfile()
-        let data = makeUserProfilesJSON(profiles: [json1, json2])
-        let sut = makeSUT()
-        
-        let receivedResult = assertThat(sut.load(complete:), receive: .success([model1, model2]), onStubbedReturns: {
-            URLProtocolStub.stub(data: data, response: anyHTTPURLResponse(statusCode: 200, headerFields: nextLinkHeader()), error: nil)
-        })
-        
-        let (model3, json3) = makeUserProfile()
-        let (model4, json4) = makeUserProfile()
-        let nextData = makeUserProfilesJSON(profiles: [json3, json4])
-        
-        let loadMoreAction = try XCTUnwrap((try? receivedResult?.get().loadMore))
-        assertThat(loadMoreAction, receive: .success([model1, model2, model3, model4]), onStubbedReturns: {
-            URLProtocolStub.stub(data: nextData, response: anyHTTPURLResponse(statusCode: 200, headerFields: nil), error: nil)
-        })
-    
-    }
+
     
     func makeSUT(url: URL? = nil) -> RemoteUserProfileLoader {
         let url = url == nil ? anyURL() : url!
@@ -274,9 +256,7 @@ class LoadUserProfileFromRemoteUseCaseTests: XCTestCase {
     }
     
     @discardableResult
-    private func assertThat(_ loadAction: LoadMoreAction, receive expectedProfileResult: Result<[UserProfile], RemoteUserProfileLoader.Error>?, onStubbedReturns: () -> Void, file: StaticString = #filePath, line: UInt = #line) -> LoadUserProfileResult? {
-        onStubbedReturns()
-        
+    private func assertThat(_ loadAction: LoadMoreAction, receive expectedProfileResult: Result<[UserProfile], RemoteUserProfileLoader.Error>?, file: StaticString = #filePath, line: UInt = #line) -> LoadUserProfileResult? {
         let exp = expectation(description: "wait for result")
         var receivedResult: LoadUserProfileResult?
         loadAction() { result in
@@ -319,8 +299,8 @@ class LoadUserProfileFromRemoteUseCaseTests: XCTestCase {
         return (model, json)
     }
     
-    private func nextLinkHeader() -> [String: String] {
-        ["Link": "<https://api.github.com/user/repos?page=3&per_page=100>; rel=\"next\", <https://api.github.com/user/repos?page=50&per_page=100>; rel=\"last\""]
+    private func nextLinkHeader(link: String = "<https://api.github.com/user/repos?page=3&per_page=100>; rel=\"next\", <https://api.github.com/user/repos?page=50&per_page=100>; rel=\"last\"") -> [String: String] {
+        ["Link": link]
     }
     
     private func anyNSError() -> NSError {
@@ -334,56 +314,64 @@ class LoadUserProfileFromRemoteUseCaseTests: XCTestCase {
     private func anyHTTPURLResponse(statusCode: Int, httpVersion: String? = nil, headerFields: [String : String]? = nil) -> HTTPURLResponse {
         HTTPURLResponse(url: anyURL(), statusCode: statusCode, httpVersion: httpVersion, headerFields: headerFields)!
     }
+
+}
+
+//MARK: - test doubles
+private class URLProtocolStub: URLProtocol {
     
-    //MARK: - test doubles
-    private class URLProtocolStub: URLProtocol {
-        
-        static var requestObserver: ((URLRequest?) -> Void)?
-        
-        override class func canInit(with task: URLSessionTask) -> Bool {
-            return true
-        }
-        
-        override class func canonicalRequest(for request: URLRequest) -> URLRequest {
-            return request
-        }
-        
-        override func startLoading() {
-            if let observer = URLProtocolStub.requestObserver {
-                client?.urlProtocolDidFinishLoading(self)
-                observer(request)
-            }
-            
-            if let data = URLProtocolStub.stub?.data {
-                client?.urlProtocol(self, didLoad: data)
-            }
-            
-            if let response = URLProtocolStub.stub?.httpUrlResponse {
-                client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
-            }
-            
-            if let error = URLProtocolStub.stub?.error {
-                client?.urlProtocol(self, didFailWithError: error)
-            }
-            
-            URLProtocolStub.requestObserver = nil
-            client?.urlProtocolDidFinishLoading(self)
-        }
-        
-        override func stopLoading() {}
-        
-        struct Stub {
-            var data: Data?
-            var httpUrlResponse: HTTPURLResponse?
-            var error: Swift.Error?
-        }
-        
-        static private var stub: Stub?
-        
-        static func stub(data: Data?, response: HTTPURLResponse?, error: Swift.Error?) {
-            stub = Stub(data: data, httpUrlResponse: response, error: error)
-            
-        }
+    static var requestObserver: ((URLRequest?) -> Void)?
+    
+    override class func canInit(with task: URLSessionTask) -> Bool {
+        return true
     }
     
+    override class func canonicalRequest(for request: URLRequest) -> URLRequest {
+        return request
+    }
+    
+    override func startLoading() {
+        if let observer = URLProtocolStub.requestObserver {
+            client?.urlProtocolDidFinishLoading(self)
+            observer(request)
+        }
+        
+        if let data = URLProtocolStub.stub?.data {
+            client?.urlProtocol(self, didLoad: data)
+        }
+        
+        if let response = URLProtocolStub.stub?.httpUrlResponse {
+            client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
+        }
+        
+        if let error = URLProtocolStub.stub?.error {
+            client?.urlProtocol(self, didFailWithError: error)
+        }
+        
+        URLProtocolStub.requestObserver = nil
+        client?.urlProtocolDidFinishLoading(self)
+    }
+    
+    override func stopLoading() {}
+    
+    struct Stub {
+        var data: Data?
+        var httpUrlResponse: HTTPURLResponse?
+        var error: Swift.Error?
+    }
+    
+    static private var stub: Stub?
+    
+    static func stub(data: Data?, response: HTTPURLResponse?, error: Swift.Error?) {
+        stub = Stub(data: data, httpUrlResponse: response, error: error)
+        
+    }
+}
+
+private extension RemoteUserProfileLoader {
+    @discardableResult
+    func stub(data: Data?, response: HTTPURLResponse?, error: Swift.Error?) -> RemoteUserProfileLoader {
+        URLProtocolStub.stub(data: data, response: response, error: error)
+        return self
+    }
 }
