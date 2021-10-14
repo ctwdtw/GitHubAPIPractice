@@ -18,32 +18,17 @@ class UserProfileMapper {
         304
     }
     
-    private let session: Session
+    private var currentResponse: DataResponse<[RemoteUserProfileLoader.RemoteUserProfile], AFError>?
     
-    private var currentProfiles: [UserProfile]
-    
-    init(session: Session, currentProfiles: [UserProfile] = []) {
-        self.session = session
-        self.currentProfiles = currentProfiles
+    var currentHeaders: HTTPHeaders? {
+        currentResponse?.response?.headers
     }
     
     func map(_ response: DataResponse<[RemoteUserProfileLoader.RemoteUserProfile], AFError>) -> LoadUserProfileResult {
+        currentResponse = response
         if let remoteProfiles = response.value {
-            
             let profiles = remoteProfiles.map { UserProfile(id: $0.id, login: $0.login, avatarUrl: $0.avatar_url, siteAdmin: $0.site_admin) }
-            
-            var loadMore: LoadMoreAction?
-            if let link = response.response!.headers.value(for: "Link"), let url = self.nextURL(from: link) {
-                loadMore = RemoteUserProfileLoader(url: url, session: session, mapper: self).load(complete:)
-            }
-            
-            let pageProfiles = PaginatedUserProfile(
-                profiles: currentProfiles + profiles,
-                loadMore: loadMore
-            )
-            self.currentProfiles = profiles
-            
-            return .success(pageProfiles)
+            return .success(profiles)
             
         } else if response.response?.statusCode == self.nonModifiedStatusCode {
             return .failure(.notModified)
@@ -59,41 +44,14 @@ class UserProfileMapper {
             
         } else {
             return .failure(.unexpected)
+            
         }
     }
-    
-    private func nextURL(from linkHeader: String) -> URL? {
-        guard let nextLink = linkHeader.split(separator: ",").filter({ $0.contains("next") }).first else {
-            return nil
-        }
-        
-        guard let range = nextLink.range(of: "(?<=\\<).+?(?=\\>)", options: .regularExpression) else {
-            return nil
-        }
-        
-        guard let url = URL(string: String(nextLink[range])) else {
-            return nil
-        }
-        
-        return url
-    }
-    
 }
 
-typealias LoadUserProfileResult = Result<PaginatedUserProfile, RemoteUserProfileLoader.Error>
+typealias LoadUserProfileResult = Result<[UserProfile], RemoteUserProfileLoader.Error>
 typealias LoadUserProfileComplete = (LoadUserProfileResult) -> Void
-typealias LoadMoreAction = ((@escaping LoadUserProfileComplete) -> Void)
-
-struct PaginatedUserProfile {
-    let profiles: [UserProfile]
-    let loadMore: LoadMoreAction?
-    
-    init(profiles: [UserProfile], loadMore: LoadMoreAction? = nil) {
-        self.profiles = profiles
-        self.loadMore = loadMore
-    }
-    
-}
+typealias LoadAction = ((@escaping LoadUserProfileComplete) -> Void)
 
 struct UserProfile: Equatable {
     let id: Int
@@ -122,7 +80,7 @@ class RemoteUserProfileLoader {
     
     let session: Session
     
-    private let mapper: UserProfileMapper
+    let mapper: UserProfileMapper
     
     init(url: URL, session: Session = .default, mapper: UserProfileMapper) {
         self.url = url
@@ -202,38 +160,7 @@ class LoadUserProfileFromRemoteUseCaseTests: XCTestCase {
         
         assertThat(sut.load(complete:), receive: .success([model1, model2]))
     }
-    
-    func test__loadMoreAction__request_next_url() throws {
-        let link = "<https://api.github.com/user/repos?page=3&per_page=100>; rel=\"next\", <https://api.github.com/user/repos?page=50&per_page=100>; rel=\"last\""
-        let data = makeUserProfilesJSON(profiles: [])
-        let sut = makeSUT().stub(data: data, response: anyHTTPURLResponse(statusCode: 200, headerFields: nextLinkHeader(link: link)), error: nil)
         
-        let receivedResult = assertThat(sut.load(complete:), receive: .success([]))
-        let loadMoreAction = try XCTUnwrap((try? receivedResult?.get().loadMore))
-        
-        let nextData = makeUserProfilesJSON(profiles: [])
-        sut.stub(data: nextData, response: anyHTTPURLResponse(statusCode: 200, headerFields: nil), error: nil)
-        
-        assertThat(loadMoreAction, request: URL(string: "https://api.github.com/user/repos?page=3&per_page=100")!)
-    }
-    
-    func test__loadMoreAction__deliversAggregatedUserProfiles() throws {
-        let (model1, json1) = makeUserProfile()
-        let (model2, json2) = makeUserProfile()
-        let data = makeUserProfilesJSON(profiles: [json1, json2])
-        let sut = makeSUT().stub(data: data, response: anyHTTPURLResponse(statusCode: 200, headerFields: nextLinkHeader()), error: nil)
-        
-        let receivedResult = assertThat(sut.load(complete:), receive: .success([model1, model2]))
-        let loadMoreAction = try XCTUnwrap((try? receivedResult?.get().loadMore))
-        
-        let (model3, json3) = makeUserProfile()
-        let (model4, json4) = makeUserProfile()
-        let nextData = makeUserProfilesJSON(profiles: [json3, json4])
-        sut.stub(data: nextData, response: anyHTTPURLResponse(statusCode: 200, headerFields: nil), error: nil)
-        
-        assertThat(loadMoreAction, receive: .success([model1, model2, model3, model4]))
-    }
-    
     func test__load__delivers_loaderHasDeallocated_error_on_sut_deinit_before_session_complete() {
         var sut: RemoteUserProfileLoader? = makeSUT()
         
@@ -257,11 +184,11 @@ class LoadUserProfileFromRemoteUseCaseTests: XCTestCase {
         let config = URLSessionConfiguration.af.default
         config.protocolClasses = [URLProtocolStub.self] + (config.protocolClasses ?? [])
         let session = Session(configuration: config)
-        return RemoteUserProfileLoader(url: url, session: session, mapper: UserProfileMapper(session: session))
+        return RemoteUserProfileLoader(url: url, session: session, mapper: UserProfileMapper())
     }
     
     //MARK: - helpers
-    private func assertThat(_ loadAction: LoadMoreAction, request url: URL, httpMethod: String = "GET") {
+    private func assertThat(_ loadAction: LoadAction, request url: URL, httpMethod: String = "GET") {
         let exp = expectation(description: "wait for request")
         
         var observedRequest: URLRequest?
@@ -278,7 +205,7 @@ class LoadUserProfileFromRemoteUseCaseTests: XCTestCase {
     }
     
     @discardableResult
-    private func assertThat(_ loadAction: LoadMoreAction, receive expectedProfileResult: Result<[UserProfile], RemoteUserProfileLoader.Error>?, file: StaticString = #filePath, line: UInt = #line) -> LoadUserProfileResult? {
+    private func assertThat(_ loadAction: LoadAction, receive expectedResult: LoadUserProfileResult, file: StaticString = #filePath, line: UInt = #line) -> LoadUserProfileResult? {
         let exp = expectation(description: "wait for result")
         var receivedResult: LoadUserProfileResult?
         loadAction() { result in
@@ -288,10 +215,10 @@ class LoadUserProfileFromRemoteUseCaseTests: XCTestCase {
         
         wait(for: [exp], timeout: 1.0)
         
-        switch (receivedResult, expectedProfileResult) {
+        switch (receivedResult, expectedResult) {
             
-        case (let .success(receivedPaginatedProfiles), let .success(expectedProfiles)):
-            XCTAssertEqual(receivedPaginatedProfiles.profiles, expectedProfiles, file: file, line: line)
+        case (let .success(receivedProfiles), let .success(expectedProfiles)):
+            XCTAssertEqual(receivedProfiles, expectedProfiles, file: file, line: line)
             return receivedResult
         
         case (let .failure(receivedError), let .failure(expectedError)):
@@ -299,44 +226,41 @@ class LoadUserProfileFromRemoteUseCaseTests: XCTestCase {
             return nil
         
         default:
-            XCTFail("received \(String(describing: receivedResult)), but expect \(String(describing: expectedProfileResult)) instead", file: file, line: line)
+            XCTFail("received \(String(describing: receivedResult)), but expect \(String(describing: expectedResult)) instead", file: file, line: line)
             return nil
         }
         
     }
-    
-    private func makeUserProfilesJSON(profiles: [[String: Any]]) -> Data {
-        let data = try! JSONSerialization.data(withJSONObject: profiles, options: .prettyPrinted)
-        return data
-    }
-    
-    private func makeUserProfile(
-        id: Int = Int.random(in: 1...1000),
-        login: String = "a-login-name",
-        avatarUrl: String = "https://any-url.com",
-        siteAdmin: Bool = false
-    ) -> (model: UserProfile, json: [String: Any]) {
-        let json: [String: Any] = [ "id": id, "login": login, "avatar_url": avatarUrl, "site_admin": siteAdmin]
-        let model = UserProfile(id: id, login: login, avatarUrl: URL(string: avatarUrl)! , siteAdmin: siteAdmin)
-        return (model, json)
-    }
-    
-    private func nextLinkHeader(link: String = "<https://api.github.com/user/repos?page=3&per_page=100>; rel=\"next\", <https://api.github.com/user/repos?page=50&per_page=100>; rel=\"last\"") -> [String: String] {
-        ["Link": link]
-    }
-    
-    private func anyNSError() -> NSError {
-        NSError(domain: "any-ns-error", code: -1, userInfo: nil)
-    }
-    
-    private func anyURL() -> URL {
-        URL(string: "https://any-url.ocm")!
-    }
-    
-    private func anyHTTPURLResponse(statusCode: Int, httpVersion: String? = nil, headerFields: [String : String]? = nil) -> HTTPURLResponse {
-        HTTPURLResponse(url: anyURL(), statusCode: statusCode, httpVersion: httpVersion, headerFields: headerFields)!
-    }
+}
 
+
+//MARK: - common helpers
+private func makeUserProfilesJSON(profiles: [[String: Any]]) -> Data {
+    let data = try! JSONSerialization.data(withJSONObject: profiles, options: .prettyPrinted)
+    return data
+}
+
+private func makeUserProfile(
+    id: Int = Int.random(in: 1...1000),
+    login: String = "a-login-name",
+    avatarUrl: String = "https://any-url.com",
+    siteAdmin: Bool = false
+) -> (model: UserProfile, json: [String: Any]) {
+    let json: [String: Any] = [ "id": id, "login": login, "avatar_url": avatarUrl, "site_admin": siteAdmin]
+    let model = UserProfile(id: id, login: login, avatarUrl: URL(string: avatarUrl)! , siteAdmin: siteAdmin)
+    return (model, json)
+}
+
+private func anyNSError() -> NSError {
+    NSError(domain: "any-ns-error", code: -1, userInfo: nil)
+}
+
+private func anyURL() -> URL {
+    URL(string: "https://any-url.ocm")!
+}
+
+private func anyHTTPURLResponse(statusCode: Int, httpVersion: String? = nil, headerFields: [String : String]? = nil) -> HTTPURLResponse {
+    HTTPURLResponse(url: anyURL(), statusCode: statusCode, httpVersion: httpVersion, headerFields: headerFields)!
 }
 
 //MARK: - test doubles
