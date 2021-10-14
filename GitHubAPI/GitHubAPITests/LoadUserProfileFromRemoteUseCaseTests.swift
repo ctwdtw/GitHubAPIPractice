@@ -140,7 +140,7 @@ class LoadUserProfileFromRemoteUseCaseTests: XCTestCase {
     func test__load__delivers_connectivity_error_on_stubbed_error() {
         let sut = makeSUT()
         
-        assertThat(sut, receive: .failure(.connectivity), onStubbedReturns: {
+        assertThat(sut.load(complete:), receive: .failure(.connectivity), onStubbedReturns: {
             URLProtocolStub.stub(data: nil, response: nil, error: anyNSError())
         })
     }
@@ -148,7 +148,7 @@ class LoadUserProfileFromRemoteUseCaseTests: XCTestCase {
     func test__load___delivers_invalidData_error_on_un_contracted_status_code() {
         let sut = makeSUT()
         
-        assertThat(sut, receive: .failure(.invalidData), onStubbedReturns: {
+        assertThat(sut.load(complete:), receive: .failure(.invalidData), onStubbedReturns: {
             URLProtocolStub.stub(data: nil, response: anyHTTPURLResponse(statusCode: 199), error: nil)
         })
     }
@@ -156,7 +156,7 @@ class LoadUserProfileFromRemoteUseCaseTests: XCTestCase {
     func test__load__delivers_invalidData_error_on_non_json() {
         let sut = makeSUT()
         
-        assertThat(sut, receive: .failure(.invalidData), onStubbedReturns: {
+        assertThat(sut.load(complete:), receive: .failure(.invalidData), onStubbedReturns: {
             let non_json = "any-non-json".data(using: .utf8)!
             URLProtocolStub.stub(data: non_json, response: anyHTTPURLResponse(statusCode: 200), error: nil)
         })
@@ -165,7 +165,7 @@ class LoadUserProfileFromRemoteUseCaseTests: XCTestCase {
     func test__load__delivers_invalidData_error_on_un_contracted_json() {
         let sut = makeSUT()
         
-        assertThat(sut, receive: .failure(.invalidData), onStubbedReturns: {
+        assertThat(sut.load(complete:), receive: .failure(.invalidData), onStubbedReturns: {
             let un_contracted_json = "{\"key\": \"value\"}".data(using: .utf8)!
             URLProtocolStub.stub(data: un_contracted_json, response: anyHTTPURLResponse(statusCode: 200), error: nil)
         })
@@ -174,7 +174,7 @@ class LoadUserProfileFromRemoteUseCaseTests: XCTestCase {
     func test__load__delivers_nonModified_error_on_304_status_code() {
         let sut = makeSUT()
         
-        assertThat(sut, receive: .failure(.notModified), onStubbedReturns: {
+        assertThat(sut.load(complete:), receive: .failure(.notModified), onStubbedReturns: {
             URLProtocolStub.stub(data: nil, response: anyHTTPURLResponse(statusCode: 304), error: nil)
         })
     }
@@ -185,7 +185,7 @@ class LoadUserProfileFromRemoteUseCaseTests: XCTestCase {
         let (_, json2) = makeUserProfile()
         let data = makeUserProfilesJSON(profiles: [json1, json2])
         
-        assertThat(sut, receive: .failure(.invalidData), onStubbedReturns: {
+        assertThat(sut.load(complete:), receive: .failure(.invalidData), onStubbedReturns: {
             URLProtocolStub.stub(data: data, response: anyHTTPURLResponse(statusCode: 199), error: nil)
         })
     }
@@ -196,7 +196,7 @@ class LoadUserProfileFromRemoteUseCaseTests: XCTestCase {
         let (model2, json2) = makeUserProfile()
         let data = makeUserProfilesJSON(profiles: [json1, json2])
         
-        assertThat(sut, receive: .success(PaginatedUserProfile(profiles:[model1, model2])), onStubbedReturns: {
+        assertThat(sut.load(complete:), receive: .success([model1, model2]), onStubbedReturns: {
             URLProtocolStub.stub(data: data, response: anyHTTPURLResponse(statusCode: 200), error: nil)
         })
     }
@@ -254,45 +254,25 @@ class LoadUserProfileFromRemoteUseCaseTests: XCTestCase {
         XCTAssertEqual(observedRequest??.url?.absoluteString, "https://api.github.com/user/repos?page=3&per_page=100")
     }
     
-    func test__loadMoreAction__deliversAggregatedUserProfiles() {
-        let sut = makeSUT()
+    func test__loadMoreAction__deliversAggregatedUserProfiles() throws {
         let (model1, json1) = makeUserProfile()
         let (model2, json2) = makeUserProfile()
         let data = makeUserProfilesJSON(profiles: [json1, json2])
-        URLProtocolStub.stub(data: data, response: anyHTTPURLResponse(statusCode: 200, headerFields: nextLinkHeader()), error: nil)
-        let firstLoadExp = expectation(description: "wait for load result")
+        let sut = makeSUT()
         
-        var receivedResult: LoadUserProfileResult?
-        sut.load { result in
-            firstLoadExp.fulfill()
-            receivedResult = result
-        }
-        
-        wait(for: [firstLoadExp], timeout: 1.0)
-        let firstModels = (try! receivedResult?.get())!.profiles
-        XCTAssertEqual(firstModels, [model1, model2])
+        let receivedResult = assertThat(sut.load(complete:), receive: .success([model1, model2]), onStubbedReturns: {
+            URLProtocolStub.stub(data: data, response: anyHTTPURLResponse(statusCode: 200, headerFields: nextLinkHeader()), error: nil)
+        })
         
         let (model3, json3) = makeUserProfile()
         let (model4, json4) = makeUserProfile()
         let nextData = makeUserProfilesJSON(profiles: [json3, json4])
-        URLProtocolStub.stub(data: nextData, response: anyHTTPURLResponse(statusCode: 200, headerFields: nil), error: nil)
-        let loadMoreExp = expectation(description: "wait for load more result")
         
-        let loadMoreAction = (try! receivedResult?.get())?.loadMore
-        
-        var nextReceivedResult: LoadUserProfileResult?
-        loadMoreAction?() { result in
-            loadMoreExp.fulfill()
-            nextReceivedResult = result
-        }
-        
-        wait(for: [loadMoreExp], timeout: 1.0)
-        let nextModels = (try! nextReceivedResult?.get())!.profiles
-        XCTAssertEqual(nextModels, [model1, model2, model3, model4])
-    }
+        let loadMoreAction = try XCTUnwrap((try? receivedResult?.get().loadMore))
+        assertThat(loadMoreAction, receive: .success([model1, model2, model3, model4]), onStubbedReturns: {
+            URLProtocolStub.stub(data: nextData, response: anyHTTPURLResponse(statusCode: 200, headerFields: nil), error: nil)
+        })
     
-    private func nextLinkHeader() -> [String: String] {
-        ["Link": "<https://api.github.com/user/repos?page=3&per_page=100>; rel=\"next\", <https://api.github.com/user/repos?page=50&per_page=100>; rel=\"last\""]
     }
     
     func makeSUT(url: URL? = nil) -> RemoteUserProfileLoader {
@@ -304,28 +284,32 @@ class LoadUserProfileFromRemoteUseCaseTests: XCTestCase {
     }
     
     //MARK: - helpers
-    private func assertThat(_ sut: RemoteUserProfileLoader, receive expectedResult: LoadUserProfileResult?, onStubbedReturns: () -> Void, file: StaticString = #filePath, line: UInt = #line) {
+    @discardableResult
+    private func assertThat(_ loadAction: LoadMoreAction, receive expectedProfileResult: Result<[UserProfile], RemoteUserProfileLoader.Error>?, onStubbedReturns: () -> Void, file: StaticString = #filePath, line: UInt = #line) -> LoadUserProfileResult? {
         onStubbedReturns()
         
         let exp = expectation(description: "wait for result")
         var receivedResult: LoadUserProfileResult?
-        sut.load { result in
+        loadAction() { result in
             exp.fulfill()
             receivedResult = result
         }
         
         wait(for: [exp], timeout: 1.0)
         
-        switch (receivedResult, expectedResult) {
+        switch (receivedResult, expectedProfileResult) {
             
-        case (let .success(receivedPaginatedProfiles), let .success(expectedPaginatedProfiles)):
-            XCTAssertEqual(receivedPaginatedProfiles.profiles, expectedPaginatedProfiles.profiles, file: file, line: line)
-            
+        case (let .success(receivedPaginatedProfiles), let .success(expectedProfiles)):
+            XCTAssertEqual(receivedPaginatedProfiles.profiles, expectedProfiles, file: file, line: line)
+            return receivedResult
+        
         case (let .failure(receivedError), let .failure(expectedError)):
             XCTAssertEqual(receivedError as NSError?, expectedError as NSError?, file: file, line: line)
-            
+            return nil
+        
         default:
-            XCTFail("received \(String(describing: receivedResult)), but expect \(String(describing: expectedResult)) instead", file: file, line: line)
+            XCTFail("received \(String(describing: receivedResult)), but expect \(String(describing: expectedProfileResult)) instead", file: file, line: line)
+            return nil
         }
         
     }
@@ -344,6 +328,10 @@ class LoadUserProfileFromRemoteUseCaseTests: XCTestCase {
         let json: [String: Any] = [ "id": id, "login": login, "avatar_url": avatarUrl, "site_admin": siteAdmin]
         let model = UserProfile(id: id, login: login, avatarUrl: URL(string: avatarUrl)! , siteAdmin: siteAdmin)
         return (model, json)
+    }
+    
+    private func nextLinkHeader() -> [String: String] {
+        ["Link": "<https://api.github.com/user/repos?page=3&per_page=100>; rel=\"next\", <https://api.github.com/user/repos?page=50&per_page=100>; rel=\"last\""]
     }
     
     private func anyNSError() -> NSError {
