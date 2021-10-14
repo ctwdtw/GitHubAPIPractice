@@ -17,16 +17,13 @@ public class UserProfileMapper {
         304
     }
     
-    private var currentResponse: DataResponse<[RemoteUserProfileLoader.RemoteUserProfile], AFError>?
-    
-    var currentHeaders: HTTPHeaders? {
-        currentResponse?.response?.headers
-    }
+    private(set) var currentHeaders: [AnyHashable: Any]?
     
     public init() {}
     
     func map(_ response: DataResponse<[RemoteUserProfileLoader.RemoteUserProfile], AFError>) -> LoadUserProfileResult {
-        currentResponse = response
+        currentHeaders = response.response?.allHeaderFields
+        
         if let remoteProfiles = response.value {
             let profiles = remoteProfiles.map { UserProfile(id: $0.id, login: $0.login, avatarUrl: $0.avatar_url, siteAdmin: $0.site_admin) }
             return .success(profiles)

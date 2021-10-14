@@ -21,14 +21,14 @@ public  class PaginatedUserProfileAdapter {
     }
     
     public  func load(complete: @escaping PaginatedLoadUserProfileComplete) {
-        adaptee.load { [adaptee] result in
+        adaptee.load { [adaptee, linkKey] result in
             let page: PaginatedUserProfileResult = result.map { profiles in
                 
                 self.currentProfiles += profiles
                 
                 var loadMore: PaginatedLoadMoreAction?
                 
-                if let link = adaptee.mapper.currentHeaders?.value(for: "Link"), let url = self.nextURL(from: link) {
+                if let link = adaptee.mapper.currentHeaders?[linkKey] as? String, let url = self.nextURL(from: link) {
                     let loader = RemoteUserProfileLoader(url: url, session: adaptee.session, mapper: adaptee.mapper)
                     loadMore = PaginatedUserProfileAdapter(adaptee: loader, currentProfiles: self.currentProfiles).load(complete:)
                 }
@@ -45,6 +45,9 @@ public  class PaginatedUserProfileAdapter {
             complete(page)
         }
     }
+    
+    //MARK: - paginated api detail
+    private let linkKey = "Link"
     
     private func nextURL(from linkHeader: String) -> URL? {
         guard let nextLink = linkHeader.split(separator: ",").filter({ $0.contains("next") }).first else {
