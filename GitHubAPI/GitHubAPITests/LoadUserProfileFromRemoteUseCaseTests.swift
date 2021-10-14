@@ -71,9 +71,15 @@ class RemoteUserProfileLoader {
             
             if let remoteProfiles = response.value {
                 let profiles = remoteProfiles.map { UserProfile(id: $0.id, login: $0.login, avatarUrl: $0.avatar_url, siteAdmin: $0.site_admin) }
+                
+                var loadMore: LoadMoreAction?
+                if let link = response.response!.headers.value(for: "Link"), let url = self.nextURL(from: link) {
+                    loadMore = RemoteUserProfileLoader(url: url, session: session, currentProfiles: profiles).load(complete:)
+                }
+                
                 let pageProfiles = PaginatedUserProfile(
                     profiles: currentProfiles + profiles,
-                    loadMore: RemoteUserProfileLoader(url: URL(string: "https://next-url.com")!, session: session, currentProfiles: profiles).load(complete:)
+                    loadMore: loadMore
                 )
                 self.currentProfiles = profiles
                 complete(.success(pageProfiles))
@@ -93,6 +99,23 @@ class RemoteUserProfileLoader {
             }
         }
     }
+    
+    private func nextURL(from linkHeader: String) -> URL? {
+        guard let nextLink = linkHeader.split(separator: ",").filter({ $0.contains("next") }).first else {
+            return nil
+        }
+        
+        guard let range = nextLink.range(of: "(?<=\\<).+?(?=\\>)", options: .regularExpression) else {
+            return nil
+        }
+        
+        guard let url = URL(string: String(nextLink[range])) else {
+            return nil
+        }
+        
+        return url
+    }
+    
 }
 
 class LoadUserProfileFromRemoteUseCaseTests: XCTestCase {
@@ -198,6 +221,37 @@ class LoadUserProfileFromRemoteUseCaseTests: XCTestCase {
         
         wait(for: [exp], timeout: 1.0)
         XCTAssertEqual(receivedError as NSError?, RemoteUserProfileLoader.Error.loaderHasDeallocated as NSError?)
+    }
+    
+    func test__loadMoreAction__request_next_url() {
+        let sut = makeSUT()
+        let data = makeUserProfilesJSON(profiles: [])
+        URLProtocolStub.stub(data: data, response: anyHTTPURLResponse(statusCode: 200, headerFields: nextLinkHeader()), error: nil)
+        let firstLoadExp = expectation(description: "wait for load result")
+        
+        var receivedResult: LoadUserProfileResult?
+        sut.load { result in
+            firstLoadExp.fulfill()
+            receivedResult = result
+        }
+        
+        wait(for: [firstLoadExp], timeout: 1.0)
+        
+        let nextData = makeUserProfilesJSON(profiles: [])
+        URLProtocolStub.stub(data: nextData, response: anyHTTPURLResponse(statusCode: 200, headerFields: nil), error: nil)
+        
+        let nextRequestExp = expectation(description: "wait for next request")
+        var observedRequest: URLRequest??
+        URLProtocolStub.requestObserver = { request in
+            observedRequest = request
+            nextRequestExp.fulfill()
+        }
+
+        let loadMoreAction = (try! receivedResult?.get())?.loadMore
+        loadMoreAction?() { _ in }
+        
+        wait(for: [nextRequestExp], timeout: 1.0)
+        XCTAssertEqual(observedRequest??.url?.absoluteString, "https://api.github.com/user/repos?page=3&per_page=100")
     }
     
     func test__loadMoreAction__deliversAggregatedUserProfiles() {
