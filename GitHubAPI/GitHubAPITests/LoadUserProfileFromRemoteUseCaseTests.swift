@@ -11,12 +11,13 @@ import Alamofire
 
 typealias LoadUserProfileResult = Result<PaginatedUserProfile, RemoteUserProfileLoader.Error>
 typealias LoadUserProfileComplete = (LoadUserProfileResult) -> Void
+typealias LoadMoreAction = ((@escaping LoadUserProfileComplete) -> Void)
 
 struct PaginatedUserProfile {
     let profiles: [UserProfile]
-    let loadMore: (() -> ((@escaping LoadUserProfileComplete) -> Void))?
+    let loadMore: LoadMoreAction?
     
-    init(profiles: [UserProfile], loadMore: (() -> ((@escaping LoadUserProfileComplete) -> Void))? = nil) {
+    init(profiles: [UserProfile], loadMore: LoadMoreAction? = nil) {
         self.profiles = profiles
         self.loadMore = loadMore
     }
@@ -49,17 +50,20 @@ class RemoteUserProfileLoader {
     
     let url: URL
     
-    init(url: URL, session: Session = .default) {
+    init(url: URL, session: Session = .default, currentProfiles: [UserProfile] = []) {
         self.url = url
         self.session = session
+        self.currentProfiles = currentProfiles
     }
     
     var nonModifiedStatusCode: Int {
         304
     }
     
+    private var currentProfiles: [UserProfile]
+    
     func load(complete: @escaping LoadUserProfileComplete) {
-        session.request(url).validate(statusCode: [200]).responseDecodable(of: [RemoteUserProfile].self) {  [weak self] response in
+        session.request(url).validate(statusCode: [200]).responseDecodable(of: [RemoteUserProfile].self) {  [weak self, session, currentProfiles] response in
             guard let self = self else {
                 complete(.failure( .loaderHasDeallocated))
                 return
@@ -67,7 +71,11 @@ class RemoteUserProfileLoader {
             
             if let remoteProfiles = response.value {
                 let profiles = remoteProfiles.map { UserProfile(id: $0.id, login: $0.login, avatarUrl: $0.avatar_url, siteAdmin: $0.site_admin) }
-                let pageProfiles = PaginatedUserProfile(profiles: profiles)
+                let pageProfiles = PaginatedUserProfile(
+                    profiles: currentProfiles + profiles,
+                    loadMore: RemoteUserProfileLoader(url: URL(string: "https://next-url.com")!, session: session, currentProfiles: profiles).load(complete:)
+                )
+                self.currentProfiles = profiles
                 complete(.success(pageProfiles))
                 
             } else if response.response?.statusCode == self.nonModifiedStatusCode {
@@ -172,7 +180,7 @@ class LoadUserProfileFromRemoteUseCaseTests: XCTestCase {
     
     func test__load__delivers_loaderHasDeallocated_error_on_sut_deinit_before_session_complete() {
         var sut: RemoteUserProfileLoader? = makeSUT()
-
+        
         let exp = expectation(description: "wait for result")
         
         var receivedError: Error?
@@ -185,11 +193,52 @@ class LoadUserProfileFromRemoteUseCaseTests: XCTestCase {
                 receivedError = error
             }
         }
-
+        
         sut = nil
-
+        
         wait(for: [exp], timeout: 1.0)
         XCTAssertEqual(receivedError as NSError?, RemoteUserProfileLoader.Error.loaderHasDeallocated as NSError?)
+    }
+    
+    func test__loadMoreAction__deliversAggregatedUserProfiles() {
+        let sut = makeSUT()
+        let (model1, json1) = makeUserProfile()
+        let (model2, json2) = makeUserProfile()
+        let data = makeUserProfilesJSON(profiles: [json1, json2])
+        URLProtocolStub.stub(data: data, response: anyHTTPURLResponse(statusCode: 200, headerFields: nextLinkHeader()), error: nil)
+        let firstLoadExp = expectation(description: "wait for load result")
+        
+        var receivedResult: LoadUserProfileResult?
+        sut.load { result in
+            firstLoadExp.fulfill()
+            receivedResult = result
+        }
+        
+        wait(for: [firstLoadExp], timeout: 1.0)
+        let firstModels = (try! receivedResult?.get())!.profiles
+        XCTAssertEqual(firstModels, [model1, model2])
+        
+        let (model3, json3) = makeUserProfile()
+        let (model4, json4) = makeUserProfile()
+        let nextData = makeUserProfilesJSON(profiles: [json3, json4])
+        URLProtocolStub.stub(data: nextData, response: anyHTTPURLResponse(statusCode: 200, headerFields: nil), error: nil)
+        let loadMoreExp = expectation(description: "wait for load more result")
+        
+        let loadMoreAction = (try! receivedResult?.get())?.loadMore
+        
+        var nextReceivedResult: LoadUserProfileResult?
+        loadMoreAction?() { result in
+            loadMoreExp.fulfill()
+            nextReceivedResult = result
+        }
+        
+        wait(for: [loadMoreExp], timeout: 1.0)
+        let nextModels = (try! nextReceivedResult?.get())!.profiles
+        XCTAssertEqual(nextModels, [model1, model2, model3, model4])
+    }
+    
+    private func nextLinkHeader() -> [String: String] {
+        ["Link": "<https://api.github.com/user/repos?page=3&per_page=100>; rel=\"next\", <https://api.github.com/user/repos?page=50&per_page=100>; rel=\"last\""]
     }
     
     func makeSUT(url: URL? = nil) -> RemoteUserProfileLoader {
