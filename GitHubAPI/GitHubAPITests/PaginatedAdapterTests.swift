@@ -9,75 +9,6 @@ import XCTest
 import GitHubAPI
 import Alamofire
 
-typealias PaginatedUserProfileResult = Result<PaginatedUserProfile, RemoteUserProfileLoader.Error>
-typealias PaginatedLoadUserProfileComplete = (PaginatedUserProfileResult) -> Void
-typealias PaginatedLoadMoreAction = ((@escaping PaginatedLoadUserProfileComplete) -> Void)
-
-struct PaginatedUserProfile {
-    let profiles: [UserProfile]
-    let loadMore: PaginatedLoadMoreAction?
-    
-    init(profiles: [UserProfile], loadMore: PaginatedLoadMoreAction? = nil) {
-        self.profiles = profiles
-        self.loadMore = loadMore
-    }
-    
-}
-
-class PaginatedAdapter {
-    private let adaptee: RemoteUserProfileLoader
-    
-    private var currentProfiles: [UserProfile]
-    
-    init(adaptee: RemoteUserProfileLoader, currentProfiles: [UserProfile]) {
-        self.adaptee = adaptee
-        self.currentProfiles = currentProfiles
-    }
-    
-    func load(complete: @escaping PaginatedLoadUserProfileComplete) {
-        adaptee.load { [adaptee] result in
-            let page: PaginatedUserProfileResult = result.map { profiles in
-                
-                self.currentProfiles += profiles
-                
-                var loadMore: PaginatedLoadMoreAction?
-                
-                if let link = adaptee.mapper.currentHeaders?.value(for: "Link"), let url = self.nextURL(from: link) {
-                    let loader = RemoteUserProfileLoader(url: url, session: adaptee.session, mapper: adaptee.mapper)
-                    loadMore = PaginatedAdapter(adaptee: loader, currentProfiles: self.currentProfiles).load(complete:)
-                }
-                
-                let pageProfiles = PaginatedUserProfile(
-                    profiles: self.currentProfiles,
-                    loadMore: loadMore
-                )
-                
-                return pageProfiles
-                
-            }
-            
-            complete(page)
-        }
-    }
-    
-    private func nextURL(from linkHeader: String) -> URL? {
-        guard let nextLink = linkHeader.split(separator: ",").filter({ $0.contains("next") }).first else {
-            return nil
-        }
-        
-        guard let range = nextLink.range(of: "(?<=\\<).+?(?=\\>)", options: .regularExpression) else {
-            return nil
-        }
-        
-        guard let url = URL(string: String(nextLink[range])) else {
-            return nil
-        }
-        
-        return url
-    }
-    
-}
-
 class PaginatedAdapterTests: XCTestCase {
     func test__loadMoreAction__request_next_url() throws {
         let link = "<https://api.github.com/user/repos?page=3&per_page=100>; rel=\"next\", <https://api.github.com/user/repos?page=50&per_page=100>; rel=\"last\""
@@ -114,13 +45,13 @@ class PaginatedAdapterTests: XCTestCase {
         ["Link": link]
     }
     
-    private func makeSUT(url: URL? = nil) -> PaginatedAdapter {
+    private func makeSUT(url: URL? = nil) -> PaginatedUserProfileAdapter {
         let url = url == nil ? anyURL() : url!
         let config = URLSessionConfiguration.af.default
         config.protocolClasses = [URLProtocolStub.self] + (config.protocolClasses ?? [])
         let session = Session(configuration: config)
         let loader = RemoteUserProfileLoader(url: url, session: session, mapper: UserProfileMapper())
-        let sut = PaginatedAdapter(adaptee: loader, currentProfiles: [])
+        let sut = PaginatedUserProfileAdapter(adaptee: loader, currentProfiles: [])
         return sut
     }
     
@@ -171,9 +102,9 @@ class PaginatedAdapterTests: XCTestCase {
 
 }
 
-private extension PaginatedAdapter {
+private extension PaginatedUserProfileAdapter {
     @discardableResult
-    func stub(data: Data?, response: HTTPURLResponse?, error: Swift.Error?) -> PaginatedAdapter {
+    func stub(data: Data?, response: HTTPURLResponse?, error: Swift.Error?) -> PaginatedUserProfileAdapter {
         URLProtocolStub.stub(data: data, response: response, error: error)
         return self
     }

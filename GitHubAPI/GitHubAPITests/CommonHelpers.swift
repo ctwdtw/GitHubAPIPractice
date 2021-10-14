@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import GitHubAPI
 //MARK: - common helpers
 func makeUserProfilesJSON(profiles: [[String: Any]]) -> Data {
     let data = try! JSONSerialization.data(withJSONObject: profiles, options: .prettyPrinted)

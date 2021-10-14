@@ -11,6 +11,8 @@
 		63DE083027187F3D0000C5EA /* PaginatedAdapterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63DE082F27187F3D0000C5EA /* PaginatedAdapterTests.swift */; };
 		63DE083227187F9B0000C5EA /* CommonHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63DE083127187F9B0000C5EA /* CommonHelpers.swift */; };
 		63DE083427187FDD0000C5EA /* URLProtocolStub.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63DE083327187FDD0000C5EA /* URLProtocolStub.swift */; };
+		63DE08362718828B0000C5EA /* RemoteUserProfileLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63DE08352718828B0000C5EA /* RemoteUserProfileLoader.swift */; };
+		63DE0838271882D80000C5EA /* PaginatedUserProfileAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63DE0837271882D80000C5EA /* PaginatedUserProfileAdapter.swift */; };
 		63F55393270FF2A30002FA50 /* GitHubAPI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63F5538A270FF2A30002FA50 /* GitHubAPI.framework */; };
 		63F55398270FF2A30002FA50 /* LoadUserProfileFromRemoteUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63F55397270FF2A30002FA50 /* LoadUserProfileFromRemoteUseCaseTests.swift */; };
 		63F55399270FF2A30002FA50 /* GitHubAPI.h in Headers */ = {isa = PBXBuildFile; fileRef = 63F5538D270FF2A30002FA50 /* GitHubAPI.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -31,6 +33,8 @@
 		63DE082F27187F3D0000C5EA /* PaginatedAdapterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaginatedAdapterTests.swift; sourceTree = "<group>"; };
 		63DE083127187F9B0000C5EA /* CommonHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonHelpers.swift; sourceTree = "<group>"; };
 		63DE083327187FDD0000C5EA /* URLProtocolStub.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLProtocolStub.swift; sourceTree = "<group>"; };
+		63DE08352718828B0000C5EA /* RemoteUserProfileLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteUserProfileLoader.swift; sourceTree = "<group>"; };
+		63DE0837271882D80000C5EA /* PaginatedUserProfileAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaginatedUserProfileAdapter.swift; sourceTree = "<group>"; };
 		63F5538A270FF2A30002FA50 /* GitHubAPI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = GitHubAPI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		63F5538D270FF2A30002FA50 /* GitHubAPI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GitHubAPI.h; sourceTree = "<group>"; };
 		63F55392270FF2A30002FA50 /* GitHubAPITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GitHubAPITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -88,6 +92,8 @@
 			isa = PBXGroup;
 			children = (
 				63F5538D270FF2A30002FA50 /* GitHubAPI.h */,
+				63DE08352718828B0000C5EA /* RemoteUserProfileLoader.swift */,
+				63DE0837271882D80000C5EA /* PaginatedUserProfileAdapter.swift */,
 			);
 			path = GitHubAPI;
 			sourceTree = "<group>";
@@ -189,6 +195,7 @@
 				TargetAttributes = {
 					63F55389270FF2A30002FA50 = {
 						CreatedOnToolsVersion = 13.0;
+						LastSwiftMigration = 1300;
 					};
 					63F55391270FF2A30002FA50 = {
 						CreatedOnToolsVersion = 13.0;
@@ -300,6 +307,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				63DE0838271882D80000C5EA /* PaginatedUserProfileAdapter.swift in Sources */,
+				63DE08362718828B0000C5EA /* RemoteUserProfileLoader.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -451,6 +460,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 9A20F49B4ABD5F7CD019C3B9 /* Pods-GitHubAPI.debug.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
@@ -471,6 +481,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -480,6 +491,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 889D3A1A98416CBE14AA73FC /* Pods-GitHubAPI.release.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
@@ -509,6 +521,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 8195CAE8EAB0CE167A7169A8 /* Pods-GitHubAPITests.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 7S9CF6BJNF;
@@ -531,6 +544,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 78F22400778E11801D862B36 /* Pods-GitHubAPITests.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 7S9CF6BJNF;
