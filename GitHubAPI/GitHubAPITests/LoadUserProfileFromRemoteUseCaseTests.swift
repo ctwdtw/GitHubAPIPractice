@@ -215,12 +215,7 @@ class LoadUserProfileFromRemoteUseCaseTests: XCTestCase {
         var receivedError: Error?
         sut?.load { result in
             exp.fulfill()
-            do {
-                _ = try result.get()
-                
-            } catch {
-                receivedError = error
-            }
+            receivedError = result.error
         }
         
         sut = nil
@@ -373,5 +368,16 @@ private extension RemoteUserProfileLoader {
     func stub(data: Data?, response: HTTPURLResponse?, error: Swift.Error?) -> RemoteUserProfileLoader {
         URLProtocolStub.stub(data: data, response: response, error: error)
         return self
+    }
+}
+
+private extension Result {
+    var error: Error? {
+        switch self {
+        case .success(_):
+            return nil
+        case .failure(let error):
+            return error
+        }
     }
 }
