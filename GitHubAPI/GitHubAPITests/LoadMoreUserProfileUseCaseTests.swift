@@ -50,8 +50,7 @@ class LoadMoreUserProfileUseCaseTests: XCTestCase {
         let config = URLSessionConfiguration.af.default
         config.protocolClasses = [URLProtocolStub.self] + (config.protocolClasses ?? [])
         let session = Session(configuration: config)
-        let loader = RemoteUserProfileLoader(url: url, session: session, mapper: UserProfileMapper())
-        let sut = PaginatedUserProfileAdapter(adaptee: loader, currentProfiles: [])
+        let sut = RemoteUserProfileLoader(url: url, session: session, mapper: UserProfileMapper()).paginated()
         return sut
     }
     
