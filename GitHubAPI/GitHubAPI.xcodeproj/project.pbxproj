@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		4E1746572EF7B07D77F8D5DF /* Pods_GitHubAPITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D6351E13F575F241864C67D4 /* Pods_GitHubAPITests.framework */; };
+		63877E5D271920EA009C92A9 /* CombinePlayground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63877E5C271920EA009C92A9 /* CombinePlayground.swift */; };
 		63DE083027187F3D0000C5EA /* PaginatedAdapterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63DE082F27187F3D0000C5EA /* PaginatedAdapterTests.swift */; };
 		63DE083227187F9B0000C5EA /* CommonHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63DE083127187F9B0000C5EA /* CommonHelpers.swift */; };
 		63DE083427187FDD0000C5EA /* URLProtocolStub.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63DE083327187FDD0000C5EA /* URLProtocolStub.swift */; };
@@ -33,6 +34,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		63877E5C271920EA009C92A9 /* CombinePlayground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CombinePlayground.swift; sourceTree = "<group>"; };
 		63DE082F27187F3D0000C5EA /* PaginatedAdapterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaginatedAdapterTests.swift; sourceTree = "<group>"; };
 		63DE083127187F9B0000C5EA /* CommonHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonHelpers.swift; sourceTree = "<group>"; };
 		63DE083327187FDD0000C5EA /* URLProtocolStub.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLProtocolStub.swift; sourceTree = "<group>"; };
@@ -114,6 +116,7 @@
 				63DE082F27187F3D0000C5EA /* PaginatedAdapterTests.swift */,
 				63DE083127187F9B0000C5EA /* CommonHelpers.swift */,
 				63DE083327187FDD0000C5EA /* URLProtocolStub.swift */,
+				63877E5C271920EA009C92A9 /* CombinePlayground.swift */,
 			);
 			path = GitHubAPITests;
 			sourceTree = "<group>";
@@ -329,6 +332,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				63DE083227187F9B0000C5EA /* CommonHelpers.swift in Sources */,
+				63877E5D271920EA009C92A9 /* CombinePlayground.swift in Sources */,
 				63F55398270FF2A30002FA50 /* LoadUserProfileFromRemoteUseCaseTests.swift in Sources */,
 				63DE083027187F3D0000C5EA /* PaginatedAdapterTests.swift in Sources */,
 				63DE083427187FDD0000C5EA /* URLProtocolStub.swift in Sources */,
