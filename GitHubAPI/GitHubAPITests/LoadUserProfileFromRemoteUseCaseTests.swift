@@ -81,7 +81,7 @@ class LoadUserProfileFromRemoteUseCaseTests: XCTestCase {
         sut = nil
         
         wait(for: [exp], timeout: 1.0)
-        XCTAssertEqual(receivedError as NSError?, RemoteUserProfileLoader.Error.loaderHasDeallocated as NSError?)
+        XCTAssertEqual(receivedError as NSError?, UserProfileMapper.Error.loaderHasDeallocated as NSError?)
     }
 
     

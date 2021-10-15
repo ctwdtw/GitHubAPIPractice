@@ -9,6 +9,14 @@ import Foundation
 import Alamofire
 
 public class UserProfileMapper {
+    public enum Error: Swift.Error {
+        case connectivity
+        case invalidData
+        case notModified
+        case loaderHasDeallocated
+        case unexpected
+    }
+    
     var validStatusCodes: [Int] {
         return [200]
     }

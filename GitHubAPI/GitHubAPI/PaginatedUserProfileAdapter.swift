@@ -6,7 +6,7 @@
 //
 
 import Foundation
-public typealias PaginatedUserProfileResult = Result<PaginatedUserProfile, RemoteUserProfileLoader.Error>
+public typealias PaginatedUserProfileResult = Result<PaginatedUserProfile, UserProfileMapper.Error>
 public typealias PaginatedLoadUserProfileComplete = (PaginatedUserProfileResult) -> Void
 public typealias PaginatedLoadMoreAction = ((@escaping PaginatedLoadUserProfileComplete) -> Void)
 
@@ -23,7 +23,7 @@ public  class PaginatedUserProfileAdapter {
     public  func load(complete: @escaping PaginatedLoadUserProfileComplete) {
         adaptee.load { [weak self] result in
             guard let self = self else {
-                complete(.failure(RemoteUserProfileLoader.Error.loaderHasDeallocated))
+                complete(.failure(UserProfileMapper.Error.loaderHasDeallocated))
                 return
             }
             

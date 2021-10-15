@@ -95,19 +95,19 @@ class CombinePlayground: XCTestCase {
 
         
         wait(for: [exp], timeout: 1.0)
-        XCTAssertEqual(receivedError as NSError?, RemoteUserProfileLoader.Error.invalidData as NSError?)
+        XCTAssertEqual(receivedError as NSError?, UserProfileMapper.Error.invalidData as NSError?)
     }
 }
 
 extension RemoteUserProfileLoader {
-    func publisher() -> AnyPublisher<[UserProfile], RemoteUserProfileLoader.Error> {
+    func publisher() -> AnyPublisher<[UserProfile], UserProfileMapper.Error> {
         return Deferred {
-            Future<[UserProfile], RemoteUserProfileLoader.Error>(self.load(complete:))
+            Future<[UserProfile], UserProfileMapper.Error>(self.load(complete:))
         }.eraseToAnyPublisher()
     }
 }
 
-extension Publisher where Output == [UserProfile], Failure == RemoteUserProfileLoader.Error {
+extension Publisher where Output == [UserProfile], Failure == UserProfileMapper.Error {
     @discardableResult
     func stub(data: Data?, response: HTTPURLResponse?, error: Swift.Error?) -> Self {
         URLProtocolStub.stub(data: data, response: response, error: error)
