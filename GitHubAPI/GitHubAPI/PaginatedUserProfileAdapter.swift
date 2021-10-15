@@ -21,48 +21,32 @@ public  class PaginatedUserProfileAdapter {
     }
     
     public  func load(complete: @escaping PaginatedLoadUserProfileComplete) {
-        adaptee.load { [adaptee, linkKey] result in
+        adaptee.load { [weak self] result in
+            guard let self = self else {
+                complete(.failure(RemoteUserProfileLoader.Error.loaderHasDeallocated))
+                return
+            }
+            
             let page: PaginatedUserProfileResult = result.map { profiles in
-                
                 self.currentProfiles += profiles
-                
-                var loadMore: PaginatedLoadMoreAction?
-                
-                if let link = adaptee.mapper.currentHeaders?[linkKey] as? String, let url = self.nextURL(from: link) {
-                    let loader = RemoteUserProfileLoader(url: url, session: adaptee.session, mapper: adaptee.mapper)
-                    loadMore = PaginatedUserProfileAdapter(adaptee: loader, currentProfiles: self.currentProfiles).load(complete:)
-                }
-                
-                let pageProfiles = PaginatedUserProfile(
+                return PaginatedUserProfile(
                     profiles: self.currentProfiles,
-                    loadMore: loadMore
+                    loadMore: self.makeLoadMore()
                 )
-                
-                return pageProfiles
-                
             }
             
             complete(page)
         }
     }
     
-    //MARK: - paginated api detail
-    private let linkKey = "Link"
-    
-    private func nextURL(from linkHeader: String) -> URL? {
-        guard let nextLink = linkHeader.split(separator: ",").filter({ $0.contains("next") }).first else {
+    private func makeLoadMore() -> PaginatedLoadMoreAction? {
+        if let url = adaptee.mapper.nextURL() {
+            let loader = RemoteUserProfileLoader(url: url, session: adaptee.session, mapper: adaptee.mapper)
+            return PaginatedUserProfileAdapter(adaptee: loader, currentProfiles: self.currentProfiles).load(complete:)
+        
+        } else {
+            
             return nil
         }
-        
-        guard let range = nextLink.range(of: "(?<=\\<).+?(?=\\>)", options: .regularExpression) else {
-            return nil
-        }
-        
-        guard let url = URL(string: String(nextLink[range])) else {
-            return nil
-        }
-        
-        return url
     }
-    
 }
