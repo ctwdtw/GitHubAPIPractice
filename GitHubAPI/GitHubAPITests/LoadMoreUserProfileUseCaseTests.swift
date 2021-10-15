@@ -1,5 +1,5 @@
 //
-//  PaginatedAdapterTests.swift
+//  LoadMoreUserProfileUseCaseTests.swift
 //  GitHubAPITests
 //
 //  Created by Paul Lee on 2021/10/14.
@@ -9,7 +9,7 @@ import XCTest
 import GitHubAPI
 import Alamofire
 
-class PaginatedAdapterTests: XCTestCase {
+class LoadMoreUserProfileUseCaseTests: XCTestCase {
     func test__loadMoreAction__request_next_url() throws {
         let link = "<https://api.github.com/user/repos?page=3&per_page=100>; rel=\"next\", <https://api.github.com/user/repos?page=50&per_page=100>; rel=\"last\""
         let data = makeUserProfilesJSON(profiles: [])
