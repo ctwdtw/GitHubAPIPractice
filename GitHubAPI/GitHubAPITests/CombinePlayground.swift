@@ -36,7 +36,8 @@ class CombinePlayground: XCTestCase {
         XCTAssertTrue(emitValueUponCreation)
     }
     
-    func test__defer__does_not_emit_value_upon_creation() {
+    func test__defer__does_not_emit_value_upon_creation() throws {
+        throw XCTSkip("we know the concept, now we skip this test case and keep the code as an illustration on how combine behave.")
         let exp = expectation(description: "exp not fulfill")
         exp.isInverted = true
         
