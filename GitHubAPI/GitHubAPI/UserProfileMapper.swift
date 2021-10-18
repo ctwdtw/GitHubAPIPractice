@@ -29,27 +29,27 @@ public class UserProfileMapper {
     
     public init() {}
     
-    func map(_ response: DataResponse<[RemoteUserProfileLoader.RemoteUserProfile], AFError>) -> LoadUserProfileResult {
+    func map(_ response: DataResponse<[RemoteUserProfileLoader.RemoteUserProfile], AFError>) throws -> [UserProfile] {
         currentHeaders = response.response?.allHeaderFields
         
         if let remoteProfiles = response.value {
             let profiles = remoteProfiles.map { UserProfile(id: $0.id, login: $0.login, avatarUrl: $0.avatar_url, siteAdmin: $0.site_admin) }
-            return .success(profiles)
+            return profiles
             
         } else if response.response?.statusCode == self.nonModifiedStatusCode {
-            return .failure(.notModified)
+            throw UserProfileMapper.Error.notModified
             
         } else if let error = response.error {
             if error.isSessionTaskError {
-                return .failure(.connectivity)
+                throw UserProfileMapper.Error.connectivity
                 
             } else {
-                return .failure(.invalidData)
+                throw UserProfileMapper.Error.invalidData
                 
             }
             
         } else {
-            return .failure(.unexpected)
+            throw UserProfileMapper.Error.unexpected
             
         }
     }

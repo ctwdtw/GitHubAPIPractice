@@ -6,7 +6,7 @@
 //
 
 import Foundation
-public typealias PaginatedUserProfileResult = Result<PaginatedUserProfile, UserProfileMapper.Error>
+public typealias PaginatedUserProfileResult = Result<PaginatedUserProfile, Swift.Error>
 public typealias PaginatedLoadUserProfileComplete = (PaginatedUserProfileResult) -> Void
 public typealias PaginatedLoadMoreAction = ((@escaping PaginatedLoadUserProfileComplete) -> Void)
 

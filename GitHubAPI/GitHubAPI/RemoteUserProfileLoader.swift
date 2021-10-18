@@ -8,7 +8,7 @@
 import Foundation
 import Alamofire
 
-public typealias LoadUserProfileResult = Result<[UserProfile], UserProfileMapper.Error>
+public typealias LoadUserProfileResult = Result<[UserProfile], Swift.Error>
 public typealias LoadUserProfileComplete = (LoadUserProfileResult) -> Void
 
 public class RemoteUserProfileLoader {
@@ -35,13 +35,19 @@ public class RemoteUserProfileLoader {
         session.request(url).validate(statusCode: mapper.validStatusCodes).responseDecodable(of: [RemoteUserProfile].self) {  [weak self] response in
             
             guard let self = self else {
-                complete(.failure(.loaderHasDeallocated))
+                complete(.failure(UserProfileMapper.Error.loaderHasDeallocated))
                 return
             }
             
-            let result = self.mapper.map(response)
-            
-            complete(result)
+            do {
+                let profiles = try self.mapper.map(response)
+                complete(.success(profiles))
+                
+            } catch {
+                complete(.failure(error))
+                
+            }
+
         }
     }
 }

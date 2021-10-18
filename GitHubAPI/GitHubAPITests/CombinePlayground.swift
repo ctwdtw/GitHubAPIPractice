@@ -101,14 +101,14 @@ class CombinePlayground: XCTestCase {
 }
 
 extension RemoteUserProfileLoader {
-    func publisher() -> AnyPublisher<[UserProfile], UserProfileMapper.Error> {
+    func publisher() -> AnyPublisher<[UserProfile], Swift.Error> {
         return Deferred {
-            Future<[UserProfile], UserProfileMapper.Error>(self.load(complete:))
+            Future<[UserProfile], Swift.Error>(self.load(complete:))
         }.eraseToAnyPublisher()
     }
 }
 
-extension Publisher where Output == [UserProfile], Failure == UserProfileMapper.Error {
+extension Publisher where Output == [UserProfile], Failure == Swift.Error {
     @discardableResult
     func stub(data: Data?, response: HTTPURLResponse?, error: Swift.Error?) -> Self {
         URLProtocolStub.stub(data: data, response: response, error: error)
