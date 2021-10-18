@@ -94,6 +94,7 @@ class LoadUserProfileFromRemoteUseCaseTests: XCTestCase {
     }
     
     //MARK: - helpers
+    private typealias LoadAction = ((@escaping LoadUserProfileComplete) -> Void)
     private func assertThat(_ loadAction: LoadAction, request url: URL, httpMethod: String = "GET") {
         let exp = expectation(description: "wait for request")
         

@@ -10,7 +10,6 @@ import Alamofire
 
 public typealias LoadUserProfileResult = Result<[UserProfile], UserProfileMapper.Error>
 public typealias LoadUserProfileComplete = (LoadUserProfileResult) -> Void
-public typealias LoadAction = ((@escaping LoadUserProfileComplete) -> Void)
 
 public class RemoteUserProfileLoader {
     struct RemoteUserProfile: Codable {
