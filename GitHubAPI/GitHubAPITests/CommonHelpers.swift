@@ -24,6 +24,51 @@ func makeUserProfile(
     return (model, json)
 }
 
+func makeUserDetailProfilesJSON(profiles: [[String: Any?]]) -> Data {
+    let data = try! JSONSerialization.data(withJSONObject: profiles, options: .prettyPrinted)
+    return data
+}
+
+func makeUserDetailProfile(
+    id: Int = Int.random(in: 1...1000),
+    avatarUrl: String = "https://any-url.com",
+    name: String? = nil,
+    biography: String? = nil,
+    login: String = "a-login-name",
+    siteAdmin: Bool = false,
+    location: String? = nil,
+    blog: String? = nil
+) -> (model: UserDetailProfile, json: [String: Any?]) {
+    let json: [String: Any?] =
+    [ "id": id,
+      "avatar_url": avatarUrl,
+      "name": name,
+      "bio": biography,
+      "login": login,
+      "site_admin": siteAdmin,
+      "location": location,
+      "blog": blog
+    ]
+    
+    var url: URL?
+    if let blog = blog {
+        url = URL(string: blog)
+    }
+    
+    let model = UserDetailProfile(
+        id: id,
+        avatarUrl: URL(string: avatarUrl)!,
+        name: name,
+        biography: biography,
+        login: login,
+        siteAdmin: siteAdmin,
+        location: location,
+        blog: url
+    )
+    
+    return (model, json)
+}
+
 func anyNSError() -> NSError {
     NSError(domain: "any-ns-error", code: -1, userInfo: nil)
 }

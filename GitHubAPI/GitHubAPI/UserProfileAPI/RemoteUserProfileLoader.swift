@@ -8,10 +8,10 @@
 import Foundation
 import Alamofire
 
-public typealias LoadUserProfileResult = Result<[UserProfile], Swift.Error>
-public typealias LoadUserProfileComplete = (LoadUserProfileResult) -> Void
-
 public class RemoteUserProfileLoader {
+    public typealias LoadUserProfileResult = Result<[UserProfile], Swift.Error>
+    public typealias LoadUserProfileComplete = (LoadUserProfileResult) -> Void
+    
     struct RemoteUserProfile: Codable {
         let id: Int
         let login: String

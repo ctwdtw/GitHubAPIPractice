@@ -20,48 +20,48 @@ class LoadUserDetailProfileFromRemoteUseCaseTests: XCTestCase {
     func test__load__delivers_connectivity_error_on_stubbed_error() {
         let sut = makeSUT().stub(data: nil, response: nil, error: anyNSError())
         
-        assertThat(sut.load(complete:), receive: .failure(UserProfileMapper.Error.connectivity))
+        assertThat(sut.load(complete:), receive: .failure(UserDetailProfileMapper.Error.connectivity))
     }
     
     func test__load___delivers_invalidData_error_on_un_contracted_status_code() {
         let sut = makeSUT().stub(data: nil, response: anyHTTPURLResponse(statusCode: 199), error: nil)
         
-        assertThat(sut.load(complete:), receive: .failure(UserProfileMapper.Error.invalidData))
+        assertThat(sut.load(complete:), receive: .failure(UserDetailProfileMapper.Error.invalidData))
     }
     
     func test__load__delivers_invalidData_error_on_non_json() {
         let data = "any-non-json".data(using: .utf8)!
         let sut = makeSUT().stub(data: data, response: anyHTTPURLResponse(statusCode: 200), error: nil)
     
-        assertThat(sut.load(complete:), receive: .failure(UserProfileMapper.Error.invalidData))
+        assertThat(sut.load(complete:), receive: .failure(UserDetailProfileMapper.Error.invalidData))
     }
     
     func test__load__delivers_invalidData_error_on_un_contracted_json() {
         let data = "{\"key\": \"value\"}".data(using: .utf8)!
         let sut = makeSUT().stub(data: data, response: anyHTTPURLResponse(statusCode: 200), error: nil)
         
-        assertThat(sut.load(complete:), receive: .failure(UserProfileMapper.Error.invalidData))
+        assertThat(sut.load(complete:), receive: .failure(UserDetailProfileMapper.Error.invalidData))
     }
     
     func test__load__delivers_nonModified_error_on_304_status_code() {
         let sut = makeSUT().stub(data: nil, response: anyHTTPURLResponse(statusCode: 304), error: nil)
         
-        assertThat(sut.load(complete:), receive: .failure(UserProfileMapper.Error.notModified))
+        assertThat(sut.load(complete:), receive: .failure(UserDetailProfileMapper.Error.notModified))
     }
     
     func test__load__delivers_invalidData_on_valid_jsons_with_non_contracted_status_code() {
-        let (_, json1) = makeUserProfile()
-        let (_, json2) = makeUserProfile()
-        let data = makeUserProfilesJSON(profiles: [json1, json2])
+        let (_, json1) = makeUserDetailProfile()
+        let (_, json2) = makeUserDetailProfile()
+        let data = makeUserDetailProfilesJSON(profiles: [json1, json2])
         let sut = makeSUT().stub(data: data, response: anyHTTPURLResponse(statusCode: 199), error: nil)
         
-        assertThat(sut.load(complete:), receive: .failure(UserProfileMapper.Error.invalidData))
+        assertThat(sut.load(complete:), receive: .failure(UserDetailProfileMapper.Error.invalidData))
     }
     
     func test__load__delivers_userProfiles_on_valid_json() {
-        let (model1, json1) = makeUserProfile()
-        let (model2, json2) = makeUserProfile()
-        let data = makeUserProfilesJSON(profiles: [json1, json2])
+        let (model1, json1) = makeUserDetailProfile()
+        let (model2, json2) = makeUserDetailProfile()
+        let data = makeUserDetailProfilesJSON(profiles: [json1, json2])
         let sut = makeSUT().stub(data: data, response: anyHTTPURLResponse(statusCode: 200), error: nil)
         
         assertThat(sut.load(complete:), receive: .success([model1, model2]))
@@ -81,7 +81,7 @@ class LoadUserDetailProfileFromRemoteUseCaseTests: XCTestCase {
         sut = nil
         
         wait(for: [exp], timeout: 1.0)
-        XCTAssertEqual(receivedError as NSError?, UserProfileMapper.Error.loaderHasDeallocated as NSError?)
+        XCTAssertEqual(receivedError as NSError?, UserDetailProfileMapper.Error.loaderHasDeallocated as NSError?)
     }
 
     
@@ -94,8 +94,8 @@ class LoadUserDetailProfileFromRemoteUseCaseTests: XCTestCase {
     }
     
     //MARK: - helpers
-    private typealias LoadAction = ((@escaping LoadUserProfileComplete) -> Void)
-    private func assertThat(_ loadAction: LoadAction, request url: URL, httpMethod: String = "GET") {
+    private typealias LoadAction = ((@escaping RemoteUserDetailProfileLoader.LoadUserDetailProfileComplete) -> Void)
+    private func assertThat(_ loadAction: LoadAction, request url: URL, httpMethod: String = "GET", file: StaticString = #filePath, line: UInt = #line) {
         let exp = expectation(description: "wait for request")
         
         var observedRequest: URLRequest?
@@ -107,14 +107,14 @@ class LoadUserDetailProfileFromRemoteUseCaseTests: XCTestCase {
         loadAction { _ in }
         
         wait(for: [exp], timeout: 1.0)
-        XCTAssertEqual(observedRequest?.url, url)
-        XCTAssertEqual(observedRequest?.httpMethod, httpMethod)
+        XCTAssertEqual(observedRequest?.url, url, file: file, line: line)
+        XCTAssertEqual(observedRequest?.httpMethod, httpMethod, file: file, line: line)
     }
     
     @discardableResult
-    private func assertThat(_ loadAction: LoadAction, receive expectedResult: LoadUserProfileResult, file: StaticString = #filePath, line: UInt = #line) -> LoadUserProfileResult? {
+    private func assertThat(_ loadAction: LoadAction, receive expectedResult:  RemoteUserDetailProfileLoader.LoadUserDetailProfileResult, file: StaticString = #filePath, line: UInt = #line) -> RemoteUserDetailProfileLoader.LoadUserDetailProfileResult? {
         let exp = expectation(description: "wait for result")
-        var receivedResult: LoadUserProfileResult?
+        var receivedResult: RemoteUserDetailProfileLoader.LoadUserDetailProfileResult?
         loadAction() { result in
             exp.fulfill()
             receivedResult = result

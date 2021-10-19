@@ -72,7 +72,7 @@ class LoadMoreUserProfileUseCaseTests: XCTestCase {
     }
     
     @discardableResult
-    private func assertThat(_ loadAction: PaginatedLoadMoreAction, receive expectedResult: LoadUserProfileResult, file: StaticString = #filePath, line: UInt = #line) -> PaginatedUserProfileResult? {
+    private func assertThat(_ loadAction: PaginatedLoadMoreAction, receive expectedResult: RemoteUserProfileLoader.LoadUserProfileResult, file: StaticString = #filePath, line: UInt = #line) -> PaginatedUserProfileResult? {
         let exp = expectation(description: "wait for result")
         var receivedResult: PaginatedUserProfileResult?
         loadAction() { result in

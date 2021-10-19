@@ -9,11 +9,18 @@ import Foundation
 import Alamofire
 
 public class RemoteUserDetailProfileLoader {
-    struct RemoteUserProfile: Codable {
-        let id: Int
-        let login: String
-        let avatar_url: URL
-        let site_admin: Bool
+    public typealias LoadUserDetailProfileResult = Result<[UserDetailProfile], Swift.Error>
+    public typealias LoadUserDetailProfileComplete = (LoadUserDetailProfileResult) -> Void
+    
+    struct RemoteUserDetailProfile: Decodable {
+            public let id: Int
+            public let avatar_url: URL
+            public let name: String?
+            public let bio: String?
+            public let login: String
+            public let site_admin: Bool
+            public let location: String?
+            public let blog: URL?
     }
     
     let url: URL
@@ -28,11 +35,11 @@ public class RemoteUserDetailProfileLoader {
         self.mapper = mapper
     }
     
-    public func load(complete: @escaping LoadUserProfileComplete) {
-        session.request(url).validate(statusCode: mapper.validStatusCodes).responseDecodable(of: [RemoteUserProfile].self) {  [weak self] response in
+    public func load(complete: @escaping LoadUserDetailProfileComplete) {
+        session.request(url).validate(statusCode: mapper.validStatusCodes).responseDecodable(of: [RemoteUserDetailProfile].self) {  [weak self] response in
             
             guard let self = self else {
-                complete(.failure(UserProfileMapper.Error.loaderHasDeallocated))
+                complete(.failure(UserDetailProfileMapper.Error.loaderHasDeallocated))
                 return
             }
             

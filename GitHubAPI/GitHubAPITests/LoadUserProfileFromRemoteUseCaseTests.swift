@@ -84,7 +84,6 @@ class LoadUserProfileFromRemoteUseCaseTests: XCTestCase {
         XCTAssertEqual(receivedError as NSError?, UserProfileMapper.Error.loaderHasDeallocated as NSError?)
     }
 
-    
     func makeSUT(url: URL? = nil) -> RemoteUserProfileLoader {
         let url = url == nil ? anyURL() : url!
         let config = URLSessionConfiguration.af.default
@@ -94,8 +93,8 @@ class LoadUserProfileFromRemoteUseCaseTests: XCTestCase {
     }
     
     //MARK: - helpers
-    private typealias LoadAction = ((@escaping LoadUserProfileComplete) -> Void)
-    private func assertThat(_ loadAction: LoadAction, request url: URL, httpMethod: String = "GET") {
+    private typealias LoadAction = ((@escaping RemoteUserProfileLoader.LoadUserProfileComplete) -> Void)
+    private func assertThat(_ loadAction: LoadAction, request url: URL, httpMethod: String = "GET", file: StaticString = #filePath, line: UInt = #line) {
         let exp = expectation(description: "wait for request")
         
         var observedRequest: URLRequest?
@@ -107,14 +106,14 @@ class LoadUserProfileFromRemoteUseCaseTests: XCTestCase {
         loadAction { _ in }
         
         wait(for: [exp], timeout: 1.0)
-        XCTAssertEqual(observedRequest?.url, url)
-        XCTAssertEqual(observedRequest?.httpMethod, httpMethod)
+        XCTAssertEqual(observedRequest?.url, url, file: file, line: line)
+        XCTAssertEqual(observedRequest?.httpMethod, httpMethod, file: file, line: line)
     }
     
     @discardableResult
-    private func assertThat(_ loadAction: LoadAction, receive expectedResult: LoadUserProfileResult, file: StaticString = #filePath, line: UInt = #line) -> LoadUserProfileResult? {
+    private func assertThat(_ loadAction: LoadAction, receive expectedResult: RemoteUserProfileLoader.LoadUserProfileResult, file: StaticString = #filePath, line: UInt = #line) -> RemoteUserProfileLoader.LoadUserProfileResult? {
         let exp = expectation(description: "wait for result")
-        var receivedResult: LoadUserProfileResult?
+        var receivedResult: RemoteUserProfileLoader.LoadUserProfileResult?
         loadAction() { result in
             exp.fulfill()
             receivedResult = result
