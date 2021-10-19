@@ -17,6 +17,17 @@ public class UserDetailProfileMapper {
         case unexpected
     }
     
+    struct RemoteUserDetailProfile: Decodable {
+            public let id: Int
+            public let avatar_url: URL
+            public let name: String?
+            public let bio: String?
+            public let login: String
+            public let site_admin: Bool
+            public let location: String?
+            public let blog: URL?
+    }
+    
     var validStatusCodes: [Int] {
         return [200]
     }
@@ -29,7 +40,7 @@ public class UserDetailProfileMapper {
     
     public init() {}
     
-    func map(_ response: DataResponse<[RemoteUserDetailProfileLoader.RemoteUserDetailProfile], AFError>) throws -> [UserDetailProfile] {
+    func map(_ response: DataResponse<[RemoteUserDetailProfile], AFError>) throws -> [UserDetailProfile] {
         currentHeaders = response.response?.allHeaderFields
         
         if let remoteDetailProfiles = response.value {

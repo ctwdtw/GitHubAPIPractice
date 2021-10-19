@@ -1,14 +1,14 @@
 //
-//  RemoteUserProfileLoader.swift
+//  RemoteLoader.swift
 //  GitHubAPI
 //
-//  Created by Paul Lee on 2021/10/14.
+//  Created by Paul Lee on 2021/10/19.
 //
 
 import Foundation
 import Alamofire
 
-public class RemoteUserProfileLoader {
+public class RemoteLoader {
     public typealias LoadUserProfileResult = Result<[UserProfile], Swift.Error>
     public typealias LoadUserProfileComplete = (LoadUserProfileResult) -> Void
     
@@ -42,11 +42,5 @@ public class RemoteUserProfileLoader {
             }
 
         }
-    }
-}
-
-extension RemoteUserProfileLoader {
-    public func paginated() -> PaginatedUserProfileAdapter {
-        PaginatedUserProfileAdapter(adaptee: self, currentProfiles: [])
     }
 }

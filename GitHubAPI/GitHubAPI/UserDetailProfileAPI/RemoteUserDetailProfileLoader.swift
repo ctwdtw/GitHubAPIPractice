@@ -12,17 +12,7 @@ public class RemoteUserDetailProfileLoader {
     public typealias LoadUserDetailProfileResult = Result<[UserDetailProfile], Swift.Error>
     public typealias LoadUserDetailProfileComplete = (LoadUserDetailProfileResult) -> Void
     
-    struct RemoteUserDetailProfile: Decodable {
-            public let id: Int
-            public let avatar_url: URL
-            public let name: String?
-            public let bio: String?
-            public let login: String
-            public let site_admin: Bool
-            public let location: String?
-            public let blog: URL?
-    }
-    
+
     let url: URL
     
     let session: Session
@@ -36,7 +26,7 @@ public class RemoteUserDetailProfileLoader {
     }
     
     public func load(complete: @escaping LoadUserDetailProfileComplete) {
-        session.request(url).validate(statusCode: mapper.validStatusCodes).responseDecodable(of: [RemoteUserDetailProfile].self) {  [weak self] response in
+        session.request(url).validate(statusCode: mapper.validStatusCodes).responseDecodable(of: [UserDetailProfileMapper.RemoteUserDetailProfile].self) {  [weak self] response in
             
             guard let self = self else {
                 complete(.failure(UserDetailProfileMapper.Error.loaderHasDeallocated))

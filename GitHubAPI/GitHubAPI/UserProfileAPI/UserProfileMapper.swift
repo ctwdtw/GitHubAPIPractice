@@ -17,6 +17,13 @@ public class UserProfileMapper {
         case unexpected
     }
     
+    struct RemoteUserProfile: Codable {
+        let id: Int
+        let login: String
+        let avatar_url: URL
+        let site_admin: Bool
+    }
+    
     var validStatusCodes: [Int] {
         return [200]
     }
@@ -29,7 +36,7 @@ public class UserProfileMapper {
     
     public init() {}
     
-    func map(_ response: DataResponse<[RemoteUserProfileLoader.RemoteUserProfile], AFError>) throws -> [UserProfile] {
+    func map(_ response: DataResponse<[RemoteUserProfile], AFError>) throws -> [UserProfile] {
         currentHeaders = response.response?.allHeaderFields
         
         if let remoteProfiles = response.value {
