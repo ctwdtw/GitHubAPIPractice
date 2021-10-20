@@ -8,7 +8,7 @@
 import Foundation
 import Alamofire
 
-public class UserProfileMapper {
+public class UserProfileMapper: Mapper {
     public enum Error: Swift.Error {
         case notModified
         case unexpected
@@ -16,14 +16,14 @@ public class UserProfileMapper {
         case invalidData
     }
     
-    struct RemoteUserProfile: Codable {
+    public struct RemoteUserProfile: Decodable {
         let id: Int
         let login: String
         let avatar_url: URL
         let site_admin: Bool
     }
     
-    var validStatusCodes: [Int] {
+    public var validStatusCodes: [Int] {
         return [200]
     }
     
@@ -33,7 +33,7 @@ public class UserProfileMapper {
     
     public init() {}
         
-    func map(_ response: DataResponse<[RemoteUserProfile], AFError>) throws -> [UserProfile] {
+    public func map(_ response: DataResponse<[RemoteUserProfile], AFError>) throws -> [UserProfile] {
         
         if let remoteProfiles = response.value {
             let profiles = remoteProfiles.map {
