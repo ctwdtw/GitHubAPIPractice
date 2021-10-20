@@ -10,10 +10,7 @@ import Alamofire
 
 public class UserProfileMapper {
     public enum Error: Swift.Error {
-        case connectivity
-        case invalidData
         case notModified
-        case loaderHasDeallocated
         case unexpected
     }
     
@@ -28,35 +25,36 @@ public class UserProfileMapper {
         return [200]
     }
     
-    var nonModifiedStatusCode: Int {
+    private var nonModifiedStatusCode: Int {
         304
     }
     
     private(set) var currentHeaders: [AnyHashable: Any]?
     
     public init() {}
-    
+        
     func map(_ response: DataResponse<[RemoteUserProfile], AFError>) throws -> [UserProfile] {
         currentHeaders = response.response?.allHeaderFields
         
         if let remoteProfiles = response.value {
-            let profiles = remoteProfiles.map { UserProfile(id: $0.id, login: $0.login, avatarUrl: $0.avatar_url, siteAdmin: $0.site_admin) }
+            let profiles = remoteProfiles.map {
+                UserProfile(
+                    id: $0.id,
+                    login: $0.login,
+                    avatarUrl: $0.avatar_url,
+                    siteAdmin: $0.site_admin
+                )}
+            
             return profiles
             
         } else if response.response?.statusCode == self.nonModifiedStatusCode {
-            throw UserProfileMapper.Error.notModified
+            throw Error.notModified
             
-        } else if let error = response.error {
-            if error.isSessionTaskError {
-                throw UserProfileMapper.Error.connectivity
-                
-            } else {
-                throw UserProfileMapper.Error.invalidData
-                
-            }
+        } else if let afError = response.error {
+            throw afError
             
         } else {
-            throw UserProfileMapper.Error.unexpected
+            throw Error.unexpected
             
         }
     }

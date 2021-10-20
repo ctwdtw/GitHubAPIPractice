@@ -23,7 +23,7 @@ public  class PaginatedUserProfileAdapter {
     public  func load(complete: @escaping PaginatedLoadUserProfileComplete) {
         adaptee.load { [weak self] result in
             guard let self = self else {
-                complete(.failure(UserProfileMapper.Error.loaderHasDeallocated))
+                complete(.failure(RemoteUserProfileLoader.Error.loaderHasDeallocated))
                 return
             }
             

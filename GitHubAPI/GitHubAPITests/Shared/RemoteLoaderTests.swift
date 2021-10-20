@@ -20,7 +20,7 @@ class RemoteLoaderTests: XCTestCase {
     func test__load__delivers_connectivity_error_on_stubbed_error() {
         let sut = makeSUT().stub(data: nil, response: nil, error: anyNSError())
         
-        assertThat(sut.load(complete:), receive: .failure(UserProfileMapper.Error.connectivity))
+        assertThat(sut.load(complete:), receive: .failure(RemoteLoader.Error.connectivity))
     }
     
     // why do we need this?
@@ -28,7 +28,7 @@ class RemoteLoaderTests: XCTestCase {
         let data = "any-non-json".data(using: .utf8)!
         let sut = makeSUT().stub(data: data, response: anyHTTPURLResponse(statusCode: 200), error: nil)
     
-        assertThat(sut.load(complete:), receive: .failure(UserProfileMapper.Error.invalidData))
+        assertThat(sut.load(complete:), receive: .failure(RemoteLoader.Error.invalidData))
     }
     
     func test__load__delivers_mapped_resource() {
@@ -54,7 +54,7 @@ class RemoteLoaderTests: XCTestCase {
         sut = nil
         
         wait(for: [exp], timeout: 1.0)
-        XCTAssertEqual(receivedError as NSError?, UserProfileMapper.Error.loaderHasDeallocated as NSError?)
+        XCTAssertEqual(receivedError as NSError?, RemoteUserProfileLoader.Error.loaderHasDeallocated as NSError?)
     }
 
     func makeSUT(url: URL? = nil) -> RemoteLoader {

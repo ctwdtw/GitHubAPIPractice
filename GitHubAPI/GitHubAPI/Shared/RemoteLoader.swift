@@ -18,6 +18,12 @@ public class RemoteLoader {
     
     let mapper: UserProfileMapper
     
+    public enum Error: Swift.Error {
+        case connectivity
+        case invalidData
+        case loaderHasDeallocated
+    }
+    
     public init(url: URL, session: Session = .default, mapper: UserProfileMapper) {
         self.url = url
         self.session = session
@@ -28,13 +34,17 @@ public class RemoteLoader {
         session.request(url).validate(statusCode: mapper.validStatusCodes).responseDecodable(of: [UserProfileMapper.RemoteUserProfile].self) {  [weak self] response in
             
             guard let self = self else {
-                complete(.failure(UserProfileMapper.Error.loaderHasDeallocated))
+                complete(.failure(RemoteUserProfileLoader.Error.loaderHasDeallocated))
                 return
             }
             
             do {
                 let profiles = try self.mapper.map(response)
                 complete(.success(profiles))
+                
+            } catch let e as AFError {
+                let mappedError = self.mapError(e)
+                complete(.failure(mappedError))
                 
             } catch {
                 complete(.failure(error))
@@ -43,4 +53,15 @@ public class RemoteLoader {
 
         }
     }
+    
+    private func mapError(_ error: AFError) -> Error  {
+        if error.isSessionTaskError {
+            return Error.connectivity
+            
+        } else {
+            return Error.invalidData
+            
+        }
+    }
+    
 }

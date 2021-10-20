@@ -10,10 +10,7 @@ import Alamofire
 
 public class UserDetailProfileMapper {
     public enum Error: Swift.Error {
-        case connectivity
-        case invalidData
-        case notModified
-        case loaderHasDeallocated
+        case resourceNotFound
         case unexpected
     }
     
@@ -32,16 +29,13 @@ public class UserDetailProfileMapper {
         return [200]
     }
     
-    var nonModifiedStatusCode: Int {
-        304
+    var resourceNotFound: Int {
+        404
     }
-    
-    private(set) var currentHeaders: [AnyHashable: Any]?
     
     public init() {}
     
     func map(_ response: DataResponse<[RemoteUserDetailProfile], AFError>) throws -> [UserDetailProfile] {
-        currentHeaders = response.response?.allHeaderFields
         
         if let remoteDetailProfiles = response.value {
             let detailProfiles = remoteDetailProfiles.map {
@@ -55,43 +49,19 @@ public class UserDetailProfileMapper {
                     location: $0.location,
                     blog: $0.blog
                     
-                ) }
+                )}
+            
             return detailProfiles
             
-        } else if response.response?.statusCode == self.nonModifiedStatusCode {
-            throw UserDetailProfileMapper.Error.notModified
+        } else if response.response?.statusCode == self.resourceNotFound {
+            throw Error.resourceNotFound
             
-        } else if let error = response.error {
-            if error.isSessionTaskError {
-                throw UserDetailProfileMapper.Error.connectivity
-                
-            } else {
-                throw UserDetailProfileMapper.Error.invalidData
-                
-            }
+        } else if let afError = response.error {
+            throw afError
             
         } else {
-            throw UserDetailProfileMapper.Error.unexpected
+            throw Error.unexpected
             
         }
-    }
-    
-    //MARK: - paginated api detail
-    private let linkKey = "Link"
-    
-    func nextURL() -> URL? {
-        guard let nextLink = (currentHeaders?[linkKey] as? String)?.split(separator: ",").filter({ $0.contains("next") }).first else {
-            return nil
-        }
-        
-        guard let range = nextLink.range(of: "(?<=\\<).+?(?=\\>)", options: .regularExpression) else {
-            return nil
-        }
-        
-        guard let url = URL(string: String(nextLink[range])) else {
-            return nil
-        }
-        
-        return url
     }
 }

@@ -96,7 +96,7 @@ class CombinePlayground: XCTestCase {
 
         
         wait(for: [exp], timeout: 1.0)
-        XCTAssertEqual(receivedError as NSError?, UserProfileMapper.Error.invalidData as NSError?)
+        XCTAssertEqual(receivedError as NSError?, RemoteUserProfileLoader.Error.invalidData as NSError?)
     }
 }
 
