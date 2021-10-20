@@ -20,27 +20,27 @@ class LoadUserDetailProfileFromRemoteUseCaseTests: XCTestCase {
     func test__load__delivers_connectivity_error_on_stubbed_error() {
         let sut = makeSUT().stub(data: nil, response: nil, error: anyNSError())
         
-        assertThat(sut.load(complete:), receive: .failure(RemoteUserDetailProfileLoader.Error.connectivity))
+        assertThat(sut.load(complete:), receive: .failure(UserDetailProfileMapper.Error.connectivity))
     }
     
     func test__load___delivers_invalidData_error_on_un_contracted_status_code() {
         let sut = makeSUT().stub(data: nil, response: anyHTTPURLResponse(statusCode: 199), error: nil)
         
-        assertThat(sut.load(complete:), receive: .failure(RemoteUserDetailProfileLoader.Error.invalidData))
+        assertThat(sut.load(complete:), receive: .failure(UserDetailProfileMapper.Error.invalidData))
     }
     
     func test__load__delivers_invalidData_error_on_non_json() {
         let data = "any-non-json".data(using: .utf8)!
         let sut = makeSUT().stub(data: data, response: anyHTTPURLResponse(statusCode: 200), error: nil)
     
-        assertThat(sut.load(complete:), receive: .failure(RemoteUserDetailProfileLoader.Error.invalidData))
+        assertThat(sut.load(complete:), receive: .failure(UserDetailProfileMapper.Error.invalidData))
     }
     
     func test__load__delivers_invalidData_error_on_un_contracted_json() {
         let data = "{\"key\": \"value\"}".data(using: .utf8)!
         let sut = makeSUT().stub(data: data, response: anyHTTPURLResponse(statusCode: 200), error: nil)
         
-        assertThat(sut.load(complete:), receive: .failure(RemoteUserDetailProfileLoader.Error.invalidData))
+        assertThat(sut.load(complete:), receive: .failure(UserDetailProfileMapper.Error.invalidData))
     }
     
     func test__load__delivers_resourceNotFound_error_on_404_status_code() {
@@ -55,7 +55,7 @@ class LoadUserDetailProfileFromRemoteUseCaseTests: XCTestCase {
         let data = makeUserDetailProfilesJSON(profiles: [json1, json2])
         let sut = makeSUT().stub(data: data, response: anyHTTPURLResponse(statusCode: 199), error: nil)
         
-        assertThat(sut.load(complete:), receive: .failure(RemoteUserDetailProfileLoader.Error.invalidData))
+        assertThat(sut.load(complete:), receive: .failure(UserDetailProfileMapper.Error.invalidData))
     }
     
     func test__load__delivers_userProfiles_on_valid_json() {

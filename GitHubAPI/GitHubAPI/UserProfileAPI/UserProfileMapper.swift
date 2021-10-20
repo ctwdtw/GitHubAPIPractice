@@ -12,6 +12,8 @@ public class UserProfileMapper {
     public enum Error: Swift.Error {
         case notModified
         case unexpected
+        case connectivity
+        case invalidData
     }
     
     struct RemoteUserProfile: Codable {
@@ -51,13 +53,24 @@ public class UserProfileMapper {
             throw Error.notModified
             
         } else if let afError = response.error {
-            throw afError
+            throw mapAFError(afError)
             
         } else {
             throw Error.unexpected
             
         }
     }
+    
+    private func mapAFError(_ error: AFError) -> Error  {
+        if error.isSessionTaskError {
+            return Error.connectivity
+            
+        } else {
+            return Error.invalidData
+            
+        }
+    }
+    
     
     //MARK: - paginated api detail
     private let linkKey = "Link"

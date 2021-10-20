@@ -10,19 +10,21 @@ import Alamofire
 
 public class UserDetailProfileMapper {
     public enum Error: Swift.Error {
+        case connectivity
+        case invalidData
         case resourceNotFound
         case unexpected
     }
     
     struct RemoteUserDetailProfile: Decodable {
-            public let id: Int
-            public let avatar_url: URL
-            public let name: String?
-            public let bio: String?
-            public let login: String
-            public let site_admin: Bool
-            public let location: String?
-            public let blog: URL?
+        public let id: Int
+        public let avatar_url: URL
+        public let name: String?
+        public let bio: String?
+        public let login: String
+        public let site_admin: Bool
+        public let location: String?
+        public let blog: URL?
     }
     
     var validStatusCodes: [Int] {
@@ -57,10 +59,20 @@ public class UserDetailProfileMapper {
             throw Error.resourceNotFound
             
         } else if let afError = response.error {
-            throw afError
+            throw mapAFError(afError)
             
         } else {
             throw Error.unexpected
+            
+        }
+    }
+    
+    private func mapAFError(_ error: AFError) -> Error  {
+        if error.isSessionTaskError {
+            return Error.connectivity
+            
+        } else {
+            return Error.invalidData
             
         }
     }

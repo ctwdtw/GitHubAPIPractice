@@ -53,10 +53,6 @@ public class RemoteLoader<RemoteResource: Decodable, Resource> {
                 let profiles = try self.mapping(response)
                 complete(.success(profiles))
                 
-            } catch let e as AFError {
-                let mappedError = self.mapError(e)
-                complete(.failure(mappedError))
-                
             } catch {
                 complete(.failure(error))
                 
@@ -64,15 +60,4 @@ public class RemoteLoader<RemoteResource: Decodable, Resource> {
 
         }
     }
-    
-    private func mapError(_ error: AFError) -> Error  {
-        if error.isSessionTaskError {
-            return Error.connectivity
-            
-        } else {
-            return Error.invalidData
-            
-        }
-    }
-    
 }

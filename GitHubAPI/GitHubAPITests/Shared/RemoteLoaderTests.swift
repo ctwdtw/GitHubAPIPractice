@@ -17,16 +17,7 @@ class RemoteLoaderTests: XCTestCase {
         assertThat(sut.load(complete:), request: url, httpMethod: "GET")
     }
     
-    /// 不論 mapper 是什麼, generic loader 和 mapper 的 integration test 都會
-    /// 讓 generic loader deliver connectivity error.
-    /// 也許這個 test case 不該存在, 已經由下一個 test case cover 了.
-//    func test__load__delivers_connectivity_error_on_stubbed_error() {
-//        let sut = makeSUT().stub(data: nil, response: nil, error: anyNSError())
-//
-//        assertThat(sut.load(complete:), receive: .failure(IntToStringLoader.Error.connectivity))
-//    }
-
-    func test__load__delivers_error_on_mapper_error() {
+    func test__load__delivers_mapped_error() {
         let mapper = ResourceMapper(error: anyNSError())
         let sut = makeSUT(mapper: mapper)
 
