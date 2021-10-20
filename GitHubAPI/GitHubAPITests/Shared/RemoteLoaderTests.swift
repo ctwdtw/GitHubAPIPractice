@@ -16,28 +16,28 @@ class RemoteLoaderTests: XCTestCase {
         
         assertThat(sut.load(complete:), request: url, httpMethod: "GET")
     }
+    
+    /// 不論 mapper 是什麼, generic loader 和 mapper 的 integration test 都會
+    /// 讓 generic loader deliver connectivity error.
+    /// 也許這個 test case 不該存在, 已經由下一個 test case cover 了.
+//    func test__load__delivers_connectivity_error_on_stubbed_error() {
+//        let sut = makeSUT().stub(data: nil, response: nil, error: anyNSError())
+//
+//        assertThat(sut.load(complete:), receive: .failure(IntToStringLoader.Error.connectivity))
+//    }
 
-    func test__load__delivers_connectivity_error_on_stubbed_error() {
-        let sut = makeSUT().stub(data: nil, response: nil, error: anyNSError())
-        
-        assertThat(sut.load(complete:), receive: .failure(RemoteLoader.Error.connectivity))
-    }
-    
-    // why do we need this?
-    func test__load__delivers_invalidData_error_on_mapper_error() {
-        let data = "any-non-json".data(using: .utf8)!
-        let sut = makeSUT().stub(data: data, response: anyHTTPURLResponse(statusCode: 200), error: nil)
-    
-        assertThat(sut.load(complete:), receive: .failure(RemoteLoader.Error.invalidData))
+    func test__load__delivers_error_on_mapper_error() {
+        let mapper = ResourceMapper(error: anyNSError())
+        let sut = makeSUT(mapper: mapper)
+
+        assertThat(sut.load(complete:), receive: .failure(anyNSError()))
     }
     
     func test__load__delivers_mapped_resource() {
-        let (model1, json1) = makeUserProfile()
-        let (model2, json2) = makeUserProfile()
-        let data = makeUserProfilesJSON(profiles: [json1, json2])
-        let sut = makeSUT().stub(data: data, response: anyHTTPURLResponse(statusCode: 200), error: nil)
+        let mapper = ResourceMapper(resource: "a-resource")
+        let sut = makeSUT(mapper: mapper)
         
-        assertThat(sut.load(complete:), receive: .success([model1, model2]))
+        assertThat(sut.load(complete:), receive: .success("a-resource"))
     }
         
     func test__load__delivers_loaderHasDeallocated_error_on_sut_deinit_before_session_complete() {
@@ -54,19 +54,53 @@ class RemoteLoaderTests: XCTestCase {
         sut = nil
         
         wait(for: [exp], timeout: 1.0)
-        XCTAssertEqual(receivedError as NSError?, RemoteUserProfileLoader.Error.loaderHasDeallocated as NSError?)
+        XCTAssertEqual(receivedError as NSError?, IntToStringLoader.Error.loaderHasDeallocated as NSError?)
     }
-
-    func makeSUT(url: URL? = nil) -> RemoteLoader {
+    
+    typealias IntToStringLoader = RemoteLoader<Int, String>
+    func makeSUT(url: URL? = nil, mapper: ResourceMapper = ResourceMapper(resource: "a-resource")) -> IntToStringLoader {
         let url = url == nil ? anyURL() : url!
         let config = URLSessionConfiguration.af.default
         config.protocolClasses = [URLProtocolStub.self] + (config.protocolClasses ?? [])
         let session = Session(configuration: config)
-        return RemoteLoader(url: url, session: session, mapper: UserProfileMapper())
+        return IntToStringLoader(url: url, session: session, mapper: mapper)
+    }
+    
+    class ResourceMapper: Mapper {
+        typealias RemoteResource = Int
+        
+        typealias Resource = String
+        
+        var validStatusCodes: [Int] = []
+        
+        private var resource: String?
+        
+        init(resource: String) {
+            self.resource = resource
+        }
+        
+        private var error: Error?
+        
+        init(error: Error) {
+            self.error = error
+        }
+        
+        func map(_ response: DataResponse<Int, AFError>) throws -> String {
+            if let res = resource {
+                return res
+            
+            } else if let e = error {
+                throw e
+                
+            } else {
+                throw anyNSError()
+                
+            }
+        }
     }
     
     //MARK: - helpers
-    private typealias LoadAction = ((@escaping RemoteLoader.LoadUserProfileComplete) -> Void)
+    private typealias LoadAction = ((@escaping IntToStringLoader.ResourceComplete) -> Void)
     private func assertThat(_ loadAction: LoadAction, request url: URL, httpMethod: String = "GET", file: StaticString = #filePath, line: UInt = #line) {
         let exp = expectation(description: "wait for request")
         
@@ -84,9 +118,9 @@ class RemoteLoaderTests: XCTestCase {
     }
     
     @discardableResult
-    private func assertThat(_ loadAction: LoadAction, receive expectedResult: RemoteLoader.LoadUserProfileResult, file: StaticString = #filePath, line: UInt = #line) -> RemoteLoader.LoadUserProfileResult? {
+    private func assertThat(_ loadAction: LoadAction, receive expectedResult: IntToStringLoader.ResourceResult, file: StaticString = #filePath, line: UInt = #line) -> IntToStringLoader.ResourceResult? {
         let exp = expectation(description: "wait for result")
-        var receivedResult: RemoteLoader.LoadUserProfileResult?
+        var receivedResult: IntToStringLoader.ResourceResult?
         loadAction() { result in
             exp.fulfill()
             receivedResult = result
