@@ -31,12 +31,9 @@ public class UserProfileMapper {
         304
     }
     
-    private(set) var currentHeaders: [AnyHashable: Any]?
-    
     public init() {}
         
     func map(_ response: DataResponse<[RemoteUserProfile], AFError>) throws -> [UserProfile] {
-        currentHeaders = response.response?.allHeaderFields
         
         if let remoteProfiles = response.value {
             let profiles = remoteProfiles.map {
@@ -69,25 +66,5 @@ public class UserProfileMapper {
             return Error.invalidData
             
         }
-    }
-    
-    
-    //MARK: - paginated api detail
-    private let linkKey = "Link"
-    
-    func nextURL() -> URL? {
-        guard let nextLink = (currentHeaders?[linkKey] as? String)?.split(separator: ",").filter({ $0.contains("next") }).first else {
-            return nil
-        }
-        
-        guard let range = nextLink.range(of: "(?<=\\<).+?(?=\\>)", options: .regularExpression) else {
-            return nil
-        }
-        
-        guard let url = URL(string: String(nextLink[range])) else {
-            return nil
-        }
-        
-        return url
     }
 }

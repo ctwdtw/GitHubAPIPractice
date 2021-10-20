@@ -47,9 +47,3 @@ public class RemoteUserProfileLoader {
         }
     }
 }
-
-extension RemoteUserProfileLoader {
-    public func paginated() -> PaginatedUserProfileAdapter {
-        PaginatedUserProfileAdapter(adaptee: self, currentProfiles: [])
-    }
-}
