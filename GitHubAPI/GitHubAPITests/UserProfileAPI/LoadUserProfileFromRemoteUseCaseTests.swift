@@ -93,7 +93,7 @@ class LoadUserProfileFromRemoteUseCaseTests: XCTestCase {
     }
     
     //MARK: - helpers
-    private typealias LoadAction = ((@escaping RemoteUserProfileLoader.LoadUserProfileComplete) -> Void)
+    private typealias LoadAction = ((@escaping RemoteUserProfileLoader.Complete) -> Void)
     private func assertThat(_ loadAction: LoadAction, request url: URL, httpMethod: String = "GET", file: StaticString = #filePath, line: UInt = #line) {
         let exp = expectation(description: "wait for request")
         
@@ -111,9 +111,9 @@ class LoadUserProfileFromRemoteUseCaseTests: XCTestCase {
     }
     
     @discardableResult
-    private func assertThat(_ loadAction: LoadAction, receive expectedResult: RemoteUserProfileLoader.LoadUserProfileResult, file: StaticString = #filePath, line: UInt = #line) -> RemoteUserProfileLoader.LoadUserProfileResult? {
+    private func assertThat(_ loadAction: LoadAction, receive expectedResult: RemoteUserProfileLoader.Result, file: StaticString = #filePath, line: UInt = #line) -> RemoteUserProfileLoader.Result? {
         let exp = expectation(description: "wait for result")
-        var receivedResult: RemoteUserProfileLoader.LoadUserProfileResult?
+        var receivedResult: RemoteUserProfileLoader.Result?
         loadAction() { result in
             exp.fulfill()
             receivedResult = result

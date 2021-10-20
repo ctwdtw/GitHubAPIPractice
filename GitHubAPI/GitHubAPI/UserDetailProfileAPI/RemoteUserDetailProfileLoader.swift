@@ -9,9 +9,8 @@ import Foundation
 import Alamofire
 
 public class RemoteUserDetailProfileLoader {
-    public typealias LoadUserDetailProfileResult = Result<[UserDetailProfile], Swift.Error>
-    
-    public typealias LoadUserDetailProfileComplete = (LoadUserDetailProfileResult) -> Void
+    public typealias Result = Swift.Result<[UserDetailProfile], Swift.Error>
+    public typealias Complete = (Result) -> Void
     
     let url: URL
     
@@ -29,7 +28,7 @@ public class RemoteUserDetailProfileLoader {
         self.mapper = mapper
     }
     
-    public func load(complete: @escaping LoadUserDetailProfileComplete) {
+    public func load(complete: @escaping Complete) {
         session.request(url).validate(statusCode: mapper.validStatusCodes).responseDecodable(of: [UserDetailProfileMapper.RemoteUserDetailProfile].self) {  [weak self] response in
             
             guard let self = self else {

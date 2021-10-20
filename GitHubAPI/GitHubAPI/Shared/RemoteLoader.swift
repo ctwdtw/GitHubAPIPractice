@@ -16,8 +16,8 @@ public protocol Mapper {
 }
 
 public class RemoteLoader<RemoteResource: Decodable, Resource> {
-    public typealias ResourceResult = Swift.Result<Resource, Swift.Error>
-    public typealias ResourceComplete = (ResourceResult) -> Void
+    public typealias Result = Swift.Result<Resource, Swift.Error>
+    public typealias Complete = (Result) -> Void
     
     let url: URL
     
@@ -41,7 +41,7 @@ public class RemoteLoader<RemoteResource: Decodable, Resource> {
         self.mapping = mapper.map(_:)
     }
     
-    public func load(complete: @escaping ResourceComplete) {
+    public func load(complete: @escaping Complete) {
         session.request(url).validate(statusCode: validStatusCodes).responseDecodable(of: RemoteResource.self) {  [weak self] response in
             
             guard let self = self else {

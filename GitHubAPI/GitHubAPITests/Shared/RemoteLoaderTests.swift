@@ -91,7 +91,7 @@ class RemoteLoaderTests: XCTestCase {
     }
     
     //MARK: - helpers
-    private typealias LoadAction = ((@escaping IntToStringLoader.ResourceComplete) -> Void)
+    private typealias LoadAction = ((@escaping IntToStringLoader.Complete) -> Void)
     private func assertThat(_ loadAction: LoadAction, request url: URL, httpMethod: String = "GET", file: StaticString = #filePath, line: UInt = #line) {
         let exp = expectation(description: "wait for request")
         
@@ -109,9 +109,9 @@ class RemoteLoaderTests: XCTestCase {
     }
     
     @discardableResult
-    private func assertThat(_ loadAction: LoadAction, receive expectedResult: IntToStringLoader.ResourceResult, file: StaticString = #filePath, line: UInt = #line) -> IntToStringLoader.ResourceResult? {
+    private func assertThat(_ loadAction: LoadAction, receive expectedResult: IntToStringLoader.Result, file: StaticString = #filePath, line: UInt = #line) -> IntToStringLoader.Result? {
         let exp = expectation(description: "wait for result")
-        var receivedResult: IntToStringLoader.ResourceResult?
+        var receivedResult: IntToStringLoader.Result?
         loadAction() { result in
             exp.fulfill()
             receivedResult = result
