@@ -10,13 +10,6 @@ import GitHubAPI
 import Alamofire
 
 class LoadUserDetailProfileFromRemoteUseCaseTests: XCTestCase {
-    func test__loadFromURL__request_with_url() {
-        let url = URL(string: "https://my-url.com")!
-        let sut = makeSUT(url: url)
-        
-        assertThat(sut.load(complete:), request: url, httpMethod: "GET")
-    }
-
     func test__load__delivers_connectivity_error_on_stubbed_error() {
         let sut = makeSUT().stub(data: nil, response: nil, error: anyNSError())
         
@@ -66,25 +59,7 @@ class LoadUserDetailProfileFromRemoteUseCaseTests: XCTestCase {
         
         assertThat(sut.load(complete:), receive: .success([model1, model2]))
     }
-        
-    func test__load__delivers_loaderHasDeallocated_error_on_sut_deinit_before_session_complete() {
-        var sut: RemoteUserDetailProfileLoader? = makeSUT()
-        
-        let exp = expectation(description: "wait for result")
-        
-        var receivedError: Error?
-        sut?.load { result in
-            exp.fulfill()
-            receivedError = result.error
-        }
-        
-        sut = nil
-        
-        wait(for: [exp], timeout: 1.0)
-        XCTAssertEqual(receivedError as NSError?, RemoteUserDetailProfileLoader.Error.loaderHasDeallocated as NSError?)
-    }
-
-    
+            
     func makeSUT(url: URL? = nil) -> RemoteUserDetailProfileLoader {
         let url = url == nil ? anyURL() : url!
         let config = URLSessionConfiguration.af.default
@@ -145,16 +120,5 @@ private extension RemoteUserDetailProfileLoader {
     func stub(data: Data?, response: HTTPURLResponse?, error: Swift.Error?) -> RemoteUserDetailProfileLoader {
         URLProtocolStub.stub(data: data, response: response, error: error)
         return self
-    }
-}
-
-private extension Result {
-    var error: Error? {
-        switch self {
-        case .success(_):
-            return nil
-        case .failure(let error):
-            return error
-        }
     }
 }

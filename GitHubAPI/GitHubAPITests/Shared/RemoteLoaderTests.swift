@@ -108,14 +108,6 @@ class RemoteLoaderTests: XCTestCase {
     }
 }
 
-private extension RemoteLoader {
-    @discardableResult
-    func stub(data: Data?, response: HTTPURLResponse?, error: Swift.Error?) -> RemoteLoader {
-        URLProtocolStub.stub(data: data, response: response, error: error)
-        return self
-    }
-}
-
 private extension Result {
     var error: Error? {
         switch self {
