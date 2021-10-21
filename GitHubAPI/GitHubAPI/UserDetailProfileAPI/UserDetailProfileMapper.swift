@@ -34,19 +34,12 @@ public class UserDetailProfileMapper {
         404
     }
     
-    private var contractedStatusCode: [Int] {
-        return validStatusCodes + [resourceNotFound]
-    }
-    
     public init() {}
     
     public func map(_ response: DataResponse<Data, AFError>) throws -> [UserDetailProfile] {
         
-        guard let statusCode = response.response?.statusCode, contractedStatusCode.contains(statusCode) else {
-            throw useCaseError(from: response)
-        }
-        
         do {
+            try validateStatusCode(for: response)
             let data = try response.result.get()
             let remoteProfiles = try decode(of: [RemoteUserDetailProfile].self, data: data)
             return remoteProfiles.map {
@@ -63,30 +56,34 @@ public class UserDetailProfileMapper {
                 )}
             
         } catch {
-            throw useCaseError(from: response)
+            throw error
             
         }
         
     }
     
-    private func useCaseError(from response: DataResponse<Data, AFError>) -> Error {
+    private func validateStatusCode(for response: DataResponse<Data, AFError>) throws {
         guard let statusCode = response.response?.statusCode else {
-            return Error.connectivity
+            throw Error.connectivity
         }
         
         guard statusCode != resourceNotFound else {
-            return Error.resourceNotFound
+            throw Error.resourceNotFound
         }
         
         guard validStatusCodes.contains(statusCode) else {
-            return Error.invalidData
+            throw Error.invalidData
         }
         
-        return Error.invalidData
+        return
     }
     
     private func decode<Item: Decodable>(of type: Item.Type, data: Data) throws -> Item {
         let decoder = JSONDecoder()
-        return try decoder.decode(type, from: data)
+        do {
+            return try decoder.decode(type, from: data)
+        } catch {
+            throw Error.invalidData
+        }
     }
 }
