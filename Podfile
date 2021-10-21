@@ -33,6 +33,7 @@ target 'GitHubAPI' do
  project 'GitHubAPI/GitHubAPI'
  shared_pod
  pod 'Alamofire'
+ pod 'Nuke', '9.5.0'
 end
 
 target 'GitHubAPITests' do
@@ -41,5 +42,6 @@ target 'GitHubAPITests' do
  project 'GitHubAPI/GitHubAPI'
  shared_pod
  pod 'Alamofire'
+ pod 'Nuke', '9.5.0'
 end
 
