@@ -17,6 +17,7 @@ public protocol Mapper {
 
 public class RemoteLoader<RemoteResource: Decodable, Resource> {
     public typealias Result = Swift.Result<Resource, Swift.Error>
+    
     public typealias Complete = (Result) -> Void
     
     let url: URL
@@ -28,8 +29,6 @@ public class RemoteLoader<RemoteResource: Decodable, Resource> {
     let validStatusCodes: [Int]
     
     public enum Error: Swift.Error {
-        case connectivity
-        case invalidData
         case loaderHasDeallocated
     }
     
@@ -50,8 +49,8 @@ public class RemoteLoader<RemoteResource: Decodable, Resource> {
             }
             
             do {
-                let profiles = try self.mapping(response)
-                complete(.success(profiles))
+                let resources = try self.mapping(response)
+                complete(.success(resources))
                 
             } catch {
                 complete(.failure(error))
