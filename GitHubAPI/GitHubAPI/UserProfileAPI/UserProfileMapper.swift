@@ -8,22 +8,21 @@
 import Foundation
 import Alamofire
 
-public class UserProfileMapper: Mapper {
+public class UserProfileMapper {
     public enum Error: Swift.Error {
         case notModified
-        case unexpected
         case connectivity
         case invalidData
     }
     
-    public struct RemoteUserProfile: Decodable {
+    private struct RemoteUserProfile: Decodable {
         let id: Int
         let login: String
         let avatar_url: URL
         let site_admin: Bool
     }
     
-    public var validStatusCodes: [Int] {
+    private var validStatusCodes: [Int] {
         return [200]
     }
     
@@ -31,12 +30,21 @@ public class UserProfileMapper: Mapper {
         304
     }
     
+    private var contractedStatusCode: [Int] {
+        return validStatusCodes + [nonModifiedStatusCode]
+    }
+    
     public init() {}
+    
+    public func map(_ response: DataResponse<Data, AFError>) throws -> [UserProfile] {
+        guard let statusCode = response.response?.statusCode, contractedStatusCode.contains(statusCode) else {
+            throw useCaseError(from: response)
+        }
         
-    public func map(_ response: DataResponse<[RemoteUserProfile], AFError>) throws -> [UserProfile] {
-        
-        if let remoteProfiles = response.value {
-            let profiles = remoteProfiles.map {
+        do {
+            let data = try response.result.get()
+            let remoteProfiles = try decode(of: [RemoteUserProfile].self, data: data)
+            return remoteProfiles.map {
                 UserProfile(
                     id: $0.id,
                     login: $0.login,
@@ -44,27 +52,30 @@ public class UserProfileMapper: Mapper {
                     siteAdmin: $0.site_admin
                 )}
             
-            return profiles
-            
-        } else if response.response?.statusCode == self.nonModifiedStatusCode {
-            throw Error.notModified
-            
-        } else if let afError = response.error {
-            throw mapAFError(afError)
-            
-        } else {
-            throw Error.unexpected
-            
+        } catch {
+            throw useCaseError(from: response)
         }
+        
     }
     
-    private func mapAFError(_ error: AFError) -> Error  {
-        if error.isSessionTaskError {
+    private func useCaseError(from response: DataResponse<Data, AFError>) -> Error {
+        guard let statusCode = response.response?.statusCode else {
             return Error.connectivity
-            
-        } else {
-            return Error.invalidData
-            
         }
+        
+        guard statusCode != nonModifiedStatusCode else {
+            return Error.notModified
+        }
+        
+        guard validStatusCodes.contains(statusCode) else {
+            return Error.invalidData
+        }
+        
+        return Error.invalidData
+    }
+    
+    private func decode<Item: Decodable>(of type: Item.Type, data: Data) throws -> Item {
+        let decoder = JSONDecoder()
+        return try decoder.decode(type, from: data)
     }
 }

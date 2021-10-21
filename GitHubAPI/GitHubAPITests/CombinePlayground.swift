@@ -19,7 +19,7 @@ class CombinePlayground: XCTestCase {
     
     
     lazy var loader: RemoteUserProfileLoader = {
-        RemoteUserProfileLoader(url: anyURL(), session: session, mapper: UserProfileMapper())
+        RemoteUserProfileLoader(url: anyURL(), session: session, mapping: UserProfileMapper().map(_:))
     }()
     
     func test__future__emit_value_upon_creation() {

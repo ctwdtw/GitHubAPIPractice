@@ -8,4 +8,4 @@
 import Foundation
 import Alamofire
 
-public typealias RemoteUserProfileLoader = RemoteLoader<[UserProfileMapper.RemoteUserProfile], [UserProfile]>
+public typealias RemoteUserProfileLoader = RemoteLoader< [UserProfile]>

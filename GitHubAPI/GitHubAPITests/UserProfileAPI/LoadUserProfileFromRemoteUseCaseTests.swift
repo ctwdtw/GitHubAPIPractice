@@ -89,7 +89,7 @@ class LoadUserProfileFromRemoteUseCaseTests: XCTestCase {
         let config = URLSessionConfiguration.af.default
         config.protocolClasses = [URLProtocolStub.self] + (config.protocolClasses ?? [])
         let session = Session(configuration: config)
-        return RemoteUserProfileLoader(url: url, session: session, mapper: UserProfileMapper())
+        return RemoteUserProfileLoader(url: url, session: session, mapping: UserProfileMapper().map(_:))
     }
     
     //MARK: - helpers

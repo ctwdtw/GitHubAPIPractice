@@ -8,40 +8,31 @@
 import Foundation
 import Alamofire
 
-public protocol Mapper {
-    associatedtype RemoteResource: Decodable
-    associatedtype Resource
-    var validStatusCodes: [Int] { get }
-    func map(_ response: DataResponse<RemoteResource, AFError>) throws -> Resource
-}
-
-public class RemoteLoader<RemoteResource: Decodable, Resource> {
+public class RemoteLoader<Resource> {
     public typealias Result = Swift.Result<Resource, Swift.Error>
     
     public typealias Complete = (Result) -> Void
     
-    let url: URL
+    public typealias Mapping = (DataResponse<Data, AFError>) throws -> Resource
     
-    let session: Session
+    private let url: URL
     
-    let mapping: (DataResponse<RemoteResource, AFError>) throws -> Resource
+    private let session: Session
     
-    let validStatusCodes: [Int]
+    private let mapping: Mapping
     
     public enum Error: Swift.Error {
         case loaderHasDeallocated
     }
     
-    public init<Mapping: Mapper>(url: URL, session: Session = .default, mapper: Mapping)
-    where Mapping.RemoteResource == RemoteResource, Mapping.Resource == Resource {
+    public init(url: URL, session: Session = .default, mapping: @escaping Mapping) {
         self.url = url
         self.session = session
-        self.validStatusCodes = mapper.validStatusCodes
-        self.mapping = mapper.map(_:)
+        self.mapping = mapping
     }
     
     public func load(complete: @escaping Complete) {
-        session.request(url).validate(statusCode: validStatusCodes).responseDecodable(of: RemoteResource.self) {  [weak self] response in
+        session.request(url).responseData {  [weak self] response in
             
             guard let self = self else {
                 complete(.failure(Error.loaderHasDeallocated))

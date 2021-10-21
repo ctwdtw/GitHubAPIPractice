@@ -8,39 +8,48 @@
 import Foundation
 import Alamofire
 
-public class UserDetailProfileMapper: Mapper {
+public class UserDetailProfileMapper {
     public enum Error: Swift.Error {
         case connectivity
         case invalidData
         case resourceNotFound
-        case unexpected
     }
     
-    public struct RemoteUserDetailProfile: Decodable {
-        public let id: Int
-        public let avatar_url: URL
-        public let name: String?
-        public let bio: String?
-        public let login: String
-        public let site_admin: Bool
-        public let location: String?
-        public let blog: URL?
+    private struct RemoteUserDetailProfile: Decodable {
+        let id: Int
+        let avatar_url: URL
+        let name: String?
+        let bio: String?
+        let login: String
+        let site_admin: Bool
+        let location: String?
+        let blog: URL?
     }
     
-    public var validStatusCodes: [Int] {
+    private var validStatusCodes: [Int] {
         return [200]
     }
     
-    var resourceNotFound: Int {
+    private var resourceNotFound: Int {
         404
+    }
+    
+    private var contractedStatusCode: [Int] {
+        return validStatusCodes + [resourceNotFound]
     }
     
     public init() {}
     
-    public func map(_ response: DataResponse<[RemoteUserDetailProfile], AFError>) throws -> [UserDetailProfile] {
+    public func map(_ response: DataResponse<Data, AFError>) throws -> [UserDetailProfile] {
         
-        if let remoteDetailProfiles = response.value {
-            let detailProfiles = remoteDetailProfiles.map {
+        guard let statusCode = response.response?.statusCode, contractedStatusCode.contains(statusCode) else {
+            throw useCaseError(from: response)
+        }
+        
+        do {
+            let data = try response.result.get()
+            let remoteProfiles = try decode(of: [RemoteUserDetailProfile].self, data: data)
+            return remoteProfiles.map {
                 UserDetailProfile(
                     id: $0.id,
                     avatarUrl: $0.avatar_url,
@@ -53,27 +62,31 @@ public class UserDetailProfileMapper: Mapper {
                     
                 )}
             
-            return detailProfiles
-            
-        } else if response.response?.statusCode == self.resourceNotFound {
-            throw Error.resourceNotFound
-            
-        } else if let afError = response.error {
-            throw mapAFError(afError)
-            
-        } else {
-            throw Error.unexpected
+        } catch {
+            throw useCaseError(from: response)
             
         }
+        
     }
     
-    private func mapAFError(_ error: AFError) -> Error  {
-        if error.isSessionTaskError {
+    private func useCaseError(from response: DataResponse<Data, AFError>) -> Error {
+        guard let statusCode = response.response?.statusCode else {
             return Error.connectivity
-            
-        } else {
-            return Error.invalidData
-            
         }
+        
+        guard statusCode != resourceNotFound else {
+            return Error.resourceNotFound
+        }
+        
+        guard validStatusCodes.contains(statusCode) else {
+            return Error.invalidData
+        }
+        
+        return Error.invalidData
+    }
+    
+    private func decode<Item: Decodable>(of type: Item.Type, data: Data) throws -> Item {
+        let decoder = JSONDecoder()
+        return try decoder.decode(type, from: data)
     }
 }
