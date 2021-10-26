@@ -62,17 +62,16 @@ class LoadImageDataFromRemoteUseCase: XCTestCase {
         let (sut, eventMonitor) = makeSUT()
 
         let createExp = expectation(description: "wait for create")
-        
-        eventMonitor.createInitialRequestObserver = { _ in
+        eventMonitor.requestDidCreateInitialURLRequest = { _, _ in
             createExp.fulfill()
         }
         
         let cancelExp = expectation(description: "wait for cancel")
 
         var cancelledRequest: URLRequest?
-        eventMonitor.cancelledRequestObserver = { request in
+        eventMonitor.requestDidCancel = { request in
             cancelExp.fulfill()
-            cancelledRequest = request
+            cancelledRequest = request.request
         }
 
         let imageURL = anyURL()
@@ -90,12 +89,12 @@ class LoadImageDataFromRemoteUseCase: XCTestCase {
         let (sut, eventMonitor) = makeSUT()
 
         let createExp = expectation(description: "wait for create")
-        eventMonitor.createInitialRequestObserver = { _ in
+        eventMonitor.requestDidCreateInitialURLRequest = { _, _ in
             createExp.fulfill()
         }
         
         let cancelExp = expectation(description: "wait for cancel")
-        eventMonitor.cancelledRequestObserver = { request in
+        eventMonitor.requestDidCancel = { _ in
             cancelExp.fulfill()
         }
 
@@ -145,33 +144,12 @@ class LoadImageDataFromRemoteUseCase: XCTestCase {
         }
     }
     
-    private func makeSUT() -> (RemoteImageDataLoader, SpyEventMonitor) {
+    private func makeSUT() -> (RemoteImageDataLoader, ClosureEventMonitor) {
         let config = URLSessionConfiguration.ephemeral
         config.protocolClasses = [URLProtocolStub.self] + (config.protocolClasses ?? [])
-        let spyEventMonitor = SpyEventMonitor()
-        let session = Session(configuration: config, eventMonitors: [spyEventMonitor])
-        return (RemoteImageDataLoader(session: session), spyEventMonitor)
-    }
-    
-    private class SpyEventMonitor: EventMonitor {
-        var cancelledRequestObserver: ((URLRequest) -> Void)?
-        func requestDidCancel(_ request: Request) {
-            if let rq = request.request {
-                cancelledRequestObserver?(rq)
-            } else {
-               XCTFail("nil-request")
-            }
-        }
-        
-        var createInitialRequestObserver: ((URLRequest) -> Void)?
-        func request(_ request: Request, didCreateInitialURLRequest urlRequest: URLRequest) {
-            createInitialRequestObserver?(urlRequest)
-        }
-        
-        func request<Value>(_ request: DataRequest, didParseResponse response: DataResponse<Value, AFError>) {
-            print("did parse response")
-        }
-        
+        let monitor = ClosureEventMonitor()
+        let session = Session(configuration: config, eventMonitors: [monitor])
+        return (RemoteImageDataLoader(session: session), monitor)
     }
 }
 
