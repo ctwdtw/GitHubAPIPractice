@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		4E1746572EF7B07D77F8D5DF /* Pods_GitHubAPITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D6351E13F575F241864C67D4 /* Pods_GitHubAPITests.framework */; };
+		63287C082727D2C7002EBAEE /* RemoteImageDataLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63287C072727D2C7002EBAEE /* RemoteImageDataLoader.swift */; };
 		632ACF9D272535A200881723 /* LoadImageDataFromRemoteUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632ACF9C272535A200881723 /* LoadImageDataFromRemoteUseCase.swift */; };
 		632D5137271D504400334ABF /* LoadUserDetailProfileFromRemoteUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632D5136271D504400334ABF /* LoadUserDetailProfileFromRemoteUseCaseTests.swift */; };
 		632D513B271D517200334ABF /* RemoteUserDetailProfileLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632D513A271D517200334ABF /* RemoteUserDetailProfileLoader.swift */; };
@@ -38,6 +39,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		63287C072727D2C7002EBAEE /* RemoteImageDataLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteImageDataLoader.swift; sourceTree = "<group>"; };
 		632ACF9C272535A200881723 /* LoadImageDataFromRemoteUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadImageDataFromRemoteUseCase.swift; sourceTree = "<group>"; };
 		632D5136271D504400334ABF /* LoadUserDetailProfileFromRemoteUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadUserDetailProfileFromRemoteUseCaseTests.swift; sourceTree = "<group>"; };
 		632D513A271D517200334ABF /* RemoteUserDetailProfileLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteUserDetailProfileLoader.swift; sourceTree = "<group>"; };
@@ -89,6 +91,7 @@
 			children = (
 				63DE0839271891E20000C5EA /* UserProfileMapper.swift */,
 				63DE08352718828B0000C5EA /* RemoteUserProfileLoader.swift */,
+				63287C072727D2C7002EBAEE /* RemoteImageDataLoader.swift */,
 			);
 			path = UserProfileAPI;
 			sourceTree = "<group>";
@@ -401,6 +404,7 @@
 				63DE083A271891E20000C5EA /* UserProfileMapper.swift in Sources */,
 				632D513E271D6CB000334ABF /* UserDetailProfileMapper.swift in Sources */,
 				632D5140271D723000334ABF /* UserDetailProfile.swift in Sources */,
+				63287C082727D2C7002EBAEE /* RemoteImageDataLoader.swift in Sources */,
 				63DE08362718828B0000C5EA /* RemoteUserProfileLoader.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
