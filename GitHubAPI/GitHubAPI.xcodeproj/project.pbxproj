@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		4E1746572EF7B07D77F8D5DF /* Pods_GitHubAPITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D6351E13F575F241864C67D4 /* Pods_GitHubAPITests.framework */; };
+		632ACF9D272535A200881723 /* LoadImageDataFromRemoteUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632ACF9C272535A200881723 /* LoadImageDataFromRemoteUseCase.swift */; };
 		632D5137271D504400334ABF /* LoadUserDetailProfileFromRemoteUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632D5136271D504400334ABF /* LoadUserDetailProfileFromRemoteUseCaseTests.swift */; };
 		632D513B271D517200334ABF /* RemoteUserDetailProfileLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632D513A271D517200334ABF /* RemoteUserDetailProfileLoader.swift */; };
 		632D513E271D6CB000334ABF /* UserDetailProfileMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632D513D271D6CB000334ABF /* UserDetailProfileMapper.swift */; };
@@ -37,6 +38,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		632ACF9C272535A200881723 /* LoadImageDataFromRemoteUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadImageDataFromRemoteUseCase.swift; sourceTree = "<group>"; };
 		632D5136271D504400334ABF /* LoadUserDetailProfileFromRemoteUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadUserDetailProfileFromRemoteUseCaseTests.swift; sourceTree = "<group>"; };
 		632D513A271D517200334ABF /* RemoteUserDetailProfileLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteUserDetailProfileLoader.swift; sourceTree = "<group>"; };
 		632D513D271D6CB000334ABF /* UserDetailProfileMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailProfileMapper.swift; sourceTree = "<group>"; };
@@ -119,6 +121,7 @@
 		632D5142271E667600334ABF /* UserProfileAPI */ = {
 			isa = PBXGroup;
 			children = (
+				632ACF9C272535A200881723 /* LoadImageDataFromRemoteUseCase.swift */,
 				63F55397270FF2A30002FA50 /* LoadUserProfileFromRemoteUseCaseTests.swift */,
 			);
 			path = UserProfileAPI;
@@ -407,6 +410,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				632D5146271E66D800334ABF /* RemoteLoaderTests.swift in Sources */,
+				632ACF9D272535A200881723 /* LoadImageDataFromRemoteUseCase.swift in Sources */,
 				63DE083227187F9B0000C5EA /* CommonHelpers.swift in Sources */,
 				632D5137271D504400334ABF /* LoadUserDetailProfileFromRemoteUseCaseTests.swift in Sources */,
 				63877E5D271920EA009C92A9 /* CombinePlayground.swift in Sources */,

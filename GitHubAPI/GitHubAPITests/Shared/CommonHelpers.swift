@@ -78,7 +78,7 @@ func anyURL() -> URL {
 }
 
 func anyData() -> Data {
-    return Data()
+    return "any-non-empty-data".data(using: .utf8)!
 }
 
 func anyHTTPURLResponse(statusCode: Int, httpVersion: String? = nil, headerFields: [String : String]? = nil) -> HTTPURLResponse {
