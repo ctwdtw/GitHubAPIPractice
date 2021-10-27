@@ -16,6 +16,9 @@
 		632D5140271D723000334ABF /* UserDetailProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632D513F271D723000334ABF /* UserDetailProfile.swift */; };
 		632D5146271E66D800334ABF /* RemoteLoaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632D5145271E66D800334ABF /* RemoteLoaderTests.swift */; };
 		632D5148271E68D600334ABF /* RemoteLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632D5147271E68D600334ABF /* RemoteLoader.swift */; };
+		63547A8F272969E9001CE31F /* LoadPaginatedUserProfileUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63547A8E272969E9001CE31F /* LoadPaginatedUserProfileUseCaseTests.swift */; };
+		63547A91272A6FE4001CE31F /* PaginatedUserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63547A90272A6FE4001CE31F /* PaginatedUserProfile.swift */; };
+		63547A93272A6FFB001CE31F /* LoadUserProfilePaginatedAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63547A92272A6FFB001CE31F /* LoadUserProfilePaginatedAdapter.swift */; };
 		63877E5D271920EA009C92A9 /* CombinePlayground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63877E5C271920EA009C92A9 /* CombinePlayground.swift */; };
 		638EEC8C2728F24800B3BBA2 /* MapUserProfileURLPackageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 638EEC8B2728F24800B3BBA2 /* MapUserProfileURLPackageTests.swift */; };
 		638EEC90272935CF00B3BBA2 /* UserProfileMapper+URLPackage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 638EEC8F272935CE00B3BBA2 /* UserProfileMapper+URLPackage.swift */; };
@@ -49,6 +52,9 @@
 		632D513F271D723000334ABF /* UserDetailProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailProfile.swift; sourceTree = "<group>"; };
 		632D5145271E66D800334ABF /* RemoteLoaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteLoaderTests.swift; sourceTree = "<group>"; };
 		632D5147271E68D600334ABF /* RemoteLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteLoader.swift; sourceTree = "<group>"; };
+		63547A8E272969E9001CE31F /* LoadPaginatedUserProfileUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadPaginatedUserProfileUseCaseTests.swift; sourceTree = "<group>"; };
+		63547A90272A6FE4001CE31F /* PaginatedUserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaginatedUserProfile.swift; sourceTree = "<group>"; };
+		63547A92272A6FFB001CE31F /* LoadUserProfilePaginatedAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadUserProfilePaginatedAdapter.swift; sourceTree = "<group>"; };
 		63877E5C271920EA009C92A9 /* CombinePlayground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CombinePlayground.swift; sourceTree = "<group>"; };
 		638EEC8B2728F24800B3BBA2 /* MapUserProfileURLPackageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapUserProfileURLPackageTests.swift; sourceTree = "<group>"; };
 		638EEC8F272935CE00B3BBA2 /* UserProfileMapper+URLPackage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserProfileMapper+URLPackage.swift"; sourceTree = "<group>"; };
@@ -105,6 +111,8 @@
 			isa = PBXGroup;
 			children = (
 				63DE083B2718928B0000C5EA /* UserProfile.swift */,
+				63547A90272A6FE4001CE31F /* PaginatedUserProfile.swift */,
+				63547A92272A6FFB001CE31F /* LoadUserProfilePaginatedAdapter.swift */,
 			);
 			path = UserProfile;
 			sourceTree = "<group>";
@@ -132,6 +140,7 @@
 				632ACF9C272535A200881723 /* LoadImageDataFromRemoteUseCase.swift */,
 				63F55397270FF2A30002FA50 /* LoadUserProfileFromRemoteUseCaseTests.swift */,
 				638EEC8B2728F24800B3BBA2 /* MapUserProfileURLPackageTests.swift */,
+				63547A8E272969E9001CE31F /* LoadPaginatedUserProfileUseCaseTests.swift */,
 			);
 			path = UserProfileAPI;
 			sourceTree = "<group>";
@@ -404,10 +413,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				63547A93272A6FFB001CE31F /* LoadUserProfilePaginatedAdapter.swift in Sources */,
 				632D513B271D517200334ABF /* RemoteUserDetailProfileLoader.swift in Sources */,
 				638EEC90272935CF00B3BBA2 /* UserProfileMapper+URLPackage.swift in Sources */,
 				632D5148271E68D600334ABF /* RemoteLoader.swift in Sources */,
 				63DE083C2718928B0000C5EA /* UserProfile.swift in Sources */,
+				63547A91272A6FE4001CE31F /* PaginatedUserProfile.swift in Sources */,
 				63DE083A271891E20000C5EA /* UserProfileMapper.swift in Sources */,
 				632D513E271D6CB000334ABF /* UserDetailProfileMapper.swift in Sources */,
 				632D5140271D723000334ABF /* UserDetailProfile.swift in Sources */,
@@ -426,6 +437,7 @@
 				63DE083227187F9B0000C5EA /* CommonHelpers.swift in Sources */,
 				632D5137271D504400334ABF /* LoadUserDetailProfileFromRemoteUseCaseTests.swift in Sources */,
 				63877E5D271920EA009C92A9 /* CombinePlayground.swift in Sources */,
+				63547A8F272969E9001CE31F /* LoadPaginatedUserProfileUseCaseTests.swift in Sources */,
 				63F55398270FF2A30002FA50 /* LoadUserProfileFromRemoteUseCaseTests.swift in Sources */,
 				63DE083427187FDD0000C5EA /* URLProtocolStub.swift in Sources */,
 			);

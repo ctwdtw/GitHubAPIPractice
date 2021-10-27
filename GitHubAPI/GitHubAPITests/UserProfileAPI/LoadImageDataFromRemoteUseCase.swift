@@ -102,6 +102,7 @@ class LoadImageDataFromRemoteUseCase: XCTestCase {
         XCTAssertEqual(cancelledRequest?.url, imageURL)
     }
     
+    /// this test is flaky when run with other XCTestCase, cancelExp sometimes can not be fulfilled, but I don't know WHY...
     func test__load__does_not_complete_when_ImageLoadingTask_is_cancelled() {
         let (sut, eventMonitor) = makeSUT()
 
