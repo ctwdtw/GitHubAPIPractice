@@ -7,7 +7,7 @@
 
 import XCTest
 import Alamofire
-@testable import GitHubAPI
+import GitHubAPI
 
 class LoadImageDataFromRemoteUseCase: XCTestCase {
     func test__load__request_URL() {
@@ -59,11 +59,10 @@ class LoadImageDataFromRemoteUseCase: XCTestCase {
     }
     
     func test__load__does_not_deliver_result_on_SUT_deallocated() {
-        var sut: RemoteImageDataLoader? = makeSUT()
         let exp = expectation(description: "wait for response")
-        sut?.requestCompleteObserver = {
+        var sut: RemoteImageDataLoader? = makeSUT(requestCompleteObserver: {
             exp.fulfill()
-        }
+        })
         
         var receivedResult: RemoteImageDataLoader.Result?
         sut?.load(url: anyURL(), complete: { result in
@@ -127,11 +126,14 @@ class LoadImageDataFromRemoteUseCase: XCTestCase {
         XCTAssertEqual((task as? RemoteImageDataLoader.RemoteImageDataTask)?.canComplete, false)
     }
     
-    private func makeSUT() -> RemoteImageDataLoader {
+    private func makeSUT(requestCompleteObserver: (() -> Void)? = nil) -> RemoteImageDataLoader {
         let config = URLSessionConfiguration.ephemeral
         config.protocolClasses = [URLProtocolStub.self] + (config.protocolClasses ?? [])
         let session = Session(configuration: config)
-        return RemoteImageDataLoader(session: session)
+        return RemoteImageDataLoader(
+            session: session,
+            requestCompleteObserver: requestCompleteObserver
+        )
     }
     
     private func assertThat(_ sut: RemoteImageDataLoader, loadToReceive expectedResult: RemoteImageDataLoader.Result, file: StaticString = #file, line: UInt = #line) {

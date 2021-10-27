@@ -13,21 +13,22 @@ public protocol ImageDataTask {
 }
 
 public class RemoteImageDataLoader {
-    class RemoteImageDataTask: ImageDataTask {
+    public class RemoteImageDataTask: ImageDataTask {
         var request: DataRequest?
-        private(set) var completion: Complete?
+        
+        public private(set) var completion: Complete?
         
         init(complete: @escaping Complete) {
             self.completion = complete
         }
         
-        func cancel() {
-            request?.cancel()
-            completion = nil
-        }
-        
         func complete(with result: Result) {
             completion?(result)
+        }
+        
+        public func cancel() {
+            request?.cancel()
+            completion = nil
         }
         
     }
@@ -43,10 +44,11 @@ public class RemoteImageDataLoader {
     
     private let session: Session
     
-    var requestCompleteObserver: (() -> Void)?
+    private var requestCompleteObserver: (() -> Void)?
     
-    public init(session: Session) {
+    public init(session: Session, requestCompleteObserver: (() -> Void)? = nil) {
         self.session = session
+        self.requestCompleteObserver = requestCompleteObserver
     }
     
     @discardableResult
