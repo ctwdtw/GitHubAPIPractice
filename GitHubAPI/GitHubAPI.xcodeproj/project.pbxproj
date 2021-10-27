@@ -17,6 +17,8 @@
 		632D5146271E66D800334ABF /* RemoteLoaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632D5145271E66D800334ABF /* RemoteLoaderTests.swift */; };
 		632D5148271E68D600334ABF /* RemoteLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632D5147271E68D600334ABF /* RemoteLoader.swift */; };
 		63877E5D271920EA009C92A9 /* CombinePlayground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63877E5C271920EA009C92A9 /* CombinePlayground.swift */; };
+		638EEC8C2728F24800B3BBA2 /* MapUserProfileURLPackageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 638EEC8B2728F24800B3BBA2 /* MapUserProfileURLPackageTests.swift */; };
+		638EEC90272935CF00B3BBA2 /* UserProfileMapper+URLPackage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 638EEC8F272935CE00B3BBA2 /* UserProfileMapper+URLPackage.swift */; };
 		63DE083227187F9B0000C5EA /* CommonHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63DE083127187F9B0000C5EA /* CommonHelpers.swift */; };
 		63DE083427187FDD0000C5EA /* URLProtocolStub.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63DE083327187FDD0000C5EA /* URLProtocolStub.swift */; };
 		63DE08362718828B0000C5EA /* RemoteUserProfileLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63DE08352718828B0000C5EA /* RemoteUserProfileLoader.swift */; };
@@ -48,6 +50,8 @@
 		632D5145271E66D800334ABF /* RemoteLoaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteLoaderTests.swift; sourceTree = "<group>"; };
 		632D5147271E68D600334ABF /* RemoteLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteLoader.swift; sourceTree = "<group>"; };
 		63877E5C271920EA009C92A9 /* CombinePlayground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CombinePlayground.swift; sourceTree = "<group>"; };
+		638EEC8B2728F24800B3BBA2 /* MapUserProfileURLPackageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapUserProfileURLPackageTests.swift; sourceTree = "<group>"; };
+		638EEC8F272935CE00B3BBA2 /* UserProfileMapper+URLPackage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserProfileMapper+URLPackage.swift"; sourceTree = "<group>"; };
 		63DE083127187F9B0000C5EA /* CommonHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonHelpers.swift; sourceTree = "<group>"; };
 		63DE083327187FDD0000C5EA /* URLProtocolStub.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLProtocolStub.swift; sourceTree = "<group>"; };
 		63DE08352718828B0000C5EA /* RemoteUserProfileLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteUserProfileLoader.swift; sourceTree = "<group>"; };
@@ -90,6 +94,7 @@
 			isa = PBXGroup;
 			children = (
 				63DE0839271891E20000C5EA /* UserProfileMapper.swift */,
+				638EEC8F272935CE00B3BBA2 /* UserProfileMapper+URLPackage.swift */,
 				63DE08352718828B0000C5EA /* RemoteUserProfileLoader.swift */,
 				63287C072727D2C7002EBAEE /* RemoteImageDataLoader.swift */,
 			);
@@ -126,6 +131,7 @@
 			children = (
 				632ACF9C272535A200881723 /* LoadImageDataFromRemoteUseCase.swift */,
 				63F55397270FF2A30002FA50 /* LoadUserProfileFromRemoteUseCaseTests.swift */,
+				638EEC8B2728F24800B3BBA2 /* MapUserProfileURLPackageTests.swift */,
 			);
 			path = UserProfileAPI;
 			sourceTree = "<group>";
@@ -399,6 +405,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				632D513B271D517200334ABF /* RemoteUserDetailProfileLoader.swift in Sources */,
+				638EEC90272935CF00B3BBA2 /* UserProfileMapper+URLPackage.swift in Sources */,
 				632D5148271E68D600334ABF /* RemoteLoader.swift in Sources */,
 				63DE083C2718928B0000C5EA /* UserProfile.swift in Sources */,
 				63DE083A271891E20000C5EA /* UserProfileMapper.swift in Sources */,
@@ -413,6 +420,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				638EEC8C2728F24800B3BBA2 /* MapUserProfileURLPackageTests.swift in Sources */,
 				632D5146271E66D800334ABF /* RemoteLoaderTests.swift in Sources */,
 				632ACF9D272535A200881723 /* LoadImageDataFromRemoteUseCase.swift in Sources */,
 				63DE083227187F9B0000C5EA /* CommonHelpers.swift in Sources */,
