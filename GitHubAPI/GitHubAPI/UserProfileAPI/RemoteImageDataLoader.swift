@@ -43,6 +43,8 @@ public class RemoteImageDataLoader {
     
     private let session: Session
     
+    var requestCompleteObserver: (() -> Void)?
+    
     public init(session: Session) {
         self.session = session
     }
@@ -51,7 +53,10 @@ public class RemoteImageDataLoader {
     public func load(url: URL, complete: @escaping Complete) -> ImageDataTask {
         let task = RemoteImageDataTask(complete: complete)
         
-        let request = session.request(url).responseData { [weak self] response in
+        let request = session.request(url).responseData { [weak self, requestCompleteObserver] response in
+            
+            requestCompleteObserver?()
+            
             guard self != nil else {
                 return
             }

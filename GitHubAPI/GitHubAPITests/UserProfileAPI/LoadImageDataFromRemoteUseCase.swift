@@ -58,6 +58,24 @@ class LoadImageDataFromRemoteUseCase: XCTestCase {
         assertThat(sut, loadToReceive: .success(data))
     }
     
+    func test__load__does_not_deliver_result_on_SUT_deallocated() {
+        var sut: RemoteImageDataLoader? = makeSUT()
+        let exp = expectation(description: "wait for response")
+        sut?.requestCompleteObserver = {
+            exp.fulfill()
+        }
+        
+        var receivedResult: RemoteImageDataLoader.Result?
+        sut?.load(url: anyURL(), complete: { result in
+            receivedResult = result
+        })
+        
+        sut = nil
+        
+        wait(for: [exp], timeout: 1.0)
+        XCTAssertNil(receivedResult)
+    }
+    
     func test__load__can_cancel_imageLoadingTask() {
         let (sut, eventMonitor) = makeSUT()
 
