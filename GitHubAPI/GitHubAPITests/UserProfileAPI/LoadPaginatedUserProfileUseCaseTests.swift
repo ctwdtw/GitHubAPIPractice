@@ -40,6 +40,22 @@ class LoadPaginatedUserProfileUseCaseTests: XCTestCase {
         assertThat( { loadMore() { _ in } }, request: nextURL)
     }
     
+    func test__loadOneMore_requestNextNextURL() throws {
+        // load
+        let nextURL = URL(string: "https://next-url.com")!
+        let stubMapper = StubMapper().stubPackage(UserProfileURLPackage(userProfiles: [makeUserProfile().model, makeUserProfile().model], nextURL: nextURL))
+        let sut = makeSUT(url: anyURL(), mapping: stubMapper.map(_:))
+        let loadMore = try XCTUnwrap(pageFor(sut.load(complete:))?.loadMore)
+        
+        // load more
+        let nextNextURL = URL(string: "https://next-next--url.com")!
+        stubMapper.stubPackage(UserProfileURLPackage(userProfiles: [makeUserProfile().model], nextURL: nextNextURL))
+        let loadOneMore = try XCTUnwrap(pageFor(loadMore)?.loadMore)
+        
+        // load one more
+        assertThat( { loadOneMore { _ in } } , request: nextNextURL)
+    }
+    
     func test__loadMore__delivers_paginatedUserProfiles() throws {
         // load first page
         let item0 = makeUserProfile()
