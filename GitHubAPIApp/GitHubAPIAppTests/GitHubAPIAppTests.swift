@@ -118,7 +118,7 @@ class UserProfileViewControllerTests: XCTestCase {
         let (sut, loaderSpy) = makeSUT()
         
         sut.triggerLoadAction()
-        loaderSpy.complete(with: .success([]), at: 1)
+        loaderSpy.complete(with: .success([]), at: 1) // I thought the loadCont was 1, but `sut.triggerLoadAction()` triggers `viewDidLoad` also
         
         XCTAssertFalse(sut.isShowingLoadingIndicator)
     }
@@ -198,8 +198,14 @@ class UserProfileViewControllerTests: XCTestCase {
             completes.append(complete)
         }
         
-        func complete(with result: UserProfileLoader.Result, at index: Int) {
-            completes[index](result)
+        func complete(with result: UserProfileLoader.Result, at index: Int, file: StaticString = #file, line: UInt = #line) {
+            if let complete = completes[safe: index] {
+                complete(result)
+            
+            } else {
+                XCTFail("load completions index out of range", file: file, line: line)
+            
+            }
         }
     }
 }
@@ -223,5 +229,11 @@ private extension UserProfileViewController {
     
     var userProfileSection: Int {
         return 0
+    }
+}
+
+extension Collection {
+    subscript (safe index: Index) -> Element? {
+        return indices.contains(index) ? self[index] : nil
     }
 }
