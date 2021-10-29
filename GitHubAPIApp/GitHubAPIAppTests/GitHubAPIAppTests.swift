@@ -39,9 +39,9 @@ public class UserProfileViewController: UITableViewController {
 }
 
 /*
-    [] Load feed automatically when view is presented
-    [] Allow customer to manually reload feed (pull to refresh)
-    [] Show a loading indicator while loading feed
+    [v] Load feed automatically when view is presented
+    [v] Allow customer to manually reload feed (pull to refresh)
+    [v] Show a loading indicator while loading feed
        -> 包含 view is presented 和 user pull to refresh 兩種情況下的 loading,
           都要考慮 loading indicator
     [] Render all loaded feed items (location, image, description)
@@ -86,62 +86,7 @@ class UserProfileViewControllerTests: XCTestCase {
         loaderSpy.complete(with: .success([]), at: 1)
         XCTAssertFalse(sut.isShowingLoadingIndicator, "expect hide loading indicator once user initiated loading is complete")
     }
-    
-    /* 原本很雜的測試, 同時測了 1. rendering (XCTAssertEqual(sut.numberOfRenderedSections, 1))
-     2. request loader, 不是好的測試
-    func test__loadAgain__onUserTriggerLoadAction_immature() {
-        let (sut, loaderSpy) = makeSUT()
-
-        sut.loadViewIfNeeded()
-        XCTAssertEqual(loaderSpy.loadCount, 1)
-
-        loaderSpy.complete(with: .success([]), at: 0)
-
-        XCTAssertEqual(sut.numberOfRenderedSections, 1)
-        XCTAssertEqual(sut.numberOfRenderedUserProfile, 0)
         
-        sut.triggerLoadAction()
-        
-        XCTAssertEqual(loaderSpy.loadCount, 2)
-    }
-    */
-    
-    /* 有時間順序的 test case, 同時測了 1. rendering (XCTAssertEqual(sut.numberOfRenderedSections, 1))
-       2. request loader, 3. loading indicator, 所以不是好的測試
-    func test__renderLoadingIndicator__whileLoading() {
-        let (sut, loaderSpy) = makeSUT()
-
-        sut.loadViewIfNeeded()
-        XCTAssertEqual(loaderSpy.loadCount, 1)
-
-        loaderSpy.complete(with: .success([]), at: 0)
-
-        XCTAssertEqual(sut.numberOfRenderedSections, 1)
-        XCTAssertEqual(sut.numberOfRenderedUserProfile, 0)
-        
-        sut.triggerLoadAction()
-        
-        XCTAssertEqual(loaderSpy.loadCount, 2)
-        XCTAssertTrue(sut.isShowingLoadingIndicator)
-        
-        loaderSpy.complete(with: .success([]), at: 1)
-        XCTAssertFalse(sut.isShowingLoadingIndicator)
-    }*/
-    
-    /* 和前兩個 UI/UX checkbox 無關, 先 comment out
-    func test__displayEmptyUserProfile__onEmptyProfiles() {
-        let (sut, loaderSpy) = makeSUT()
-
-        sut.loadViewIfNeeded()
-        XCTAssertEqual(loaderSpy.loadCount, 1)
-
-        loaderSpy.complete(with: .success([]), at: 0)
-
-        XCTAssertEqual(sut.numberOfRenderedSections, 1)
-        XCTAssertEqual(sut.numberOfRenderedUserProfile, 0)
-    }
-     */
-    
     private func makeSUT(file: StaticString = #file, line: UInt = #line) -> (UserProfileViewController, LoaderSpy) {
         let loaderSpy = LoaderSpy()
         let sut = UserProfileViewController(loader: loaderSpy)
