@@ -27,11 +27,11 @@ public class UserProfileViewController: UITableViewController {
         super.viewDidLoad()
         refreshControl = UIRefreshControl()
         refreshControl?.addTarget(self, action: #selector(load), for: .valueChanged)
+        refreshControl?.beginRefreshing()
         load()
     }
     
     @objc private func load() {
-        refreshControl?.beginRefreshing()
         loader.load { [weak self] _ in
             self?.refreshControl?.endRefreshing()
         }
@@ -74,6 +74,12 @@ class UserProfileViewControllerTests: XCTestCase {
     // XCTAssertEqual(loaderSpy.loadCount, 3)
     // 隱含了 sut.loadViewIfNeeded() 呼叫 loader 1 次的知識,
     // 這樣的隱含關係, 叫做 hidden temporal coupling
+    // 如果把 sut.loadViewIfNeed() 註解掉, 測試也還是會通過,
+    // 這是因為先前沒有呼叫 sut.loadViewIfNeeded() 的話, sut.triggerLoadAction() 會去 trigger `viewDidLoad`,
+    // 若以呼叫過 sut.loadViewIfNeeded(), sut.loadViewIfNeeded() 則不會再次 trigger `viewDidLoad`
+    // UIKit 的這種行為, 會導致可能淺在的 bug, (例如 refreshControl?.beginRefreshing(), 寫在 viewDidLoad,
+    // 目前的測試案例 func test__showLoadingIndicator__onUserTriggerLoadAction() 捕捉不到),
+    // 如果我們把 loading indicator 相關的測試都 group 在一起, 就可以捕捉到這個 bug.
     func test__loadUserProfile__onUserTriggerLoadAction() {
         let (sut, loaderSpy) = makeSUT()
         sut.loadViewIfNeeded()
