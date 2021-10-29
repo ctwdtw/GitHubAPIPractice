@@ -32,26 +32,61 @@ public class UserProfileViewController: UITableViewController {
     
     @objc private func load() {
         refreshControl?.beginRefreshing()
-        loader.load { _ in
-            self.refreshControl?.endRefreshing()
+        loader.load { [weak self] _ in
+            self?.refreshControl?.endRefreshing()
         }
     }
 }
 
+/*
+    [] Load feed automatically when view is presented
+    [] Allow customer to manually reload feed (pull to refresh)
+    [] Show a loading indicator while loading feed
+       -> 包含 view is presented 和 user pull to refresh 兩種情況下的 loading,
+          都要考慮 loading indicator
+    [] Render all loaded feed items (location, image, description)
+    [] Image loading experience
+        [] Load when image view is visible (on screen)
+        [] Cancel when image view is out of screen
+        [] Show a loading indicator while loading image (shimmer)
+        [] Option to retry on image download error
+        [] Preload when image view is near visible
+*/
+ 
 class UserProfileViewControllerTests: XCTestCase {
-    func test__init__does_not_load_userProfile() {
+    // [v] Load feed automatically when view is presented
+    func test__doesNotLoadUserProfile__onInit() {
         let (_, loaderSpy) = makeSUT()
     
         XCTAssertEqual(loaderSpy.loadCount, 0)
     }
     
-    func test__loadUserProfile__onViewDidLoad() {
+    // [v] Load feed automatically when view is presented
+    func test__loadUserProfile__onViewIsPresented() {
         let (sut, loaderSpy) = makeSUT()
         sut.loadViewIfNeeded()
         XCTAssertEqual(loaderSpy.loadCount, 1)
     }
+    
+    // [v] Allow customer to manually reload feed (pull to refresh)
+    // 把原本很雜的測試, 變得單純只測呼叫 loader 的次數, 注意
+    // XCTAssertEqual(loaderSpy.loadCount, 2) 和
+    // XCTAssertEqual(loaderSpy.loadCount, 3)
+    // 隱含了 sut.loadViewIfNeeded() 呼叫 loader 1 次的知識,
+    // 這樣的隱含關係, 叫做 hidden temporal coupling
+    func test__loadUserProfile__onUserTriggerLoadAction() {
+        let (sut, loaderSpy) = makeSUT()
+        sut.loadViewIfNeeded()
         
-    func test__loadAgain__onUserTriggerLoadAction() {
+        sut.triggerLoadAction()
+        XCTAssertEqual(loaderSpy.loadCount, 2)
+        
+        sut.triggerLoadAction()
+        XCTAssertEqual(loaderSpy.loadCount, 3)
+    }
+    
+    /* 原本很雜的測試
+    func test__loadAgain__onUserTriggerLoadAction_immature() {
         let (sut, loaderSpy) = makeSUT()
 
         sut.loadViewIfNeeded()
@@ -66,7 +101,43 @@ class UserProfileViewControllerTests: XCTestCase {
         
         XCTAssertEqual(loaderSpy.loadCount, 2)
     }
+    */
     
+    func test__showLoadingIndicator__onViewIsPresented() {
+        let (sut, _) = makeSUT()
+        
+        sut.loadViewIfNeeded()
+        
+        XCTAssertTrue(sut.isShowingLoadingIndicator)
+    }
+    
+    func test__hideLoadingIndicator__onViewIsPresented_loaderComplete() {
+        let (sut, loaderSpy) = makeSUT()
+        
+        sut.loadViewIfNeeded()
+        loaderSpy.complete(with: .success([]), at: 0)
+
+        XCTAssertFalse(sut.isShowingLoadingIndicator)
+    }
+    
+    func test__showLoadingIndicator__onUserTriggerLoadAction() {
+        let (sut, _) = makeSUT()
+        sut.loadViewIfNeeded()
+        
+        sut.triggerLoadAction()
+        XCTAssertTrue(sut.isShowingLoadingIndicator)
+    }
+    
+    func test__hideLoadingIndicator__onUserTriggerLoadAction_loaderComplete() {
+        let (sut, loaderSpy) = makeSUT()
+        
+        sut.loadViewIfNeeded()
+        sut.triggerLoadAction()
+        loaderSpy.complete(with: .success([]), at: 1)
+        XCTAssertFalse(sut.isShowingLoadingIndicator)
+    }
+    
+    /* 有時間順序的 test case, 先留著不刪
     func test__renderLoadingIndicator__whileLoading() {
         let (sut, loaderSpy) = makeSUT()
 
@@ -85,8 +156,9 @@ class UserProfileViewControllerTests: XCTestCase {
         
         loaderSpy.complete(with: .success([]), at: 1)
         XCTAssertFalse(sut.isShowingLoadingIndicator)
-    }
+    }*/
     
+    /* 和前兩個 UI/UX checkbox 無關, 先 comment out
     func test__displayEmptyUserProfile__onEmptyProfiles() {
         let (sut, loaderSpy) = makeSUT()
 
@@ -98,12 +170,20 @@ class UserProfileViewControllerTests: XCTestCase {
         XCTAssertEqual(sut.numberOfRenderedSections, 1)
         XCTAssertEqual(sut.numberOfRenderedUserProfile, 0)
     }
-
+     */
     
-    private func makeSUT() -> (UserProfileViewController, LoaderSpy) {
+    private func makeSUT(file: StaticString = #file, line: UInt = #line) -> (UserProfileViewController, LoaderSpy) {
         let loaderSpy = LoaderSpy()
         let sut = UserProfileViewController(loader: loaderSpy)
+        trackForMemoryLead(loaderSpy, file: file, line: line)
+        trackForMemoryLead(sut, file: file, line: line)
         return (sut, loaderSpy)
+    }
+    
+    private func trackForMemoryLead(_ instance: AnyObject, file: StaticString = #filePath, line: UInt = #line) {
+        addTeardownBlock { [weak instance] in
+            XCTAssertNil(instance, file: file, line: line)
+        }
     }
     
     private class LoaderSpy: UserProfileLoader {
