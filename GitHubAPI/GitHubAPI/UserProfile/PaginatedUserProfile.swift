@@ -16,4 +16,10 @@ public struct PaginatedUserProfile {
     public let userProfiles: [UserProfile]
     
     public let loadMore: LoadMoreAction?
+    
+    public init(userProfiles: [UserProfile], loadMore: PaginatedUserProfile.LoadMoreAction?) {
+        self.userProfiles = userProfiles
+        self.loadMore = loadMore
+    }
+    
 }
