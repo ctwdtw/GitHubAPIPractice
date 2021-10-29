@@ -85,6 +85,44 @@ class UserProfileViewControllerTests: XCTestCase {
         XCTAssertEqual(loaderSpy.loadCount, 3)
     }
     
+    // [v] Show a loading indicator while loading feed
+    func test__showLoadingIndicator__onViewIsPresented() {
+        let (sut, _) = makeSUT()
+        
+        sut.loadViewIfNeeded()
+        
+        XCTAssertTrue(sut.isShowingLoadingIndicator)
+    }
+    
+    // [v] Show a loading indicator while loading feed
+    func test__hideLoadingIndicator__onViewIsPresented_loaderComplete() {
+        let (sut, loaderSpy) = makeSUT()
+        
+        sut.loadViewIfNeeded()
+        loaderSpy.complete(with: .success([]), at: 0)
+
+        XCTAssertFalse(sut.isShowingLoadingIndicator)
+    }
+    
+    // [v] Show a loading indicator while loading feed
+    func test__showLoadingIndicator__onUserTriggerLoadAction() {
+        let (sut, _) = makeSUT()
+        
+        sut.triggerLoadAction()
+        
+        XCTAssertTrue(sut.isShowingLoadingIndicator)
+    }
+    
+    // [v] Show a loading indicator while loading feed
+    func test__hideLoadingIndicator__onUserTriggerLoadAction_loaderComplete() {
+        let (sut, loaderSpy) = makeSUT()
+        
+        sut.triggerLoadAction()
+        loaderSpy.complete(with: .success([]), at: 1)
+        
+        XCTAssertFalse(sut.isShowingLoadingIndicator)
+    }
+    
     /* 原本很雜的測試
     func test__loadAgain__onUserTriggerLoadAction_immature() {
         let (sut, loaderSpy) = makeSUT()
@@ -102,40 +140,6 @@ class UserProfileViewControllerTests: XCTestCase {
         XCTAssertEqual(loaderSpy.loadCount, 2)
     }
     */
-    
-    func test__showLoadingIndicator__onViewIsPresented() {
-        let (sut, _) = makeSUT()
-        
-        sut.loadViewIfNeeded()
-        
-        XCTAssertTrue(sut.isShowingLoadingIndicator)
-    }
-    
-    func test__hideLoadingIndicator__onViewIsPresented_loaderComplete() {
-        let (sut, loaderSpy) = makeSUT()
-        
-        sut.loadViewIfNeeded()
-        loaderSpy.complete(with: .success([]), at: 0)
-
-        XCTAssertFalse(sut.isShowingLoadingIndicator)
-    }
-    
-    func test__showLoadingIndicator__onUserTriggerLoadAction() {
-        let (sut, _) = makeSUT()
-        sut.loadViewIfNeeded()
-        
-        sut.triggerLoadAction()
-        XCTAssertTrue(sut.isShowingLoadingIndicator)
-    }
-    
-    func test__hideLoadingIndicator__onUserTriggerLoadAction_loaderComplete() {
-        let (sut, loaderSpy) = makeSUT()
-        
-        sut.loadViewIfNeeded()
-        sut.triggerLoadAction()
-        loaderSpy.complete(with: .success([]), at: 1)
-        XCTAssertFalse(sut.isShowingLoadingIndicator)
-    }
     
     /* 有時間順序的 test case, 先留著不刪
     func test__renderLoadingIndicator__whileLoading() {
