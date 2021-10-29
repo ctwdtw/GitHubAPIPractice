@@ -58,16 +58,16 @@ class UserProfileViewControllerTests: XCTestCase {
     // [v] Allow customer to manually reload feed (pull to refresh)
     func test__loadUserProfileActions__requestUserProfilesFromLoader() {
         let (sut, loaderSpy) = makeSUT()
-        XCTAssertEqual(loaderSpy.loadCount, 0)
+        XCTAssertEqual(loaderSpy.loadCount, 0, "expect no loading request before view is loaded")
   
         sut.loadViewIfNeeded()
-        XCTAssertEqual(loaderSpy.loadCount, 1)
+        XCTAssertEqual(loaderSpy.loadCount, 1, "expect one loading request once view is loaded")
         
         sut.userInitiatedLoadAction()
-        XCTAssertEqual(loaderSpy.loadCount, 2)
+        XCTAssertEqual(loaderSpy.loadCount, 2, "expect another loading request when user initiate a reload")
         
         sut.userInitiatedLoadAction()
-        XCTAssertEqual(loaderSpy.loadCount, 3)
+        XCTAssertEqual(loaderSpy.loadCount, 3, "expect yet another loading request once user initiate another reload")
     }
     
     // [v] Show a loading indicator while loading feed
@@ -75,16 +75,16 @@ class UserProfileViewControllerTests: XCTestCase {
         let (sut, loaderSpy) = makeSUT()
         
         sut.loadViewIfNeeded()
-        XCTAssertTrue(sut.isShowingLoadingIndicator)
+        XCTAssertTrue(sut.isShowingLoadingIndicator, "expect show loading indicator once view is loaded")
         
         loaderSpy.complete(with: .success([]), at: 0)
-        XCTAssertFalse(sut.isShowingLoadingIndicator)
+        XCTAssertFalse(sut.isShowingLoadingIndicator, "expect hide loading indicator once loading is complete")
         
         sut.userInitiatedLoadAction()
-        XCTAssertTrue(sut.isShowingLoadingIndicator)
+        XCTAssertTrue(sut.isShowingLoadingIndicator, "expect show loading indicator again when user initiate a reload")
 
         loaderSpy.complete(with: .success([]), at: 1)
-        XCTAssertFalse(sut.isShowingLoadingIndicator)
+        XCTAssertFalse(sut.isShowingLoadingIndicator, "expect hide loading indicator once user initiated loading is complete")
     }
     
     /* 原本很雜的測試, 同時測了 1. rendering (XCTAssertEqual(sut.numberOfRenderedSections, 1))
