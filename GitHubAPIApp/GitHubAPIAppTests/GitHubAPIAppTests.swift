@@ -27,11 +27,11 @@ public class UserProfileViewController: UITableViewController {
         super.viewDidLoad()
         refreshControl = UIRefreshControl()
         refreshControl?.addTarget(self, action: #selector(load), for: .valueChanged)
-        refreshControl?.beginRefreshing()
         load()
     }
     
     @objc private func load() {
+        refreshControl?.beginRefreshing()
         loader.load { [weak self] _ in
             self?.refreshControl?.endRefreshing()
         }
@@ -55,81 +55,40 @@ public class UserProfileViewController: UITableViewController {
  
 class UserProfileViewControllerTests: XCTestCase {
     // [v] Load feed automatically when view is presented
-    func test__doesNotLoadUserProfile__onInit() {
-        let (_, loaderSpy) = makeSUT()
-    
-        XCTAssertEqual(loaderSpy.loadCount, 0)
-    }
-    
-    // [v] Load feed automatically when view is presented
-    func test__loadUserProfile__onViewIsPresented() {
+    // [v] Allow customer to manually reload feed (pull to refresh)
+    func test__loadUserProfileActions__requestUserProfilesFromLoader() {
         let (sut, loaderSpy) = makeSUT()
+        XCTAssertEqual(loaderSpy.loadCount, 0)
+  
         sut.loadViewIfNeeded()
         XCTAssertEqual(loaderSpy.loadCount, 1)
-    }
-    
-    // [v] Allow customer to manually reload feed (pull to refresh)
-    // 把原本很雜的測試, 變得單純只測呼叫 loader 的次數, 注意
-    // XCTAssertEqual(loaderSpy.loadCount, 2) 和
-    // XCTAssertEqual(loaderSpy.loadCount, 3)
-    // 隱含了 sut.loadViewIfNeeded() 呼叫 loader 1 次的知識,
-    // 這樣的隱含關係, 叫做 hidden temporal coupling
-    // 如果把 sut.loadViewIfNeed() 註解掉, 測試也還是會通過,
-    // 這是因為先前沒有呼叫 sut.loadViewIfNeeded() 的話, sut.triggerLoadAction() 會去 trigger `viewDidLoad`,
-    // 若以呼叫過 sut.loadViewIfNeeded(), sut.loadViewIfNeeded() 則不會再次 trigger `viewDidLoad`
-    // UIKit 的這種行為, 會導致可能淺在的 bug, (例如 refreshControl?.beginRefreshing(), 寫在 viewDidLoad,
-    // 目前的測試案例 func test__showLoadingIndicator__onUserTriggerLoadAction() 捕捉不到),
-    // 如果我們把 loading indicator 相關的測試都 group 在一起, 就可以捕捉到這個 bug.
-    func test__loadUserProfile__onUserTriggerLoadAction() {
-        let (sut, loaderSpy) = makeSUT()
-        sut.loadViewIfNeeded()
         
-        sut.triggerLoadAction()
+        sut.userInitiatedLoadAction()
         XCTAssertEqual(loaderSpy.loadCount, 2)
         
-        sut.triggerLoadAction()
+        sut.userInitiatedLoadAction()
         XCTAssertEqual(loaderSpy.loadCount, 3)
     }
     
     // [v] Show a loading indicator while loading feed
-    func test__showLoadingIndicator__onViewIsPresented() {
-        let (sut, _) = makeSUT()
-        
-        sut.loadViewIfNeeded()
-        
-        XCTAssertTrue(sut.isShowingLoadingIndicator)
-    }
-    
-    // [v] Show a loading indicator while loading feed
-    func test__hideLoadingIndicator__onViewIsPresented_loaderComplete() {
+    func test__loadingIndicator__isVisibleWhileLoadingUserProfile() {
         let (sut, loaderSpy) = makeSUT()
         
         sut.loadViewIfNeeded()
+        XCTAssertTrue(sut.isShowingLoadingIndicator)
+        
         loaderSpy.complete(with: .success([]), at: 0)
-
         XCTAssertFalse(sut.isShowingLoadingIndicator)
-    }
-    
-    // [v] Show a loading indicator while loading feed
-    func test__showLoadingIndicator__onUserTriggerLoadAction() {
-        let (sut, _) = makeSUT()
         
-        sut.triggerLoadAction()
-        
+        sut.userInitiatedLoadAction()
         XCTAssertTrue(sut.isShowingLoadingIndicator)
-    }
-    
-    // [v] Show a loading indicator while loading feed
-    func test__hideLoadingIndicator__onUserTriggerLoadAction_loaderComplete() {
-        let (sut, loaderSpy) = makeSUT()
-        
-        sut.triggerLoadAction()
-        loaderSpy.complete(with: .success([]), at: 1) // I thought the loadCont was 1, but `sut.triggerLoadAction()` triggers `viewDidLoad` also
-        
+
+        loaderSpy.complete(with: .success([]), at: 1)
         XCTAssertFalse(sut.isShowingLoadingIndicator)
     }
     
-    /* 原本很雜的測試
+    /* 原本很雜的測試, 同時測了 1. rendering (XCTAssertEqual(sut.numberOfRenderedSections, 1))
+     2. request loader, 不是好的測試
     func test__loadAgain__onUserTriggerLoadAction_immature() {
         let (sut, loaderSpy) = makeSUT()
 
@@ -147,7 +106,8 @@ class UserProfileViewControllerTests: XCTestCase {
     }
     */
     
-    /* 有時間順序的 test case, 先留著不刪
+    /* 有時間順序的 test case, 同時測了 1. rendering (XCTAssertEqual(sut.numberOfRenderedSections, 1))
+       2. request loader, 3. loading indicator, 所以不是好的測試
     func test__renderLoadingIndicator__whileLoading() {
         let (sut, loaderSpy) = makeSUT()
 
@@ -217,7 +177,7 @@ class UserProfileViewControllerTests: XCTestCase {
 }
 
 private extension UserProfileViewController {
-    func triggerLoadAction() {
+    func userInitiatedLoadAction() {
         refreshControl?.sendActions(for: .valueChanged)
     }
     
