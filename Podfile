@@ -8,7 +8,7 @@ workspace 'GitHubAPIPractice'
 #project 'GitHubAPI/GitHubAPI'
 
 def shared_pod
-  
+  pod 'Alamofire'
 end
 
 target 'GitHubAPIApp' do
@@ -32,7 +32,6 @@ target 'GitHubAPI' do
  use_frameworks!
  project 'GitHubAPI/GitHubAPI'
  shared_pod
- pod 'Alamofire'
 end
 
 target 'GitHubAPITests' do
@@ -40,6 +39,5 @@ target 'GitHubAPITests' do
  use_frameworks!
  project 'GitHubAPI/GitHubAPI'
  shared_pod
- pod 'Alamofire'
 end
 

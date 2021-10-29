@@ -55,6 +55,8 @@
 		63547A8E272969E9001CE31F /* LoadPaginatedUserProfileUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadPaginatedUserProfileUseCaseTests.swift; sourceTree = "<group>"; };
 		63547A90272A6FE4001CE31F /* PaginatedUserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaginatedUserProfile.swift; sourceTree = "<group>"; };
 		63547A92272A6FFB001CE31F /* LoadUserProfilePaginatedAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadUserProfilePaginatedAdapter.swift; sourceTree = "<group>"; };
+		63547A98272BA4C3001CE31F /* Alamofire.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Alamofire.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		63547AA0272BB41C001CE31F /* Alamofire.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Alamofire.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		63877E5C271920EA009C92A9 /* CombinePlayground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CombinePlayground.swift; sourceTree = "<group>"; };
 		638EEC8B2728F24800B3BBA2 /* MapUserProfileURLPackageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapUserProfileURLPackageTests.swift; sourceTree = "<group>"; };
 		638EEC8F272935CE00B3BBA2 /* UserProfileMapper+URLPackage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserProfileMapper+URLPackage.swift"; sourceTree = "<group>"; };
@@ -218,6 +220,8 @@
 		A52B58FCD527A2D1162B9DE9 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				63547AA0272BB41C001CE31F /* Alamofire.framework */,
+				63547A98272BA4C3001CE31F /* Alamofire.framework */,
 				F0AACE94F610C8BD1CEFF06B /* Pods_GitHubAPI.framework */,
 				D6351E13F575F241864C67D4 /* Pods_GitHubAPITests.framework */,
 			);
