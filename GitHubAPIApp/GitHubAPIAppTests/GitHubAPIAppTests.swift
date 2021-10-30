@@ -6,22 +6,8 @@
 //
 
 import XCTest
+import GitHubAPI
 import GitHubAPIApp
-
-/*
-    [v] Load feed automatically when view is presented
-    [v] Allow customer to manually reload feed (pull to refresh)
-    [v] Show a loading indicator while loading feed
-       -> 包含 view is presented 和 user pull to refresh 兩種情況下的 loading,
-          都要考慮 loading indicator
-    [] Render all loaded feed items (location, image, description)
-    [] Image loading experience
-        [] Load when image view is visible (on screen)
-        [] Cancel when image view is out of screen
-        [] Show a loading indicator while loading image (shimmer)
-        [] Option to retry on image download error
-        [] Preload when image view is near visible
-*/
  
 class UserProfileViewControllerTests: XCTestCase {
     // [v] Load feed automatically when view is presented
@@ -56,7 +42,43 @@ class UserProfileViewControllerTests: XCTestCase {
         loaderSpy.complete(with: .success([]), at: 1)
         XCTAssertFalse(sut.isShowingLoadingIndicator, "expect hide loading indicator once user initiated loading is complete")
     }
+    
+    func test__renderingUserProfiles__onLoaderComplete() {
+        let item0 = UserProfile(id: 0, login: "user-login-account", avatarUrl: URL(string: "https://any-url.com")!, siteAdmin: false)
+        let item1 = UserProfile(id: 1, login: "another-user-login-account", avatarUrl: URL(string: "https://any-url.com")!, siteAdmin: true)
+        let item2 = UserProfile(id: 2, login: "yet-another-user-login-account", avatarUrl: URL(string: "https://any-url.com")!, siteAdmin: false)
         
+        let (sut, loaderSpy) = makeSUT()
+        sut.loadViewIfNeeded()
+        loaderSpy.complete(with: .success([]), at: 0)
+        assertThat(sut, rendering: [])
+        
+        sut.userInitiatedLoadAction()
+        loaderSpy.complete(with: .success([item0]), at: 1)
+        assertThat(sut, rendering: [item0])
+        
+        sut.userInitiatedLoadAction()
+        loaderSpy.complete(with: .success([item1, item2]), at: 2)
+        assertThat(sut, rendering: [item1, item2])
+    }
+
+    private func assertThat(_ sut: UserProfileViewController,
+                            rendering userProfiles: [UserProfile],
+                            file: StaticString = #filePath,
+                            line: UInt = #line
+    ) {
+        XCTAssertEqual(sut.numberOfRenderedSections, 1, file: file, line: line)
+        XCTAssertEqual(sut.numberOfRenderedUserProfile, userProfiles.count, file: file, line: line)
+        
+        userProfiles.enumerated().forEach { (idx, item) in
+            let indexPath = IndexPath(row: idx, section: sut.userProfileSection)
+            let userProfileView = sut.tableView.dataSource?.tableView(sut.tableView, cellForRowAt: indexPath) as? UserProfileCell
+            XCTAssertEqual(userProfileView?.loginLabel.text, item.login, file: file, line: line)
+            XCTAssertEqual(userProfileView?.siteAdminLabel.isHidden, !item.siteAdmin, file: file,line: line)
+        }
+        
+    }
+    
     private func makeSUT(file: StaticString = #file, line: UInt = #line) -> (UserProfileViewController, LoaderSpy) {
         let loaderSpy = LoaderSpy()
         let sut = UserProfileViewController(loader: loaderSpy)
@@ -118,3 +140,4 @@ extension Collection {
         return indices.contains(index) ? self[index] : nil
     }
 }
+
