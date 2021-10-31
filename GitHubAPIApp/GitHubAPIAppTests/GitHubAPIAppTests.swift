@@ -8,19 +8,6 @@
 import XCTest
 import GitHubAPI
 import GitHubAPIApp
-
-/*
-[] Load feed automatically when view is presented
-[] Allow customer to manually reload feed (pull to refresh)
-[] Show a loading indicator while loading feed -> viewDidLoad, user pull to refresh
-[] Render all loaded feed items (location, image, description)
-[] Image loading experience
-    [] Load when image view is visible (on screen)
-    [] Cancel when image view is out of screen
-    [] Show a loading indicator while loading image (shimmer)
-    [] Option to retry on image download error
-    [] Preload when image view is near visible
-*/
  
 class UserProfileViewControllerTests: XCTestCase {
     // [v] Load feed automatically when view is presented
@@ -75,9 +62,33 @@ class UserProfileViewControllerTests: XCTestCase {
         assertThat(sut, rendering: [item1, item2])
     }
     
+    func test__loadImage__whenUserProfileViewIsVisible() {
+        let url0 = URL(string: "https://a-avatar-url.com")!
+        let item0 = makeUserProfile(avatarUrl: url0)
+        
+        let url1 = URL(string: "https://another-avatar-url.com")!
+        let item1 = makeUserProfile(avatarUrl: url1)
+        
+        let (sut, loaderSpy) = makeSUT()
+        sut.loadViewIfNeeded()
+        loaderSpy.complete(with: .success([item0, item1]), at: 0)
+        
+        XCTAssertEqual(loaderSpy.avatarUrls, [])
+        
+        sut.simulateUserProfileViewIsVisible(at: 0)
+        XCTAssertEqual(loaderSpy.avatarUrls, [url0])
+        
+        sut.simulateUserProfileViewIsVisible(at: 1)
+        XCTAssertEqual(loaderSpy.avatarUrls, [url0, url1])
+    }
+    
+    private func makeUserProfile(id: Int = { Int.random(in: 0...999)  }(), login: String = "a-user-login-account", avatarUrl: URL = URL(string: "https://any-avatar-url")!, siteAdmin: Bool = false) -> UserProfile {
+        return UserProfile(id: id, login: login, avatarUrl: avatarUrl, siteAdmin: siteAdmin)
+    }
+    
     private func makeSUT(file: StaticString = #file, line: UInt = #line) -> (UserProfileViewController, LoaderSpy) {
         let loaderSpy = LoaderSpy()
-        let sut = UserProfileViewController(loader: loaderSpy)
+        let sut = UserProfileViewController(loader: loaderSpy, imageLoader: loaderSpy)
         trackForMemoryLeak(loaderSpy, file: file, line: line)
         trackForMemoryLeak(sut, file: file, line: line)
         return (sut, loaderSpy)
@@ -89,16 +100,19 @@ class UserProfileViewControllerTests: XCTestCase {
         }
     }
     
-    private class LoaderSpy: UserProfileLoader {
-        var loadCount = 0
-        var completes: [UserProfileLoader.Complete] = []
-        func load(complete: @escaping Complete) {
-            loadCount += 1
-            completes.append(complete)
+    private class LoaderSpy: UserProfileLoader, ImageDataLoader {
+        var loadProfileCompletes: [UserProfileLoader.Complete] = []
+        
+        var loadCount: Int {
+            loadProfileCompletes.count
+        }
+        
+        func load(complete: @escaping UserProfileLoader.Complete) {
+            loadProfileCompletes.append(complete)
         }
         
         func complete(with result: UserProfileLoader.Result, at index: Int, file: StaticString = #file, line: UInt = #line) {
-            if let complete = completes[safe: index] {
+            if let complete = loadProfileCompletes[safe: index] {
                 complete(result)
             
             } else {
@@ -106,8 +120,20 @@ class UserProfileViewControllerTests: XCTestCase {
             
             }
         }
+        
+        private(set) var avatarUrls: [URL] = []
+        func load(url: URL, complete: @escaping ImageDataLoader.Complete) -> ImageDataTask {
+            avatarUrls.append(url)
+            return SpyImageDataTask()
+        }
     }
     
+    private class SpyImageDataTask: ImageDataTask {
+        func cancel() {
+            
+        }
+    }
+
     private func assertThat(_ sut: UserProfileViewController,
                             rendering userProfiles: [UserProfile],
                             file: StaticString = #filePath,
@@ -157,6 +183,12 @@ private extension UserProfileViewController {
     
     func userProfileView(at row: Int) -> UITableViewCell? {
         return tableView.dataSource?.tableView(tableView, cellForRowAt: IndexPath(row: row, section: userProfileSection))
+    }
+    
+    func simulateUserProfileViewIsVisible(at idx: Int) {
+        let indexPath = IndexPath(row: idx, section: userProfileSection)
+        let cell = userProfileView(at: idx)!
+        tableView.delegate?.tableView?(tableView, willDisplay: cell, forRowAt: indexPath)
     }
 }
 

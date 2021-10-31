@@ -14,6 +14,14 @@ public protocol UserProfileLoader {
     func load(complete: @escaping Complete)
 }
 
+public protocol ImageDataLoader {
+    typealias Result = Swift.Result<Data, Error>
+    
+    typealias Complete = (Result) -> Void
+    
+    func load(url: URL, complete: @escaping Complete) -> ImageDataTask
+}
+
 public class UserProfileCell: UITableViewCell {
     public let loginLabel = UILabel()
     public let siteAdminLabel = UILabel()
@@ -21,6 +29,8 @@ public class UserProfileCell: UITableViewCell {
 
 public class UserProfileViewController: UITableViewController {
     private var loader: UserProfileLoader!
+    private var imageLoader: ImageDataLoader!
+    
     
     private var userProfiles: [UserProfile] = [] {
         didSet {
@@ -28,9 +38,10 @@ public class UserProfileViewController: UITableViewController {
         }
     }
     
-    public convenience init(loader: UserProfileLoader) {
+    public convenience init(loader: UserProfileLoader, imageLoader: ImageDataLoader) {
         self.init()
         self.loader = loader
+        self.imageLoader = imageLoader
     }
     
     public override func viewDidLoad() {
@@ -69,6 +80,15 @@ public class UserProfileViewController: UITableViewController {
     public override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return userProfiles.count
     }
+    
+    public override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        let url = userProfiles[indexPath.row].avatarUrl
+        _ = imageLoader.load(url: url) { _ in
+            
+        }
+        
+    }
+    
 }
 
 /*
