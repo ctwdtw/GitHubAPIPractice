@@ -8,6 +8,19 @@
 import XCTest
 import GitHubAPI
 import GitHubAPIApp
+
+/*
+[] Load feed automatically when view is presented
+[] Allow customer to manually reload feed (pull to refresh)
+[] Show a loading indicator while loading feed -> viewDidLoad, user pull to refresh
+[] Render all loaded feed items (location, image, description)
+[] Image loading experience
+    [] Load when image view is visible (on screen)
+    [] Cancel when image view is out of screen
+    [] Show a loading indicator while loading image (shimmer)
+    [] Option to retry on image download error
+    [] Preload when image view is near visible
+*/
  
 class UserProfileViewControllerTests: XCTestCase {
     // [v] Load feed automatically when view is presented
@@ -61,33 +74,16 @@ class UserProfileViewControllerTests: XCTestCase {
         loaderSpy.complete(with: .success([item1, item2]), at: 2)
         assertThat(sut, rendering: [item1, item2])
     }
-
-    private func assertThat(_ sut: UserProfileViewController,
-                            rendering userProfiles: [UserProfile],
-                            file: StaticString = #filePath,
-                            line: UInt = #line
-    ) {
-        XCTAssertEqual(sut.numberOfRenderedSections, 1, file: file, line: line)
-        XCTAssertEqual(sut.numberOfRenderedUserProfile, userProfiles.count, file: file, line: line)
-        
-        userProfiles.enumerated().forEach { (idx, item) in
-            let indexPath = IndexPath(row: idx, section: sut.userProfileSection)
-            let userProfileView = sut.tableView.dataSource?.tableView(sut.tableView, cellForRowAt: indexPath) as? UserProfileCell
-            XCTAssertEqual(userProfileView?.loginLabel.text, item.login, file: file, line: line)
-            XCTAssertEqual(userProfileView?.siteAdminLabel.isHidden, !item.siteAdmin, file: file,line: line)
-        }
-        
-    }
     
     private func makeSUT(file: StaticString = #file, line: UInt = #line) -> (UserProfileViewController, LoaderSpy) {
         let loaderSpy = LoaderSpy()
         let sut = UserProfileViewController(loader: loaderSpy)
-        trackForMemoryLead(loaderSpy, file: file, line: line)
-        trackForMemoryLead(sut, file: file, line: line)
+        trackForMemoryLeak(loaderSpy, file: file, line: line)
+        trackForMemoryLeak(sut, file: file, line: line)
         return (sut, loaderSpy)
     }
     
-    private func trackForMemoryLead(_ instance: AnyObject, file: StaticString = #filePath, line: UInt = #line) {
+    private func trackForMemoryLeak(_ instance: AnyObject, file: StaticString = #filePath, line: UInt = #line) {
         addTeardownBlock { [weak instance] in
             XCTAssertNil(instance, file: file, line: line)
         }
@@ -111,6 +107,31 @@ class UserProfileViewControllerTests: XCTestCase {
             }
         }
     }
+    
+    private func assertThat(_ sut: UserProfileViewController,
+                            rendering userProfiles: [UserProfile],
+                            file: StaticString = #filePath,
+                            line: UInt = #line
+    ) {
+        XCTAssertEqual(sut.numberOfRenderedSections, 1, "receive \(sut.numberOfRenderedSections) sections, but expect \(1)", file: file, line: line)
+        XCTAssertEqual(sut.numberOfRenderedUserProfile, userProfiles.count, "receive \(sut.numberOfRenderedUserProfile) user profiles, but expect \(userProfiles.count)", file: file, line: line)
+        
+        userProfiles.enumerated().forEach { (idx, userProfile) in
+            assertThat(sut, hasViewConfiguredFor: userProfile, at: idx)
+        }
+    }
+    
+    private func assertThat(_ sut: UserProfileViewController, hasViewConfiguredFor userProfile: UserProfile, at idx: Int, file: StaticString = #filePath, line: UInt = #line) {
+        let view = sut.userProfileView(at: idx)
+        guard let cell =  view as? UserProfileCell else {
+            return XCTFail("receive \(String(describing: view)) instead, but expect it to be \(UserProfileCell.self) instance at index: \(idx), but got", file: file, line: line)
+        }
+        
+        XCTAssertEqual(cell.loginAccountText, userProfile.login, "receive login account text \(String(describing: cell.loginAccountText)), but expect it to be \(userProfile.login) instead.", file: file, line: line)
+        
+        XCTAssertEqual(cell.showSiteAdminLabel, userProfile.siteAdmin, "receive show site admin label to be \(cell.showSiteAdminLabel), but expect it to be \(userProfile.siteAdmin) ", file: file, line: line)
+    }
+
 }
 
 private extension UserProfileViewController {
@@ -133,6 +154,20 @@ private extension UserProfileViewController {
     var userProfileSection: Int {
         return 0
     }
+    
+    func userProfileView(at row: Int) -> UITableViewCell? {
+        return tableView.dataSource?.tableView(tableView, cellForRowAt: IndexPath(row: row, section: userProfileSection))
+    }
+}
+
+private extension UserProfileCell {
+    var loginAccountText: String? {
+        return loginLabel.text
+    }
+    
+    var showSiteAdminLabel: Bool {
+        return !siteAdminLabel.isHidden
+    }
 }
 
 extension Collection {
@@ -141,3 +176,12 @@ extension Collection {
     }
 }
 
+public extension XCTestCase {
+    func XCTExpected<T: Equatable>(_ expected: T, received: T, message: String, file: StaticString = #filePath, line: UInt = #line) {
+        XCTAssertEqual(expected, received, message, file: file,line: line)
+    }
+    
+    func XCTReceived<T: Equatable>(_ received: T, expected: T, message: String, file: StaticString = #filePath, line: UInt = #line) {
+        XCTAssertEqual(received, expected, file: file,line: line)
+    }
+}
