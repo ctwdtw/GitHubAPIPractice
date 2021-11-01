@@ -83,10 +83,17 @@ public class UserProfileViewController: UITableViewController {
     
     public override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         let url = userProfiles[indexPath.row].avatarUrl
-        _ = imageLoader.load(url: url) { _ in
+        let task = imageLoader.load(url: url) { _ in
             
         }
         
+        imageDataTasks[indexPath] = task
+    }
+    
+    private var imageDataTasks: [IndexPath: ImageDataTask] = [:]
+    public override func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        imageDataTasks[indexPath]?.cancel()
+        imageDataTasks[indexPath] = nil
     }
     
 }

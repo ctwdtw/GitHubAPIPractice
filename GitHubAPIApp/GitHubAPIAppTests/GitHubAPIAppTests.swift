@@ -63,23 +63,37 @@ class UserProfileViewControllerTests: XCTestCase {
     }
     
     func test__loadImage__whenUserProfileViewIsVisible() {
-        let url0 = URL(string: "https://a-avatar-url.com")!
-        let item0 = makeUserProfile(avatarUrl: url0)
-        
-        let url1 = URL(string: "https://another-avatar-url.com")!
-        let item1 = makeUserProfile(avatarUrl: url1)
+        let item0 = makeUserProfile(avatarUrl: URL(string: "https://a-avatar-url.com")!)
+        let item1 = makeUserProfile(avatarUrl: URL(string: "https://another-avatar-url.com")!)
         
         let (sut, loaderSpy) = makeSUT()
         sut.loadViewIfNeeded()
         loaderSpy.complete(with: .success([item0, item1]), at: 0)
         
-        XCTAssertEqual(loaderSpy.avatarUrls, [])
+        XCTAssertEqual(loaderSpy.avatarUrls, [], "Expect no avatar url request until user profile view become visible")
         
         sut.simulateUserProfileViewIsVisible(at: 0)
-        XCTAssertEqual(loaderSpy.avatarUrls, [url0])
+        XCTAssertEqual(loaderSpy.avatarUrls, [item0.avatarUrl], "Expect first avatar url request when first user profile view become visible")
         
         sut.simulateUserProfileViewIsVisible(at: 1)
-        XCTAssertEqual(loaderSpy.avatarUrls, [url0, url1])
+        XCTAssertEqual(loaderSpy.avatarUrls, [item0.avatarUrl, item1.avatarUrl], "Expect second request avatar url when second user profile view also become visible")
+    }
+    
+    func test__cancelLoadImage__whenUserProfileViewIsNotVisibleAnymore() {
+        let item0 = makeUserProfile(avatarUrl: URL(string: "https://a-avatar-url.com")!)
+        let item1 = makeUserProfile(avatarUrl: URL(string: "https://another-avatar-url.com")!)
+        
+        let (sut, loaderSpy) = makeSUT()
+        sut.loadViewIfNeeded()
+        loaderSpy.complete(with: .success([item0, item1]), at: 0)
+        
+        XCTAssertEqual(loaderSpy.cancelledAvatarUrls, [], "Expect no cancelled avatar url request until user profile view is not visible")
+        
+        sut.simulateUserProfileViewIsNotVisible(at: 0)
+        XCTAssertEqual(loaderSpy.cancelledAvatarUrls, [item0.avatarUrl], "Expect first cancelled avatar url request when first user profile view become not visible anymore")
+        
+        sut.simulateUserProfileViewIsNotVisible(at: 1)
+        XCTAssertEqual(loaderSpy.cancelledAvatarUrls, [item0.avatarUrl, item1.avatarUrl], "Expect second cancelled avatar url request when second user profile view become not visible anymore")
     }
     
     private func makeUserProfile(id: Int = { Int.random(in: 0...999)  }(), login: String = "a-user-login-account", avatarUrl: URL = URL(string: "https://any-avatar-url")!, siteAdmin: Bool = false) -> UserProfile {
@@ -122,15 +136,25 @@ class UserProfileViewControllerTests: XCTestCase {
         }
         
         private(set) var avatarUrls: [URL] = []
+        
+        private(set) var cancelledAvatarUrls: [URL] = []
+        
         func load(url: URL, complete: @escaping ImageDataLoader.Complete) -> ImageDataTask {
             avatarUrls.append(url)
-            return SpyImageDataTask()
+            return SpyImageDataTask(cancelCallback: { [weak self] in
+                self?.cancelledAvatarUrls.append(url)
+            })
         }
     }
     
     private class SpyImageDataTask: ImageDataTask {
+        private var cancelCallback: (() -> Void)?
+        init(cancelCallback: @escaping ()-> Void) {
+            self.cancelCallback = cancelCallback
+        }
         func cancel() {
-            
+            cancelCallback?()
+            cancelCallback = nil
         }
     }
 
@@ -185,10 +209,18 @@ private extension UserProfileViewController {
         return tableView.dataSource?.tableView(tableView, cellForRowAt: IndexPath(row: row, section: userProfileSection))
     }
     
-    func simulateUserProfileViewIsVisible(at idx: Int) {
+    @discardableResult
+    func simulateUserProfileViewIsVisible(at idx: Int) -> UITableViewCell {
         let indexPath = IndexPath(row: idx, section: userProfileSection)
         let cell = userProfileView(at: idx)!
         tableView.delegate?.tableView?(tableView, willDisplay: cell, forRowAt: indexPath)
+        return cell
+    }
+    
+    func simulateUserProfileViewIsNotVisible(at idx: Int) {
+        let indexPath = IndexPath(row: idx, section: userProfileSection)
+        let cell = simulateUserProfileViewIsVisible(at: idx)
+        tableView.delegate?.tableView?(tableView, didEndDisplaying: cell, forRowAt: indexPath)
     }
 }
 
