@@ -58,9 +58,12 @@ public class UserProfileViewController: UITableViewController {
                 return
             }
             
+            if let items = try? result.get() {
+                self.userProfiles = items
+            }
+            
             self.refreshControl?.endRefreshing()
-            let items = try! result.get()
-            self.userProfiles = items
+        
         }
     }
     
@@ -106,8 +109,8 @@ public class UserProfileViewController: UITableViewController {
           都要考慮 loading indicator
     [] Render all loaded feed items (location, image, description)
     [] Image loading experience
-        [] Load when image view is visible (on screen)
-        [] Cancel when image view is out of screen
+        [v] Load when image view is visible (on screen)
+        [v] Cancel when image view is out of screen
         [] Show a loading indicator while loading image (shimmer)
         [] Option to retry on image download error
         [] Preload when image view is near visible

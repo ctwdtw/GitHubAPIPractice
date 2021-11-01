@@ -27,20 +27,20 @@ class UserProfileViewControllerTests: XCTestCase {
     }
     
     // [v] Show a loading indicator while loading feed
-    func test__loadingIndicator__isVisibleWhileLoadingUserProfile() {
+    func test__loadingIndicator__isDisplayedProperlyWhileLoadingUserProfile() {
         let (sut, loaderSpy) = makeSUT()
         
         sut.loadViewIfNeeded()
         XCTAssertTrue(sut.isShowingLoadingIndicator, "expect show loading indicator once view is loaded")
         
         loaderSpy.complete(with: .success([]), at: 0)
-        XCTAssertFalse(sut.isShowingLoadingIndicator, "expect hide loading indicator once loading is complete")
+        XCTAssertFalse(sut.isShowingLoadingIndicator, "expect hide loading indicator once loading is complete with success")
         
         sut.userInitiatedLoadAction()
         XCTAssertTrue(sut.isShowingLoadingIndicator, "expect show loading indicator again when user initiate a reload")
 
-        loaderSpy.complete(with: .success([]), at: 1)
-        XCTAssertFalse(sut.isShowingLoadingIndicator, "expect hide loading indicator once user initiated loading is complete")
+        loaderSpy.complete(with: .failure(anyNSError()), at: 1)
+        XCTAssertFalse(sut.isShowingLoadingIndicator, "expect hide loading indicator once user initiated loading is complete with failure")
     }
     
     func test__renderingUserProfiles__onLoaderComplete() {
@@ -62,6 +62,20 @@ class UserProfileViewControllerTests: XCTestCase {
         assertThat(sut, rendering: [item1, item2])
     }
     
+    func test__doesNotAlterRenderedUserProfile__onLoaderCompleteWithFailure() {
+        let item0 = UserProfile(id: 0, login: "user-login-account", avatarUrl: URL(string: "https://any-url.com")!, siteAdmin: false)
+        
+        let (sut, loaderSpy) = makeSUT()
+        sut.loadViewIfNeeded()
+        loaderSpy.complete(with: .success([item0]), at: 0)
+        assertThat(sut, rendering: [item0])
+        
+        sut.userInitiatedLoadAction()
+        loaderSpy.complete(with: .failure(anyNSError()), at: 1)
+        assertThat(sut, rendering: [item0])
+    }
+    
+    // [v] Load when image view is visible (on screen)
     func test__loadImage__whenUserProfileViewIsVisible() {
         let item0 = makeUserProfile(avatarUrl: URL(string: "https://a-avatar-url.com")!)
         let item1 = makeUserProfile(avatarUrl: URL(string: "https://another-avatar-url.com")!)
@@ -79,6 +93,7 @@ class UserProfileViewControllerTests: XCTestCase {
         XCTAssertEqual(loaderSpy.avatarUrls, [item0.avatarUrl, item1.avatarUrl], "Expect second request avatar url when second user profile view also become visible")
     }
     
+    // [v] Cancel when image view is out of screen
     func test__cancelLoadImage__whenUserProfileViewIsNotVisibleAnymore() {
         let item0 = makeUserProfile(avatarUrl: URL(string: "https://a-avatar-url.com")!)
         let item1 = makeUserProfile(avatarUrl: URL(string: "https://another-avatar-url.com")!)
@@ -180,6 +195,10 @@ class UserProfileViewControllerTests: XCTestCase {
         XCTAssertEqual(cell.loginAccountText, userProfile.login, "receive login account text \(String(describing: cell.loginAccountText)), but expect it to be \(userProfile.login) instead.", file: file, line: line)
         
         XCTAssertEqual(cell.showSiteAdminLabel, userProfile.siteAdmin, "receive show site admin label to be \(cell.showSiteAdminLabel), but expect it to be \(userProfile.siteAdmin) ", file: file, line: line)
+    }
+    
+    private func anyNSError() -> Error {
+        NSError(domain: "any-ns-error", code: -1, userInfo: nil)
     }
 
 }
