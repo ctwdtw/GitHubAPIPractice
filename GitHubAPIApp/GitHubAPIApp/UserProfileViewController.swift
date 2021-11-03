@@ -81,8 +81,8 @@ public class UserProfileViewController: UITableViewController {
         let url = userProfiles[indexPath.row].avatarUrl
         let task = imageLoader.load(url: url) { [weak cell] result in
             cell?.imageLoadingIndicator.stopAnimating()
-            if let imageData = try? result.get() {
-                cell?.avatarImageView.image = UIImage(data: imageData)
+            if let imageData = try? result.get(), let image = UIImage(data: imageData) {
+                cell?.avatarImageView.image = image
             } else {
                 cell?.retryButton.isHidden = false
             }

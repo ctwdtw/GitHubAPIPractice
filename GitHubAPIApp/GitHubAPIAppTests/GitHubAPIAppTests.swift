@@ -177,6 +177,29 @@ class UserProfileViewControllerTests: XCTestCase {
         XCTAssertEqual(view1?.isShowingRetryView, true, "Expect retry action view for second view when complete loading second image with error")
     }
     
+    func test__showRetryActionView__onLoadedInvalidImageData() {
+        let image0 = UIImage.image(with: .red).pngData()!
+        let invalidImage = Data()
+        let (sut, loaderSpy) = makeSUT()
+        
+        sut.loadViewIfNeeded()
+        loaderSpy.complete(with: .success([makeUserProfile(), makeUserProfile()]), at: 0)
+        
+        let view0 = sut.simulateUserProfileViewIsVisible(at: 0)
+        let view1 = sut.simulateUserProfileViewIsVisible(at: 1)
+        
+        XCTAssertEqual(view0?.isShowingRetryView, false, "Expect no retry action view for first view while loading image data")
+        XCTAssertEqual(view1?.isShowingRetryView, false, "Expect no retry action view for second view while loading image data")
+        
+        loaderSpy.completeImageLoading(with: .success(image0), at: 0)
+        XCTAssertEqual(view0?.isShowingRetryView, false, "Expect no retry action view for first view when complete loading first image data successfully")
+        XCTAssertEqual(view1?.isShowingRetryView, false, "Expect no change of retry action view visibility for second view when complete loading first image data successfully")
+        
+        loaderSpy.completeImageLoading(with: .success(invalidImage), at: 1)
+        XCTAssertEqual(view0?.isShowingRetryView, false, "Expect no change of retry action view visibility for first view when complete loading second image with error")
+        XCTAssertEqual(view1?.isShowingRetryView, true, "Expect retry action view for second view when complete loading second image but with invalid image data")
+    }
+    
     private func makeUserProfile(id: Int = { Int.random(in: 0...999)  }(), login: String = "a-user-login-account", avatarUrl: URL = URL(string: "https://any-avatar-url")!, siteAdmin: Bool = false) -> UserProfile {
         return UserProfile(id: id, login: login, avatarUrl: avatarUrl, siteAdmin: siteAdmin)
     }
