@@ -155,6 +155,28 @@ class UserProfileViewControllerTests: XCTestCase {
         XCTAssertEqual(view1?.renderedImage, image1, "Expect render image1 on second view when second image loading is complete successfully")
     }
     
+    func test__showRetryActionView__onImageDataLoadingCompleteWithError() {
+        let image0 = UIImage.image(with: .red).pngData()!
+        let (sut, loaderSpy) = makeSUT()
+        
+        sut.loadViewIfNeeded()
+        loaderSpy.complete(with: .success([makeUserProfile(), makeUserProfile()]), at: 0)
+        
+        let view0 = sut.simulateUserProfileViewIsVisible(at: 0)
+        let view1 = sut.simulateUserProfileViewIsVisible(at: 1)
+        
+        XCTAssertEqual(view0?.isShowingRetryView, false, "Expect no retry action view for first view while loading image data")
+        XCTAssertEqual(view1?.isShowingRetryView, false, "Expect no retry action view for second view while loading image data")
+        
+        loaderSpy.completeImageLoading(with: .success(image0), at: 0)
+        XCTAssertEqual(view0?.isShowingRetryView, false, "Expect no retry action view for first view when complete loading first image data successfully")
+        XCTAssertEqual(view1?.isShowingRetryView, false, "Expect no change of retry action view visibility for second view when complete loading first image data successfully")
+        
+        loaderSpy.completeImageLoading(with: .failure(anyNSError()), at: 1)
+        XCTAssertEqual(view0?.isShowingRetryView, false, "Expect no change of retry action view visibility for first view when complete loading second image with error")
+        XCTAssertEqual(view1?.isShowingRetryView, true, "Expect retry action view for second view when complete loading second image with error")
+    }
+    
     private func makeUserProfile(id: Int = { Int.random(in: 0...999)  }(), login: String = "a-user-login-account", avatarUrl: URL = URL(string: "https://any-avatar-url")!, siteAdmin: Bool = false) -> UserProfile {
         return UserProfile(id: id, login: login, avatarUrl: avatarUrl, siteAdmin: siteAdmin)
     }
@@ -235,7 +257,7 @@ class UserProfileViewControllerTests: XCTestCase {
         XCTAssertEqual(sut.numberOfRenderedUserProfile, userProfiles.count, "receive \(sut.numberOfRenderedUserProfile) user profiles, but expect \(userProfiles.count)", file: file, line: line)
         
         userProfiles.enumerated().forEach { (idx, userProfile) in
-            assertThat(sut, hasViewConfiguredFor: userProfile, at: idx)
+            assertThat(sut, hasViewConfiguredFor: userProfile, at: idx, file: file, line: line)
         }
     }
     
@@ -311,6 +333,10 @@ private extension UserProfileCell {
     
     var renderedImage: Data? {
         avatarImageView.image?.pngData()
+    }
+    
+    var isShowingRetryView: Bool {
+        !retryButton.isHidden
     }
 }
 

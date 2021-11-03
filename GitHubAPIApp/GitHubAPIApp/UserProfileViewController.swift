@@ -27,12 +27,13 @@ public class UserProfileCell: UITableViewCell {
     public let siteAdminLabel = UILabel()
     public let imageLoadingIndicator = UIActivityIndicatorView()
     public let avatarImageView = UIImageView()
+    public let retryButton: UIButton = UIButton()
 }
 
 public class UserProfileViewController: UITableViewController {
     private var loader: UserProfileLoader!
-    private var imageLoader: ImageDataLoader!
     
+    private var imageLoader: ImageDataLoader!
     
     private var userProfiles: [UserProfile] = [] {
         didSet {
@@ -70,10 +71,24 @@ public class UserProfileViewController: UITableViewController {
     }
     
     public override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let item = userProfiles[indexPath.row]
         let cell = UserProfileCell()
+        let item = userProfiles[indexPath.row]
         cell.loginLabel.text = item.login
         cell.siteAdminLabel.isHidden = !item.siteAdmin
+        cell.avatarImageView.image = nil
+        cell.imageLoadingIndicator.startAnimating()
+        cell.retryButton.isHidden = true
+        let url = userProfiles[indexPath.row].avatarUrl
+        let task = imageLoader.load(url: url) { [weak cell] result in
+            cell?.imageLoadingIndicator.stopAnimating()
+            if let imageData = try? result.get() {
+                cell?.avatarImageView.image = UIImage(data: imageData)
+            } else {
+                cell?.retryButton.isHidden = false
+            }
+        }
+        
+        imageDataTasks[indexPath] = task
         
         return cell
     }
@@ -84,24 +99,6 @@ public class UserProfileViewController: UITableViewController {
     
     public override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return userProfiles.count
-    }
-    
-    public override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        guard let cell = cell as? UserProfileCell else {
-            return
-        }
-        
-        cell.avatarImageView.image = nil
-        cell.imageLoadingIndicator.startAnimating()
-        let url = userProfiles[indexPath.row].avatarUrl
-        let task = imageLoader.load(url: url) { [weak cell] result in
-            cell?.imageLoadingIndicator.stopAnimating()
-            if let imageData = try? result.get() {
-                cell?.avatarImageView.image = UIImage(data: imageData)
-            }
-        }
-        
-        imageDataTasks[indexPath] = task
     }
     
     private var imageDataTasks: [IndexPath: ImageDataTask] = [:]
