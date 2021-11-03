@@ -26,6 +26,7 @@ public class UserProfileCell: UITableViewCell {
     public let loginLabel = UILabel()
     public let siteAdminLabel = UILabel()
     public let imageLoadingIndicator = UIActivityIndicatorView()
+    public let avatarImageView = UIImageView()
 }
 
 public class UserProfileViewController: UITableViewController {
@@ -90,10 +91,14 @@ public class UserProfileViewController: UITableViewController {
             return
         }
         
+        cell.avatarImageView.image = nil
         cell.imageLoadingIndicator.startAnimating()
         let url = userProfiles[indexPath.row].avatarUrl
-        let task = imageLoader.load(url: url) { [weak cell] _ in
+        let task = imageLoader.load(url: url) { [weak cell] result in
             cell?.imageLoadingIndicator.stopAnimating()
+            if let imageData = try? result.get() {
+                cell?.avatarImageView.image = UIImage(data: imageData)
+            }
         }
         
         imageDataTasks[indexPath] = task
@@ -113,7 +118,7 @@ public class UserProfileViewController: UITableViewController {
     [v] Show a loading indicator while loading feed
        -> 包含 view is presented 和 user pull to refresh 兩種情況下的 loading,
           都要考慮 loading indicator
-    [] Render all loaded feed items (location, image, description)
+    [v] Render all loaded feed items (location, image, description)
     [] Image loading experience
         [v] Load when image view is visible (on screen)
         [v] Cancel when image view is out of screen

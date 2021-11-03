@@ -132,6 +132,29 @@ class UserProfileViewControllerTests: XCTestCase {
         XCTAssertEqual(view1?.isShowingImageLoadingIndicator, false, "Expect no loading indicator for second view once second avatar loading complete with error")
     }
     
+    func test__renderLoadedImage__onImageDataLoadingComplete() {
+        let image0 = UIImage.image(with: .red).pngData()!
+        let image1 = UIImage.image(with: .blue).pngData()!
+        
+        let (sut, loaderSpy) = makeSUT()
+        
+        sut.loadViewIfNeeded()
+        loaderSpy.complete(with: .success([makeUserProfile(), makeUserProfile()]), at: 0)
+        
+        let view0 = sut.simulateUserProfileViewIsVisible(at: 0)
+        let view1 = sut.simulateUserProfileViewIsVisible(at: 1)
+        XCTAssertNil(view0?.renderedImage, "Expect no rendered image on first view until first image loading is complete successfully")
+        XCTAssertNil(view1?.renderedImage, "Expect no rendered image on second view until second image loading is complete successfully")
+        
+        loaderSpy.completeImageLoading(with: .success(image0), at: 0)
+        XCTAssertEqual(view0?.renderedImage, image0, "Expect rendered image0 on first view when first image loading is complete successfully")
+        XCTAssertNil(view1?.renderedImage, "Expect no image rendering state changed for second view when first image loading is complete successfully")
+        
+        loaderSpy.completeImageLoading(with: .success(image1), at: 1)
+        XCTAssertEqual(view0?.renderedImage, image0, "Expect no image rendering state changed for first view when second image loading is complete successfully")
+        XCTAssertEqual(view1?.renderedImage, image1, "Expect render image1 on second view when second image loading is complete successfully")
+    }
+    
     private func makeUserProfile(id: Int = { Int.random(in: 0...999)  }(), login: String = "a-user-login-account", avatarUrl: URL = URL(string: "https://any-avatar-url")!, siteAdmin: Bool = false) -> UserProfile {
         return UserProfile(id: id, login: login, avatarUrl: avatarUrl, siteAdmin: siteAdmin)
     }
@@ -285,6 +308,10 @@ private extension UserProfileCell {
     var isShowingImageLoadingIndicator: Bool {
         !imageLoadingIndicator.isHidden
     }
+    
+    var renderedImage: Data? {
+        avatarImageView.image?.pngData()
+    }
 }
 
 extension Collection {
@@ -300,5 +327,18 @@ public extension XCTestCase {
     
     func XCTReceived<T: Equatable>(_ received: T, expected: T, message: String, file: StaticString = #filePath, line: UInt = #line) {
         XCTAssertEqual(received, expected, file: file,line: line)
+    }
+}
+
+private extension UIImage {
+    static func image(with color: UIColor) -> UIImage {
+        let rect = CGRect(x: 0, y: 0, width: 1, height: 1)
+        UIGraphicsBeginImageContext(rect.size)
+        let context = UIGraphicsGetCurrentContext()!
+        context.setFillColor(color.cgColor)
+        context.fill(rect)
+        let img = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return img!
     }
 }
