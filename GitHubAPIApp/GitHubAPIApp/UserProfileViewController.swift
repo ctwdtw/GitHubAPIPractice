@@ -27,7 +27,17 @@ public class UserProfileCell: UITableViewCell {
     public let siteAdminLabel = UILabel()
     public let imageLoadingIndicator = UIActivityIndicatorView()
     public let avatarImageView = UIImageView()
-    public let retryButton: UIButton = UIButton()
+    public private(set) lazy var retryButton: UIButton = {
+        let btn = UIButton()
+        btn.addTarget(self, action: #selector(retryButtonTouchUpInside), for: .touchUpInside)
+        return btn
+    }()
+    
+    @objc private func retryButtonTouchUpInside() {
+        onRetry?()
+    }
+    
+    var onRetry: (() -> Void)?
 }
 
 public class UserProfileViewController: UITableViewController {
@@ -73,22 +83,34 @@ public class UserProfileViewController: UITableViewController {
     public override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UserProfileCell()
         let item = userProfiles[indexPath.row]
+        
         cell.loginLabel.text = item.login
         cell.siteAdminLabel.isHidden = !item.siteAdmin
         cell.avatarImageView.image = nil
         cell.imageLoadingIndicator.startAnimating()
         cell.retryButton.isHidden = true
-        let url = userProfiles[indexPath.row].avatarUrl
-        let task = imageLoader.load(url: url) { [weak cell] result in
-            cell?.imageLoadingIndicator.stopAnimating()
-            if let imageData = try? result.get(), let image = UIImage(data: imageData) {
-                cell?.avatarImageView.image = image
-            } else {
-                cell?.retryButton.isHidden = false
+        
+        let load = { [weak self] in
+            guard let self = self else { return }
+            
+            let url = item.avatarUrl
+            let task = self.imageLoader.load(url: url) { [weak cell] result in
+                cell?.imageLoadingIndicator.stopAnimating()
+                if let imageData = try? result.get(), let image = UIImage(data: imageData) {
+                    cell?.avatarImageView.image = image
+                } else {
+                    cell?.retryButton.isHidden = false
+                }
             }
+            
+            self.imageDataTasks[indexPath] = task
         }
         
-        imageDataTasks[indexPath] = task
+        cell.onRetry = {
+            load()
+        }
+        
+        load()
         
         return cell
     }

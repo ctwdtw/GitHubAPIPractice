@@ -200,6 +200,22 @@ class UserProfileViewControllerTests: XCTestCase {
         XCTAssertEqual(view1?.isShowingRetryView, true, "Expect retry action view for second view when complete loading second image but with invalid image data")
     }
     
+    func test__retryImageLoadingAction__onTapRetryActionView() {
+        let item0 = makeUserProfile()
+        let (sut, loaderSpy) = makeSUT()
+        sut.loadViewIfNeeded()
+        loaderSpy.complete(with: .success([item0]), at: 0)
+        
+        let view0 = sut.simulateUserProfileViewIsVisible(at: 0)
+        XCTAssertEqual(loaderSpy.avatarUrls, [item0.avatarUrl], "Expect one avatar url request for the visible profile view")
+        
+        loaderSpy.completeImageLoading(with: .failure(anyNSError()), at: 0)
+        XCTAssertEqual(loaderSpy.avatarUrls, [item0.avatarUrl], "Expect no change of avatar url request before user initiate a retry action")
+        
+        view0?.simulateTapRetryView()
+        XCTAssertEqual(loaderSpy.avatarUrls, [item0.avatarUrl, item0.avatarUrl], "Expect two avatar url request for the visible profile view when user initiate a retry action")
+    }
+    
     private func makeUserProfile(id: Int = { Int.random(in: 0...999)  }(), login: String = "a-user-login-account", avatarUrl: URL = URL(string: "https://any-avatar-url")!, siteAdmin: Bool = false) -> UserProfile {
         return UserProfile(id: id, login: login, avatarUrl: avatarUrl, siteAdmin: siteAdmin)
     }
@@ -360,6 +376,10 @@ private extension UserProfileCell {
     
     var isShowingRetryView: Bool {
         !retryButton.isHidden
+    }
+    
+    func simulateTapRetryView() {
+        retryButton.sendActions(for: .touchUpInside)
     }
 }
 
