@@ -25,6 +25,7 @@ public protocol ImageDataLoader {
 public class UserProfileCell: UITableViewCell {
     public let loginLabel = UILabel()
     public let siteAdminLabel = UILabel()
+    public let imageLoadingIndicator = UIActivityIndicatorView()
 }
 
 public class UserProfileViewController: UITableViewController {
@@ -85,9 +86,14 @@ public class UserProfileViewController: UITableViewController {
     }
     
     public override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        guard let cell = cell as? UserProfileCell else {
+            return
+        }
+        
+        cell.imageLoadingIndicator.startAnimating()
         let url = userProfiles[indexPath.row].avatarUrl
-        let task = imageLoader.load(url: url) { _ in
-            
+        let task = imageLoader.load(url: url) { [weak cell] _ in
+            cell?.imageLoadingIndicator.stopAnimating()
         }
         
         imageDataTasks[indexPath] = task
@@ -111,7 +117,7 @@ public class UserProfileViewController: UITableViewController {
     [] Image loading experience
         [v] Load when image view is visible (on screen)
         [v] Cancel when image view is out of screen
-        [] Show a loading indicator while loading image (shimmer)
+        [v] Show a loading indicator while loading image (shimmer)
         [] Option to retry on image download error
         [] Preload when image view is near visible
 */

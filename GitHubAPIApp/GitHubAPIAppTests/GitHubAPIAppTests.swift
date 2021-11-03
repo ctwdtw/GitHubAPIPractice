@@ -111,6 +111,27 @@ class UserProfileViewControllerTests: XCTestCase {
         XCTAssertEqual(loaderSpy.cancelledAvatarUrls, [item0.avatarUrl, item1.avatarUrl], "Expect second cancelled avatar url request when second user profile view become not visible anymore")
     }
     
+    // [v] Show a loading indicator while loading image (shimmer)
+    func test__displayImageLoadingIndicator_whileLoadingImage() {
+        let (sut, loaderSpy) = makeSUT()
+        
+        sut.loadViewIfNeeded()
+        loaderSpy.complete(with: .success([makeUserProfile(), makeUserProfile()]), at: 0)
+        
+        let view0 = sut.simulateUserProfileViewIsVisible(at: 0)
+        let view1 = sut.simulateUserProfileViewIsVisible(at: 1)
+        XCTAssertEqual(view0?.isShowingImageLoadingIndicator, true, "Expect loading indicator for first view while loading first avatar image")
+        XCTAssertEqual(view1?.isShowingImageLoadingIndicator, true, "Expect loading indicator for second view while ")
+        
+        loaderSpy.completeImageLoading(with: .success(Data()), at: 0)
+        XCTAssertEqual(view0?.isShowingImageLoadingIndicator, false, "Expect no loading indicator for first view once first avatar loading complete successfully")
+        XCTAssertEqual(view1?.isShowingImageLoadingIndicator, true, "Expect loading indicator for second view does not change once first avatar loading complete successfully")
+        
+        loaderSpy.completeImageLoading(with: .failure(anyNSError()), at: 1)
+        XCTAssertEqual(view0?.isShowingImageLoadingIndicator, false, "Expect loading indicator for the first view does not change once second avatar loading complete with error")
+        XCTAssertEqual(view1?.isShowingImageLoadingIndicator, false, "Expect no loading indicator for second view once second avatar loading complete with error")
+    }
+    
     private func makeUserProfile(id: Int = { Int.random(in: 0...999)  }(), login: String = "a-user-login-account", avatarUrl: URL = URL(string: "https://any-avatar-url")!, siteAdmin: Bool = false) -> UserProfile {
         return UserProfile(id: id, login: login, avatarUrl: avatarUrl, siteAdmin: siteAdmin)
     }
@@ -154,11 +175,20 @@ class UserProfileViewControllerTests: XCTestCase {
         
         private(set) var cancelledAvatarUrls: [URL] = []
         
+        private(set) var imageLoadingCompletions = [ImageDataLoader.Complete]()
+        
         func load(url: URL, complete: @escaping ImageDataLoader.Complete) -> ImageDataTask {
             avatarUrls.append(url)
+            imageLoadingCompletions.append(complete)
             return SpyImageDataTask(cancelCallback: { [weak self] in
                 self?.cancelledAvatarUrls.append(url)
             })
+        }
+        
+        func completeImageLoading(with result: ImageDataLoader.Result, at idx: Int) {
+            if let completion = imageLoadingCompletions[safe: idx] {
+                completion(result)
+            }
         }
     }
     
@@ -229,17 +259,17 @@ private extension UserProfileViewController {
     }
     
     @discardableResult
-    func simulateUserProfileViewIsVisible(at idx: Int) -> UITableViewCell {
+    func simulateUserProfileViewIsVisible(at idx: Int) -> UserProfileCell? {
         let indexPath = IndexPath(row: idx, section: userProfileSection)
-        let cell = userProfileView(at: idx)!
-        tableView.delegate?.tableView?(tableView, willDisplay: cell, forRowAt: indexPath)
+        let cell = userProfileView(at: idx) as? UserProfileCell
+        tableView.delegate?.tableView?(tableView, willDisplay: cell!, forRowAt: indexPath)
         return cell
     }
     
     func simulateUserProfileViewIsNotVisible(at idx: Int) {
         let indexPath = IndexPath(row: idx, section: userProfileSection)
         let cell = simulateUserProfileViewIsVisible(at: idx)
-        tableView.delegate?.tableView?(tableView, didEndDisplaying: cell, forRowAt: indexPath)
+        tableView.delegate?.tableView?(tableView, didEndDisplaying: cell!, forRowAt: indexPath)
     }
 }
 
@@ -250,6 +280,10 @@ private extension UserProfileCell {
     
     var showSiteAdminLabel: Bool {
         return !siteAdminLabel.isHidden
+    }
+    
+    var isShowingImageLoadingIndicator: Bool {
+        !imageLoadingIndicator.isHidden
     }
 }
 
