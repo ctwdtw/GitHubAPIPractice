@@ -138,10 +138,10 @@ public class UserProfileViewController: UITableViewController {
        -> 包含 view is presented 和 user pull to refresh 兩種情況下的 loading,
           都要考慮 loading indicator
     [v] Render all loaded feed items (location, image, description)
-    [] Image loading experience
+    [v] Image loading experience
         [v] Load when image view is visible (on screen)
         [v] Cancel when image view is out of screen
         [v] Show a loading indicator while loading image (shimmer)
-        [] Option to retry on image download error
+        [v] Option to retry on image download error
         [] Preload when image view is near visible
 */

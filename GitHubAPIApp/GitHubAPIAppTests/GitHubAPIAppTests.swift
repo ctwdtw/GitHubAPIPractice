@@ -43,6 +43,7 @@ class UserProfileViewControllerTests: XCTestCase {
         XCTAssertFalse(sut.isShowingLoadingIndicator, "expect hide loading indicator once user initiated loading is complete with failure")
     }
     
+    // [v] Image loading experience
     func test__renderingUserProfiles__onLoaderComplete() {
         let item0 = UserProfile(id: 0, login: "user-login-account", avatarUrl: URL(string: "https://any-url.com")!, siteAdmin: false)
         let item1 = UserProfile(id: 1, login: "another-user-login-account", avatarUrl: URL(string: "https://any-url.com")!, siteAdmin: true)
@@ -62,6 +63,7 @@ class UserProfileViewControllerTests: XCTestCase {
         assertThat(sut, rendering: [item1, item2])
     }
     
+    // [v] Image loading experience
     func test__doesNotAlterRenderedUserProfile__onLoaderCompleteWithFailure() {
         let item0 = UserProfile(id: 0, login: "user-login-account", avatarUrl: URL(string: "https://any-url.com")!, siteAdmin: false)
         
@@ -132,6 +134,7 @@ class UserProfileViewControllerTests: XCTestCase {
         XCTAssertEqual(view1?.isShowingImageLoadingIndicator, false, "Expect no loading indicator for second view once second avatar loading complete with error")
     }
     
+    // [v] Image loading experience
     func test__renderLoadedImage__onImageDataLoadingComplete() {
         let image0 = UIImage.image(with: .red).pngData()!
         let image1 = UIImage.image(with: .blue).pngData()!
@@ -155,6 +158,7 @@ class UserProfileViewControllerTests: XCTestCase {
         XCTAssertEqual(view1?.renderedImage, image1, "Expect render image1 on second view when second image loading is complete successfully")
     }
     
+    // [v] Option to retry on image download error
     func test__showRetryActionView__onImageDataLoadingCompleteWithError() {
         let image0 = UIImage.image(with: .red).pngData()!
         let (sut, loaderSpy) = makeSUT()
@@ -177,6 +181,7 @@ class UserProfileViewControllerTests: XCTestCase {
         XCTAssertEqual(view1?.isShowingRetryView, true, "Expect retry action view for second view when complete loading second image with error")
     }
     
+    // [v] Option to retry on image download error
     func test__showRetryActionView__onLoadedInvalidImageData() {
         let image0 = UIImage.image(with: .red).pngData()!
         let invalidImage = Data()
@@ -200,6 +205,7 @@ class UserProfileViewControllerTests: XCTestCase {
         XCTAssertEqual(view1?.isShowingRetryView, true, "Expect retry action view for second view when complete loading second image but with invalid image data")
     }
     
+    // [v] Option to retry on image download error
     func test__retryImageLoadingAction__onTapRetryActionView() {
         let item0 = makeUserProfile()
         let (sut, loaderSpy) = makeSUT()
