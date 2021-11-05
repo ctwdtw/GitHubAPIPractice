@@ -123,7 +123,7 @@ class UserProfileViewControllerTests: XCTestCase {
         let view0 = sut.simulateUserProfileViewIsVisible(at: 0)
         let view1 = sut.simulateUserProfileViewIsVisible(at: 1)
         XCTAssertEqual(view0?.isShowingImageLoadingIndicator, true, "Expect loading indicator for first view while loading first avatar image")
-        XCTAssertEqual(view1?.isShowingImageLoadingIndicator, true, "Expect loading indicator for second view while ")
+        XCTAssertEqual(view1?.isShowingImageLoadingIndicator, true, "Expect loading indicator for second view while loading second avatar image")
         
         loaderSpy.completeImageLoading(with: .success(Data()), at: 0)
         XCTAssertEqual(view0?.isShowingImageLoadingIndicator, false, "Expect no loading indicator for first view once first avatar loading complete successfully")
@@ -132,6 +132,10 @@ class UserProfileViewControllerTests: XCTestCase {
         loaderSpy.completeImageLoading(with: .failure(anyNSError()), at: 1)
         XCTAssertEqual(view0?.isShowingImageLoadingIndicator, false, "Expect loading indicator for the first view does not change once second avatar loading complete with error")
         XCTAssertEqual(view1?.isShowingImageLoadingIndicator, false, "Expect no loading indicator for second view once second avatar loading complete with error")
+        
+        view1?.simulateTapRetryView()
+        XCTAssertEqual(view0?.isShowingImageLoadingIndicator, false, "Expect no change of avatar loading indicator for first view")
+        XCTAssertEqual(view1?.isShowingImageLoadingIndicator, true, "Expect loading indicator for second view when avatar image loading is retried.")
     }
     
     // [v] Image loading experience
