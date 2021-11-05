@@ -82,21 +82,19 @@ public class UserProfileViewController: UITableViewController, UITableViewDataSo
     }
     
     public override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = UserProfileCell()
         let item = userProfiles[indexPath.row]
         
+        let cell = UserProfileCell()
         cell.loginLabel.text = item.login
         cell.siteAdminLabel.isHidden = !item.siteAdmin
         cell.avatarImageView.image = nil
-        
         cell.retryButton.isHidden = true
         
-        let load = { [weak self, weak cell] in
+        let loadAvatarImage = { [weak self, weak cell] in
             guard let self = self else { return }
             cell?.imageLoadingIndicator.startAnimating()
-            
-            let url = item.avatarUrl
-            let task = self.imageLoader.load(url: url) { [weak cell] result in
+    
+            self.imageDataTasks[indexPath] = self.imageLoader.load(url: item.avatarUrl) { [weak cell] result in
                 cell?.imageLoadingIndicator.stopAnimating()
                 if let imageData = try? result.get(), let image = UIImage(data: imageData) {
                     cell?.avatarImageView.image = image
@@ -104,15 +102,11 @@ public class UserProfileViewController: UITableViewController, UITableViewDataSo
                     cell?.retryButton.isHidden = false
                 }
             }
-            
-            self.imageDataTasks[indexPath] = task
         }
         
-        cell.onRetry = {
-            load()
-        }
+        cell.onRetry = loadAvatarImage
         
-        load()
+        loadAvatarImage()
         
         return cell
     }
