@@ -88,12 +88,12 @@ public class UserProfileViewController: UITableViewController, UITableViewDataSo
         cell.loginLabel.text = item.login
         cell.siteAdminLabel.isHidden = !item.siteAdmin
         cell.avatarImageView.image = nil
-        cell.retryButton.isHidden = true
         
         let loadAvatarImage = { [weak self, weak cell] in
             guard let self = self else { return }
             cell?.imageLoadingIndicator.startAnimating()
-    
+            cell?.retryButton.isHidden = true
+            
             self.imageDataTasks[indexPath] = self.imageLoader.load(url: item.avatarUrl) { [weak cell] result in
                 cell?.imageLoadingIndicator.stopAnimating()
                 if let imageData = try? result.get(), let image = UIImage(data: imageData) {

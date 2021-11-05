@@ -183,6 +183,10 @@ class UserProfileViewControllerTests: XCTestCase {
         loaderSpy.completeImageLoading(with: .failure(anyNSError()), at: 1)
         XCTAssertEqual(view0?.isShowingRetryView, false, "Expect no change of retry action view visibility for first view when complete loading second image with error")
         XCTAssertEqual(view1?.isShowingRetryView, true, "Expect retry action view for second view when complete loading second image with error")
+        
+        view1?.simulateTapRetryView()
+        XCTAssertEqual(view0?.isShowingRetryView, false, "Expect no change of retry action view visibility for the first view when user initiate a retry action for the second view")
+        XCTAssertEqual(view1?.isShowingRetryView, false, "Expect no retry action view for the second view when user initiate a retry action for the second view")
     }
     
     // [v] Option to retry on image download error
