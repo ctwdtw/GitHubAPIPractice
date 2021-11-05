@@ -222,6 +222,42 @@ class UserProfileViewControllerTests: XCTestCase {
         XCTAssertEqual(loaderSpy.avatarUrls, [item0.avatarUrl, item0.avatarUrl], "Expect two avatar url request for the visible profile view when user initiate a retry action")
     }
     
+    // [v] Preload when image view is near visible
+    func test__preloadAvatarImage__whenProfileViewIsNearVisible() {
+        let item0 = makeUserProfile()
+        let item1 = makeUserProfile()
+        let (sut, loaderSpy) = makeSUT()
+        sut.loadViewIfNeeded()
+        
+        loaderSpy.complete(with: .success([item0, item1]), at: 0)
+        XCTAssertEqual(loaderSpy.avatarUrls, [], "Expect no avatar url until first user profile view become near visible")
+        
+        sut.simulateUserProfileViewIsNearVisible(at: 0)
+        XCTAssertEqual(loaderSpy.avatarUrls, [item0.avatarUrl], "Expect first avatar url once first user profile view become near visible")
+        
+        sut.simulateUserProfileViewIsNearVisible(at: 1)
+        XCTAssertEqual(loaderSpy.avatarUrls, [item0.avatarUrl, item1.avatarUrl], "Expect second avatar url once second user profile view become near visible")
+    }
+    
+    // [v] Preload when image view is near visible
+    func test__cancelPreloadAvatarImage__whenProfileViewIsNotNearVisible() {
+        let item0 = makeUserProfile()
+        let item1 = makeUserProfile()
+        let (sut, loaderSpy) = makeSUT()
+        sut.loadViewIfNeeded()
+        loaderSpy.complete(with: .success([item0, item1]), at: 0)
+        
+        sut.simulateUserProfileViewIsNearVisible(at: 0)
+        sut.simulateUserProfileViewIsNearVisible(at: 1)
+        XCTAssertEqual(loaderSpy.cancelledAvatarUrls, [], "Expect no cancel avatar url until first user profile view become not near visible")
+        
+        sut.simulateUserProfileViewIsNotNearVisible(at: 0)
+        XCTAssertEqual(loaderSpy.cancelledAvatarUrls, [item0.avatarUrl], "Expect cancel first avatar url when first user profile view become not visible anymore")
+        
+        sut.simulateUserProfileViewIsNotNearVisible(at: 1)
+        XCTAssertEqual(loaderSpy.cancelledAvatarUrls, [item0.avatarUrl, item1.avatarUrl], "Expect cancel second avatar url when second user profile view become not visible anymore")
+    }
+    
     private func makeUserProfile(id: Int = { Int.random(in: 0...999)  }(), login: String = "a-user-login-account", avatarUrl: URL = URL(string: "https://any-avatar-url")!, siteAdmin: Bool = false) -> UserProfile {
         return UserProfile(id: id, login: login, avatarUrl: avatarUrl, siteAdmin: siteAdmin)
     }
@@ -361,6 +397,17 @@ private extension UserProfileViewController {
         let cell = simulateUserProfileViewIsVisible(at: idx)
         tableView.delegate?.tableView?(tableView, didEndDisplaying: cell!, forRowAt: indexPath)
     }
+    
+    func simulateUserProfileViewIsNearVisible(at idx: Int) {
+        let indexPath = IndexPath(row: idx, section: userProfileSection)
+        tableView.prefetchDataSource?.tableView(tableView, prefetchRowsAt: [indexPath])
+    }
+    
+    func simulateUserProfileViewIsNotNearVisible(at idx: Int) {
+        let indexPath = IndexPath(row: idx, section: userProfileSection)
+        tableView.prefetchDataSource?.tableView?(tableView, cancelPrefetchingForRowsAt: [indexPath])
+    }
+    
 }
 
 private extension UserProfileCell {

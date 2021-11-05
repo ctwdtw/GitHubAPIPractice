@@ -40,7 +40,7 @@ public class UserProfileCell: UITableViewCell {
     var onRetry: (() -> Void)?
 }
 
-public class UserProfileViewController: UITableViewController {
+public class UserProfileViewController: UITableViewController, UITableViewDataSourcePrefetching {
     private var loader: UserProfileLoader!
     
     private var imageLoader: ImageDataLoader!
@@ -59,6 +59,7 @@ public class UserProfileViewController: UITableViewController {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
+        tableView.prefetchDataSource = self
         refreshControl = UIRefreshControl()
         refreshControl?.addTarget(self, action: #selector(load), for: .valueChanged)
         load()
@@ -129,6 +130,20 @@ public class UserProfileViewController: UITableViewController {
         imageDataTasks[indexPath] = nil
     }
     
+    public func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
+        indexPaths.forEach { indexPath in
+            let url = userProfiles[indexPath.row].avatarUrl
+            let task = imageLoader.load(url: url) { _ in }
+            imageDataTasks[indexPath] = task
+        }
+    }
+    
+    public func tableView(_ tableView: UITableView, cancelPrefetchingForRowsAt indexPaths: [IndexPath]) {
+        indexPaths.forEach { indexPath in
+            imageDataTasks[indexPath]?.cancel()
+            imageDataTasks[indexPath] = nil
+        }
+    }
 }
 
 /*
@@ -143,5 +158,5 @@ public class UserProfileViewController: UITableViewController {
         [v] Cancel when image view is out of screen
         [v] Show a loading indicator while loading image (shimmer)
         [v] Option to retry on image download error
-        [] Preload when image view is near visible
+        [v] Preload when image view is near visible
 */
