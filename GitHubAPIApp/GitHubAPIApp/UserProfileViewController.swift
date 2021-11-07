@@ -22,24 +22,6 @@ public protocol ImageDataLoader {
     func load(url: URL, complete: @escaping Complete) -> ImageDataTask
 }
 
-public class UserProfileCell: UITableViewCell {
-    public let loginLabel = UILabel()
-    public let siteAdminLabel = UILabel()
-    public let imageLoadingIndicator = UIActivityIndicatorView()
-    public let avatarImageView = UIImageView()
-    public private(set) lazy var retryButton: UIButton = {
-        let btn = UIButton()
-        btn.addTarget(self, action: #selector(retryButtonTouchUpInside), for: .touchUpInside)
-        return btn
-    }()
-    
-    @objc private func retryButtonTouchUpInside() {
-        onRetry?()
-    }
-    
-    var onRetry: (() -> Void)?
-}
-
 public class UserProfileViewController: UITableViewController, UITableViewDataSourcePrefetching {
     private var loader: UserProfileLoader!
     
@@ -140,18 +122,3 @@ public class UserProfileViewController: UITableViewController, UITableViewDataSo
         }
     }
 }
-
-/*
-    [v] Load feed automatically when view is presented
-    [v] Allow customer to manually reload feed (pull to refresh)
-    [v] Show a loading indicator while loading feed
-       -> 包含 view is presented 和 user pull to refresh 兩種情況下的 loading,
-          都要考慮 loading indicator
-    [v] Render all loaded feed items (location, image, description)
-    [v] Image loading experience
-        [v] Load when image view is visible (on screen)
-        [v] Cancel when image view is out of screen
-        [v] Show a loading indicator while loading image (shimmer)
-        [v] Option to retry on image download error
-        [v] Preload when image view is near visible
-*/
