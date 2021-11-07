@@ -26,10 +26,8 @@ public class UserProfileViewController: UITableViewController, UITableViewDataSo
     private var loader: UserProfileLoader!
     
     private var imageLoader: ImageDataLoader!
-    
-    private var imageDataTasks: [IndexPath: ImageDataTask] = [:]
-    
-    private var userProfiles: [UserProfile] = [] {
+
+    private var cellControllers: [UserProfileCellController] = [] {
         didSet {
             tableView.reloadData()
         }
@@ -53,41 +51,21 @@ public class UserProfileViewController: UITableViewController, UITableViewDataSo
     @objc private func load() {
         refreshControl?.beginRefreshing()
         loader.load { [weak self] result in
-            if let items = try? result.get() {
-                self?.userProfiles = items
+            if let items = try? result.get(),
+                let controllers = self?.adapt(items: items) {
+                self?.cellControllers = controllers
             }
             
             self?.refreshControl?.endRefreshing()
         }
     }
     
+    private func adapt(items: [UserProfile]) -> [UserProfileCellController] {
+        return items.map { UserProfileCellController(item: $0, imageLoader: imageLoader) }
+    }
+    
     public override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let item = userProfiles[indexPath.row]
-        let cell: UserProfileCell = tableView.dequeueReusableCell(for: indexPath)
-        cell.loginLabel.text = item.login
-        cell.siteAdminLabel.isHidden = !item.siteAdmin
-        cell.avatarImageView.image = nil
-        
-        let loadAvatarImage = { [weak self, weak cell] in
-            guard let self = self else { return }
-            cell?.imageLoadingIndicator.startAnimating()
-            cell?.retryButton.isHidden = true
-            
-            self.imageDataTasks[indexPath] = self.imageLoader.load(url: item.avatarUrl) { [weak cell] result in
-                cell?.imageLoadingIndicator.stopAnimating()
-                if let imageData = try? result.get(), let image = UIImage(data: imageData) {
-                    cell?.avatarImageView.image = image
-                } else {
-                    cell?.retryButton.isHidden = false
-                }
-            }
-        }
-        
-        cell.onRetry = loadAvatarImage
-        
-        loadAvatarImage()
-        
-        return cell
+        return cellControllers[indexPath.row].view(for: tableView, at: indexPath)
     }
     
     public override func numberOfSections(in tableView: UITableView) -> Int {
@@ -95,27 +73,22 @@ public class UserProfileViewController: UITableViewController, UITableViewDataSo
     }
     
     public override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return userProfiles.count
+        return cellControllers.count
     }
     
     public override func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        cancelImageLoadingTask(at: indexPath)
+        cellControllers[indexPath.row].cancel()
     }
     
     public func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
         indexPaths.forEach { indexPath in
-            let url = userProfiles[indexPath.row].avatarUrl
-            let task = imageLoader.load(url: url) { _ in }
-            imageDataTasks[indexPath] = task
+            cellControllers[indexPath.row].load()
         }
     }
     
     public func tableView(_ tableView: UITableView, cancelPrefetchingForRowsAt indexPaths: [IndexPath]) {
-        indexPaths.forEach(cancelImageLoadingTask(at:))
-    }
-    
-    private func cancelImageLoadingTask(at indexPath: IndexPath) {
-        imageDataTasks[indexPath]?.cancel()
-        imageDataTasks[indexPath] = nil
+        indexPaths.forEach { indexPath in
+            cellControllers[indexPath.row].cancel()
+        }
     }
 }
