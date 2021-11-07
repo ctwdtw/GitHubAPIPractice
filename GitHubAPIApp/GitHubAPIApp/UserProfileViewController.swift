@@ -27,6 +27,8 @@ public class UserProfileViewController: UITableViewController, UITableViewDataSo
     
     private var imageLoader: ImageDataLoader!
     
+    private var imageDataTasks: [IndexPath: ImageDataTask] = [:]
+    
     private var userProfiles: [UserProfile] = [] {
         didSet {
             tableView.reloadData()
@@ -96,10 +98,8 @@ public class UserProfileViewController: UITableViewController, UITableViewDataSo
         return userProfiles.count
     }
     
-    private var imageDataTasks: [IndexPath: ImageDataTask] = [:]
     public override func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        imageDataTasks[indexPath]?.cancel()
-        imageDataTasks[indexPath] = nil
+        cancelImageLoadingTask(at: indexPath)
     }
     
     public func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
@@ -111,9 +111,11 @@ public class UserProfileViewController: UITableViewController, UITableViewDataSo
     }
     
     public func tableView(_ tableView: UITableView, cancelPrefetchingForRowsAt indexPaths: [IndexPath]) {
-        indexPaths.forEach { indexPath in
-            imageDataTasks[indexPath]?.cancel()
-            imageDataTasks[indexPath] = nil
-        }
+        indexPaths.forEach(cancelImageLoadingTask(at:))
+    }
+    
+    private func cancelImageLoadingTask(at indexPath: IndexPath) {
+        imageDataTasks[indexPath]?.cancel()
+        imageDataTasks[indexPath] = nil
     }
 }
