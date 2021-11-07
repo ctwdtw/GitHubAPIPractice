@@ -23,9 +23,8 @@ public protocol ImageDataLoader {
 }
 
 public class UserProfileViewController: UITableViewController, UITableViewDataSourcePrefetching {
-    private var loader: UserProfileLoader!
     
-    private var imageLoader: ImageDataLoader!
+    private var refresher: UserProfileRefreshController!
 
     private var cellControllers: [UserProfileCellController] = [] {
         didSet {
@@ -33,35 +32,23 @@ public class UserProfileViewController: UITableViewController, UITableViewDataSo
         }
     }
     
-    public convenience init(loader: UserProfileLoader, imageLoader: ImageDataLoader) {
+    public convenience init(refreshController: UserProfileRefreshController) {
         self.init()
-        self.loader = loader
-        self.imageLoader = imageLoader
+        self.refresher = refreshController
     }
     
     public override func viewDidLoad() {
         super.viewDidLoad()
         tableView.registerCell(type: UserProfileCell.self)
         tableView.prefetchDataSource = self
-        refreshControl = UIRefreshControl()
-        refreshControl?.addTarget(self, action: #selector(load), for: .valueChanged)
-        load()
-    }
-    
-    @objc private func load() {
-        refreshControl?.beginRefreshing()
-        loader.load { [weak self] result in
-            if let items = try? result.get(),
-                let controllers = self?.adapt(items: items) {
-                self?.cellControllers = controllers
-            }
-            
-            self?.refreshControl?.endRefreshing()
+        
+        refreshControl = refresher.view()
+        
+        refresher.onRefreshed = { [weak self] cellControllers in
+            self?.cellControllers = cellControllers
         }
-    }
-    
-    private func adapt(items: [UserProfile]) -> [UserProfileCellController] {
-        return items.map { UserProfileCellController(item: $0, imageLoader: imageLoader) }
+        
+        refresher.load()
     }
     
     public override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
