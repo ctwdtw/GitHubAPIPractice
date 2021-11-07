@@ -34,21 +34,27 @@ public class UserProfileViewController: UITableViewController, UITableViewDataSo
     
     public convenience init(refreshController: UserProfileRefreshController) {
         self.init()
+        refreshController.onRefreshed = { [weak self] cellControllers in
+            self?.cellControllers = cellControllers
+        }
+        
         self.refresher = refreshController
     }
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.registerCell(type: UserProfileCell.self)
-        tableView.prefetchDataSource = self
-        
-        refreshControl = refresher.view()
-        
-        refresher.onRefreshed = { [weak self] cellControllers in
-            self?.cellControllers = cellControllers
-        }
-        
+        configureRefreshControl()
+        configureTableView()
         refresher.load()
+    }
+    
+    private func configureTableView() {
+        tableView.prefetchDataSource = self
+        tableView.registerCell(type: UserProfileCell.self)
+    }
+    
+    private func configureRefreshControl() {
+        refreshControl = refresher.view()
     }
     
     public override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
