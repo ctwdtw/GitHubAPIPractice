@@ -50,16 +50,11 @@ public class UserProfileViewController: UITableViewController, UITableViewDataSo
     @objc private func load() {
         refreshControl?.beginRefreshing()
         loader.load { [weak self] result in
-            guard let self = self else {
-                return
-            }
-            
             if let items = try? result.get() {
-                self.userProfiles = items
+                self?.userProfiles = items
             }
             
-            self.refreshControl?.endRefreshing()
-        
+            self?.refreshControl?.endRefreshing()
         }
     }
     
