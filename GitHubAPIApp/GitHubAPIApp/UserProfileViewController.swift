@@ -41,6 +41,7 @@ public class UserProfileViewController: UITableViewController, UITableViewDataSo
     
     public override func viewDidLoad() {
         super.viewDidLoad()
+        tableView.registerCell(type: UserProfileCell.self)
         tableView.prefetchDataSource = self
         refreshControl = UIRefreshControl()
         refreshControl?.addTarget(self, action: #selector(load), for: .valueChanged)
@@ -60,8 +61,7 @@ public class UserProfileViewController: UITableViewController, UITableViewDataSo
     
     public override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let item = userProfiles[indexPath.row]
-        
-        let cell = UserProfileCell()
+        let cell: UserProfileCell = tableView.dequeueReusableCell(for: indexPath)
         cell.loginLabel.text = item.login
         cell.siteAdminLabel.isHidden = !item.siteAdmin
         cell.avatarImageView.image = nil
