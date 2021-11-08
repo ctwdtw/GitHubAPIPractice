@@ -26,18 +26,14 @@ public class UserProfileViewController: UITableViewController, UITableViewDataSo
     
     private var refresher: UserProfileRefreshController!
 
-    private var cellControllers: [UserProfileCellController] = [] {
+    var cellControllers: [UserProfileCellController] = [] {
         didSet {
             tableView.reloadData()
         }
     }
     
-    public convenience init(refreshController: UserProfileRefreshController) {
+    convenience init(refreshController: UserProfileRefreshController) {
         self.init()
-        refreshController.onRefreshed = { [weak self] cellControllers in
-            self?.cellControllers = cellControllers
-        }
-        
         self.refresher = refreshController
     }
     

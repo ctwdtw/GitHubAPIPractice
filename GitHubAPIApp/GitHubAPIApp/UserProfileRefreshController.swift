@@ -18,34 +18,26 @@ public class UserProfileRefreshController: NSObject {
     
     private var loader: UserProfileLoader!
     
-    private var imageLoader: ImageDataLoader!
-    
-    convenience public init(loader: UserProfileLoader, imageLoader: ImageDataLoader) {
+    convenience init(loader: UserProfileLoader) {
         self.init()
         self.loader = loader
-        self.imageLoader = imageLoader
     }
     
     func view() -> UIRefreshControl {
         refreshControl
     }
     
-    var onRefreshed: (([UserProfileCellController]) -> Void)?
+    var onRefreshed: (([UserProfile]) -> Void)?
     
     @objc func load() {
         refreshControl.beginRefreshing()
         loader.load { [weak self] result in
-            if let items = try? result.get(),
-                let controllers = self?.adapt(items: items) {
-                self?.onRefreshed?(controllers)
+            if let items = try? result.get() {
+                self?.onRefreshed?(items)
             }
             
             self?.refreshControl.endRefreshing()
         }
-    }
-    
-    private func adapt(items: [UserProfile]) -> [UserProfileCellController] {
-        return items.map { UserProfileCellController(item: $0, imageLoader: imageLoader) }
     }
     
 }
