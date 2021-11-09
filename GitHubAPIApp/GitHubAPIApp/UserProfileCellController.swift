@@ -16,12 +16,20 @@ class UserProfileCellController: NSObject {
     }
 
     func view(for tableView: UITableView, at indexPath: IndexPath) -> UITableViewCell {
-        let cell: UserProfileCell = tableView.dequeueReusableCell(for: indexPath)
+        let cell: UserProfileCell = binded(tableView.dequeueReusableCell(for: indexPath))
+        
+        viewModel.loadImageData()
+        
+        return cell
+    }
+    
+    private func binded(_ cell: UserProfileCell) -> UserProfileCell {
         cell.loginLabel.text = viewModel.loginAccountText
         cell.siteAdminLabel.isHidden = !viewModel.shouldShowSiteAdminLabel
-        cell.avatarImageView.image = nil
+        cell.onRetry = viewModel.loadImageData
         
         viewModel.onImageLoadingStart = { [weak cell] in
+            cell?.avatarImageView.image = nil
             cell?.imageLoadingIndicator.startAnimating()
             cell?.retryButton.isHidden = true
         }
@@ -35,10 +43,6 @@ class UserProfileCellController: NSObject {
             cell?.imageLoadingIndicator.stopAnimating()
             cell?.retryButton.isHidden = false
         }
-        
-        cell.onRetry = viewModel.loadImageData
-        
-        viewModel.loadImageData()
         
         return cell
     }
