@@ -7,6 +7,7 @@
 
 import Foundation
 import GitHubAPI
+import UIKit
 
 public class UserProfileUIComposer {
     private init() {}
@@ -21,10 +22,18 @@ public class UserProfileUIComposer {
         return userProfileController
     }
     
+    struct ImageDecodingError: Error {}
+    
     private static func adaptUserProfileToCellController(forwardingTo controller: UserProfileViewController, imageLoader: ImageDataLoader) -> ([UserProfile]) -> Void {
         return { [weak controller] userProfiles in
             controller?.cellControllers = userProfiles.map { profile in
-                UserProfileCellController(item: profile, imageLoader: imageLoader)
+                UserProfileCellController(viewModel: UserProfileViewModel(model: profile, imageLoader: imageLoader, imageMapping: { data in
+                    if let image = UIImage(data: data) {
+                        return image
+                    } else {
+                        throw ImageDecodingError()
+                    }
+                }))
             }
         }
     }
