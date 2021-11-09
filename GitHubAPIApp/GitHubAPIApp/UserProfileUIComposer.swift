@@ -13,11 +13,13 @@ public class UserProfileUIComposer {
     private init() {}
     
     public static func make(userProfileLoader: UserProfileLoader, avatarImageDataLoader: ImageDataLoader) -> UserProfileViewController {
-        let refresher = UserProfileRefreshController(loader: userProfileLoader)
+        let refreshViewModel = UserProfileRefreshViewModel(loader: userProfileLoader)
+        
+        let refresher = UserProfileRefreshController(viewModel: refreshViewModel)
         
         let userProfileController = UserProfileViewController(refreshController: refresher)
         
-        refresher.onRefreshed = adaptUserProfileToCellController(forwardingTo: userProfileController, imageLoader: avatarImageDataLoader)
+        refreshViewModel.onRefreshed = adaptUserProfileToCellController(forwardingTo: userProfileController, imageLoader: avatarImageDataLoader)
         
         return userProfileController
     }

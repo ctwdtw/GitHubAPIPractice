@@ -9,35 +9,34 @@ import UIKit
 import GitHubAPI
 
 public class UserProfileRefreshController: NSObject {
-    private lazy var refreshControl: UIRefreshControl = {
-        let view = UIRefreshControl()
-        view.addTarget(self, action: #selector(load), for: .valueChanged)
-        return view
-    }()
+    private lazy var refreshControl: UIRefreshControl = binded(UIRefreshControl())
     
+    private let viewModel: UserProfileRefreshViewModel
     
-    private var loader: UserProfileLoader!
-    
-    convenience init(loader: UserProfileLoader) {
-        self.init()
-        self.loader = loader
+    init(viewModel: UserProfileRefreshViewModel) {
+        self.viewModel = viewModel
     }
     
     func view() -> UIRefreshControl {
         refreshControl
     }
     
-    var onRefreshed: (([UserProfile]) -> Void)?
+    private func binded(_ refreshControl: UIRefreshControl) -> UIRefreshControl {
+        refreshControl.addTarget(self, action: #selector(load), for: .valueChanged)
+        
+        viewModel.onStartLoading = { [weak refreshControl] in
+            refreshControl?.beginRefreshing()
+        }
+    
+        viewModel.onFinishLoading = { [weak refreshControl] in
+            refreshControl?.endRefreshing()
+        }
+        
+        return refreshControl
+    }
     
     @objc func load() {
-        refreshControl.beginRefreshing()
-        loader.load { [weak self] result in
-            if let items = try? result.get() {
-                self?.onRefreshed?(items)
-            }
-            
-            self?.refreshControl.endRefreshing()
-        }
+        viewModel.load()
     }
     
 }
