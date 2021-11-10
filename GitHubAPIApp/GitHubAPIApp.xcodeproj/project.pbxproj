@@ -15,6 +15,7 @@
 		632B0C8527395ADD00AA290E /* UserProfileUIComposer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632B0C8427395ADD00AA290E /* UserProfileUIComposer.swift */; };
 		632B0C89273A78C600AA290E /* UserProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632B0C88273A78C600AA290E /* UserProfileViewModel.swift */; };
 		632B0C8B273A914D00AA290E /* UserProfileRefreshViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632B0C8A273A914D00AA290E /* UserProfileRefreshViewModel.swift */; };
+		632B0C95273C274700AA290E /* UserProfileLoaderViewModelAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632B0C94273C274600AA290E /* UserProfileLoaderViewModelAdapter.swift */; };
 		63547AA9272BB699001CE31F /* GitHubAPI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63547AA8272BB699001CE31F /* GitHubAPI.framework */; };
 		63547AAA272BB699001CE31F /* GitHubAPI.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 63547AA8272BB699001CE31F /* GitHubAPI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		63F55351270FF26C0002FA50 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63F55350270FF26C0002FA50 /* AppDelegate.swift */; };
@@ -61,6 +62,7 @@
 		632B0C8427395ADD00AA290E /* UserProfileUIComposer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileUIComposer.swift; sourceTree = "<group>"; };
 		632B0C88273A78C600AA290E /* UserProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileViewModel.swift; sourceTree = "<group>"; };
 		632B0C8A273A914D00AA290E /* UserProfileRefreshViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileRefreshViewModel.swift; sourceTree = "<group>"; };
+		632B0C94273C274600AA290E /* UserProfileLoaderViewModelAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileLoaderViewModelAdapter.swift; sourceTree = "<group>"; };
 		63547A94272A9CE4001CE31F /* GitHubAPI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = GitHubAPI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		63547A9C272BB3E7001CE31F /* GitHubAPI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = GitHubAPI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		63547AA4272BB5FC001CE31F /* Alamofire.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Alamofire.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -139,6 +141,7 @@
 			isa = PBXGroup;
 			children = (
 				632B0C8427395ADD00AA290E /* UserProfileUIComposer.swift */,
+				632B0C94273C274600AA290E /* UserProfileLoaderViewModelAdapter.swift */,
 				63F55350270FF26C0002FA50 /* AppDelegate.swift */,
 				63F55352270FF26C0002FA50 /* SceneDelegate.swift */,
 				632B0C7E2737E1FD00AA290E /* UITableView+ReusingCell.swift */,
@@ -368,6 +371,7 @@
 				63F55355270FF26C0002FA50 /* UserProfileViewController.swift in Sources */,
 				63F55351270FF26C0002FA50 /* AppDelegate.swift in Sources */,
 				632B0C8527395ADD00AA290E /* UserProfileUIComposer.swift in Sources */,
+				632B0C95273C274700AA290E /* UserProfileLoaderViewModelAdapter.swift in Sources */,
 				63F55353270FF26C0002FA50 /* SceneDelegate.swift in Sources */,
 				632B0C812737F4DB00AA290E /* UserProfileCellController.swift in Sources */,
 				632B0C7F2737E1FD00AA290E /* UITableView+ReusingCell.swift in Sources */,
