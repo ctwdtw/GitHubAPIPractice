@@ -19,15 +19,15 @@ class UserProfileRefreshViewModel {
     
     var onFinishLoading: (() -> Void)?
     
-    var onRefreshed: (([UserProfile]) -> Void)?
+    var onRefreshed: ((UserProfileLoader.Resource) -> Void)?
     
     func load() {
         onStartLoading?()
         loader.load { [weak self] result in
             guard let self = self else { return }
             
-            if let items = try? result.get() {
-                self.onRefreshed?(items)
+            if let resource = try? result.get() {
+                self.onRefreshed?(resource)
             }
             
             self.onFinishLoading?()

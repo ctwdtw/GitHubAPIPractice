@@ -9,7 +9,8 @@ import UIKit
 import GitHubAPI
 
 public protocol UserProfileLoader {
-    typealias Result = Swift.Result<[UserProfile], Swift.Error>
+    typealias Resource = UserProfileURLPackage
+    typealias Result = Swift.Result<Resource, Swift.Error>
     typealias Complete = (Result) -> Void
     func load(complete: @escaping Complete)
 }

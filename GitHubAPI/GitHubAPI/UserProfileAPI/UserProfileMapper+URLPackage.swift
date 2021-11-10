@@ -12,7 +12,7 @@ public struct UserProfileURLPackage {
     public let userProfiles: [UserProfile]
     public let nextURL: URL?
     
-    public init(userProfiles: [UserProfile], nextURL: URL?) {
+    public init(_ userProfiles: [UserProfile], nextURL: URL? = nil) {
         self.userProfiles = userProfiles
         self.nextURL = nextURL
     }
@@ -28,7 +28,7 @@ public extension UserProfileMapper {
         do {
             let linkString = response.response?.value(forHTTPHeaderField: "Link")
             let item: [UserProfile] = try self.map(response)
-            return UserProfileURLPackage(userProfiles: item, nextURL: nextURL(linkString))
+            return UserProfileURLPackage(item, nextURL: nextURL(linkString))
         } catch {
             throw error
         }

@@ -26,9 +26,9 @@ public class UserProfileUIComposer {
     
     struct ImageDecodingError: Error {}
     
-    private static func adaptUserProfileToCellController(forwardingTo controller: UserProfileViewController, imageLoader: ImageDataLoader) -> ([UserProfile]) -> Void {
-        return { [weak controller] userProfiles in
-            controller?.cellControllers = userProfiles.map { profile in
+    private static func adaptUserProfileToCellController(forwardingTo controller: UserProfileViewController, imageLoader: ImageDataLoader) -> (UserProfileLoader.Resource) -> Void {
+        return { [weak controller] resource in
+            controller?.cellControllers = resource.userProfiles.map { profile in
                 UserProfileCellController(viewModel: UserProfileViewModel(model: profile, imageLoader: imageLoader, imageMapping: { data in
                     if let image = UIImage(data: data) {
                         return image

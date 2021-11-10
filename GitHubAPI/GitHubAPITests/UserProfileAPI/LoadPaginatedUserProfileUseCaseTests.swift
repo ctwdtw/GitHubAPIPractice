@@ -33,7 +33,7 @@ class LoadPaginatedUserProfileUseCaseTests: XCTestCase {
     
     func test__loadMore_requestNextURL() throws {
         let nextURL = URL(string: "https://next-url.com")!
-        let stubMapper = StubMapper().stubPackage(UserProfileURLPackage(userProfiles: [makeUserProfile().model, makeUserProfile().model], nextURL: nextURL))
+        let stubMapper = StubMapper().stubPackage(UserProfileURLPackage([makeUserProfile().model, makeUserProfile().model], nextURL: nextURL))
 
         let sut = makeSUT(url: anyURL(), mapping: stubMapper.map(_:))
         let loadMore = try XCTUnwrap(pageFor(sut.load(complete:))?.loadMore)
@@ -43,13 +43,13 @@ class LoadPaginatedUserProfileUseCaseTests: XCTestCase {
     func test__loadOneMore_requestNextNextURL() throws {
         // load
         let nextURL = URL(string: "https://next-url.com")!
-        let stubMapper = StubMapper().stubPackage(UserProfileURLPackage(userProfiles: [makeUserProfile().model, makeUserProfile().model], nextURL: nextURL))
+        let stubMapper = StubMapper().stubPackage(UserProfileURLPackage([makeUserProfile().model, makeUserProfile().model], nextURL: nextURL))
         let sut = makeSUT(url: anyURL(), mapping: stubMapper.map(_:))
         let loadMore = try XCTUnwrap(pageFor(sut.load(complete:))?.loadMore)
         
         // load more
         let nextNextURL = URL(string: "https://next-next--url.com")!
-        stubMapper.stubPackage(UserProfileURLPackage(userProfiles: [makeUserProfile().model], nextURL: nextNextURL))
+        stubMapper.stubPackage(UserProfileURLPackage([makeUserProfile().model], nextURL: nextNextURL))
         let loadOneMore = try XCTUnwrap(pageFor(loadMore)?.loadMore)
         
         // load one more
@@ -61,7 +61,7 @@ class LoadPaginatedUserProfileUseCaseTests: XCTestCase {
         let item0 = makeUserProfile()
         let item1 = makeUserProfile()
         let nextURL = URL(string: "https://next-url.com")!
-        let stubMapper = StubMapper().stubPackage(UserProfileURLPackage(userProfiles: [item0.model, item1.model], nextURL: nextURL))
+        let stubMapper = StubMapper().stubPackage(UserProfileURLPackage([item0.model, item1.model], nextURL: nextURL))
         
         let sut = makeSUT(url: anyURL(), mapping: stubMapper.map(_:))
         let page = try XCTUnwrap(pageFor(sut.load(complete:)))
@@ -71,7 +71,7 @@ class LoadPaginatedUserProfileUseCaseTests: XCTestCase {
         let item3 = makeUserProfile()
         let item4 = makeUserProfile()
         let nextNextURL = URL(string: "https://next-next-url.com")
-        stubMapper.stubPackage(UserProfileURLPackage(userProfiles: [item3.model, item4.model], nextURL: nextNextURL))
+        stubMapper.stubPackage(UserProfileURLPackage([item3.model, item4.model], nextURL: nextNextURL))
         
         let loadMore = try XCTUnwrap(page.loadMore)
         let nextPage = try XCTUnwrap(pageFor(loadMore))
@@ -86,7 +86,7 @@ class LoadPaginatedUserProfileUseCaseTests: XCTestCase {
         // load next next page success
         let item5 = makeUserProfile()
         let item6 = makeUserProfile()
-        stubMapper.stubPackage(UserProfileURLPackage(userProfiles: [item5.model, item6.model], nextURL: nil))
+        stubMapper.stubPackage(UserProfileURLPackage([item5.model, item6.model], nextURL: nil))
         let nextNextPage = try XCTUnwrap(pageFor(loadOneMore))
         XCTAssertEqual(nextNextPage.userProfiles, [item0.model, item1.model, item3.model, item4.model, item5.model, item6.model])
     }
