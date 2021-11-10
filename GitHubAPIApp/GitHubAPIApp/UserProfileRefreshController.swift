@@ -13,8 +13,11 @@ public class UserProfileRefreshController: NSObject {
     
     private let viewModel: UserProfileRefreshViewModel
     
-    init(viewModel: UserProfileRefreshViewModel) {
+    private let loadAction: () -> Void
+    
+    init(viewModel: UserProfileRefreshViewModel, loadAction: @escaping () -> Void) {
         self.viewModel = viewModel
+        self.loadAction = loadAction
     }
     
     func view() -> UIRefreshControl {
@@ -36,7 +39,7 @@ public class UserProfileRefreshController: NSObject {
     }
     
     @objc func load() {
-        viewModel.load()
+        loadAction()
     }
     
 }
