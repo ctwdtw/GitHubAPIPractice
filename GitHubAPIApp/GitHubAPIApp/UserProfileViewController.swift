@@ -67,18 +67,18 @@ public class UserProfileViewController: UITableViewController, UITableViewDataSo
     }
     
     public override func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        cellControllers[indexPath.row].cancel()
+        cellControllers[indexPath.row].cancelLoad()
     }
     
     public func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
         indexPaths.forEach { indexPath in
-            cellControllers[indexPath.row].load()
+            cellControllers[indexPath.row].preload()
         }
     }
     
     public func tableView(_ tableView: UITableView, cancelPrefetchingForRowsAt indexPaths: [IndexPath]) {
         indexPaths.forEach { indexPath in
-            cellControllers[indexPath.row].cancel()
+            cellControllers[indexPath.row].cancelLoad()
         }
     }
 }

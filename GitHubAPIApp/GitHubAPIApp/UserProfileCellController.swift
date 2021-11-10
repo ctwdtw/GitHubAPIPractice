@@ -47,11 +47,11 @@ class UserProfileCellController: NSObject {
         return cell
     }
     
-    func load() {
+    func preload() {
         viewModel.loadImageData()
     }
     
-    func cancel() {
+    func cancelLoad() {
         viewModel.cancelLoadImageData()
     }
 }

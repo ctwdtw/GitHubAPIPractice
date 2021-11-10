@@ -17,7 +17,9 @@ public class UserProfileUIComposer {
         
         let profileViewModelAdapter = UserProfileLoaderViewModelAdapter(loader: userProfileLoader, viewModel: refreshViewModel, imageLoader: avatarImageDataLoader)
         
-        let refresher = UserProfileRefreshController(viewModel: refreshViewModel, loadAction: profileViewModelAdapter.load)
+        refreshViewModel.loadAction = profileViewModelAdapter.load
+        
+        let refresher = UserProfileRefreshController(viewModel: refreshViewModel)
         
         let userProfileController = UserProfileViewController(refreshController: refresher)
         

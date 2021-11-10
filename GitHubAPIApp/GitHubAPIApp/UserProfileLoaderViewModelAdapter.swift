@@ -11,7 +11,7 @@ import GitHubAPI
 class UserProfileLoaderViewModelAdapter {
     private let loader: UserProfileLoader
     
-    private let viewModel: UserProfileRefreshViewModel
+    private unowned let viewModel: UserProfileRefreshViewModel
     
     private let imageLoader: ImageDataLoader
     
@@ -37,7 +37,7 @@ class UserProfileLoaderViewModelAdapter {
         }
     }
     
-    private func cellControllers(_ resource: UserProfileURLPackage) -> [UserProfileCellController] {
+    private func cellControllers(_ resource: UserProfileLoader.Resource) -> [UserProfileCellController] {
         resource.userProfiles.map { profile in
             UserProfileCellController(viewModel: UserProfileViewModel(model: profile, imageLoader: imageLoader, imageMapping: { data in
                 if let image = UIImage(data: data) {

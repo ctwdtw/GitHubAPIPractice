@@ -14,4 +14,6 @@ class UserProfileRefreshViewModel {
     var onFinishLoading: (() -> Void)?
     
     var onRefreshed: (([UserProfileCellController]) -> Void)?
+    
+    var loadAction: (() -> Void)?
 }
