@@ -24,6 +24,17 @@ import GitHubAPIApp
         [v] Preload when image view is near visible
 */
 
+/*
+ [] Layout
+ [] Infinite Scroll Experience
+     [] Trigger Load More action on scroll to bottom
+         [] Only if there are more items to load
+         [] Only if not already loading
+     [] Show loading indicator while loading
+     [] Show error message on failure
+       [] Tap on error to retry
+ */
+
 class UserProfileViewControllerTests: XCTestCase {
     // [v] Load feed automatically when view is presented
     // [v] Allow customer to manually reload feed (pull to refresh)
