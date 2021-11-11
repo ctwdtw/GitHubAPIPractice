@@ -18,6 +18,8 @@
 		632B0C95273C274700AA290E /* UserProfileLoaderViewModelAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632B0C94273C274600AA290E /* UserProfileLoaderViewModelAdapter.swift */; };
 		63547AA9272BB699001CE31F /* GitHubAPI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63547AA8272BB699001CE31F /* GitHubAPI.framework */; };
 		63547AAA272BB699001CE31F /* GitHubAPI.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 63547AA8272BB699001CE31F /* GitHubAPI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		63923155273CE70E000532C5 /* CellController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63923154273CE70E000532C5 /* CellController.swift */; };
+		63923157273CE757000532C5 /* CellViewCreator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63923156273CE757000532C5 /* CellViewCreator.swift */; };
 		63F55351270FF26C0002FA50 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63F55350270FF26C0002FA50 /* AppDelegate.swift */; };
 		63F55353270FF26C0002FA50 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63F55352270FF26C0002FA50 /* SceneDelegate.swift */; };
 		63F55355270FF26C0002FA50 /* UserProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63F55354270FF26C0002FA50 /* UserProfileViewController.swift */; };
@@ -67,6 +69,8 @@
 		63547A9C272BB3E7001CE31F /* GitHubAPI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = GitHubAPI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		63547AA4272BB5FC001CE31F /* Alamofire.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Alamofire.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		63547AA8272BB699001CE31F /* GitHubAPI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = GitHubAPI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		63923154273CE70E000532C5 /* CellController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CellController.swift; sourceTree = "<group>"; };
+		63923156273CE757000532C5 /* CellViewCreator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CellViewCreator.swift; sourceTree = "<group>"; };
 		63F5534D270FF26C0002FA50 /* GitHubAPIApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GitHubAPIApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		63F55350270FF26C0002FA50 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		63F55352270FF26C0002FA50 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -150,6 +154,8 @@
 				632B0C8A273A914D00AA290E /* UserProfileRefreshViewModel.swift */,
 				632B0C88273A78C600AA290E /* UserProfileViewModel.swift */,
 				632B0C802737F4DB00AA290E /* UserProfileCellController.swift */,
+				63923156273CE757000532C5 /* CellViewCreator.swift */,
+				63923154273CE70E000532C5 /* CellController.swift */,
 				632B0C7C2737D76F00AA290E /* UserProfileCell.swift */,
 				63F55356270FF26C0002FA50 /* Main.storyboard */,
 				63F55359270FF26E0002FA50 /* Assets.xcassets */,
@@ -369,7 +375,9 @@
 				632B0C7D2737D76F00AA290E /* UserProfileCell.swift in Sources */,
 				632B0C83273805AB00AA290E /* UserProfileRefreshController.swift in Sources */,
 				63F55355270FF26C0002FA50 /* UserProfileViewController.swift in Sources */,
+				63923155273CE70E000532C5 /* CellController.swift in Sources */,
 				63F55351270FF26C0002FA50 /* AppDelegate.swift in Sources */,
+				63923157273CE757000532C5 /* CellViewCreator.swift in Sources */,
 				632B0C8527395ADD00AA290E /* UserProfileUIComposer.swift in Sources */,
 				632B0C95273C274700AA290E /* UserProfileLoaderViewModelAdapter.swift in Sources */,
 				63F55353270FF26C0002FA50 /* SceneDelegate.swift in Sources */,

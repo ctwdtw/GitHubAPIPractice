@@ -27,7 +27,13 @@ public class UserProfileViewController: UITableViewController, UITableViewDataSo
     
     private var refresher: UserProfileRefreshController!
 
-    var cellControllers: [UserProfileCellController] = [] {
+    var cellControllers: [CellController] = [] {
+        didSet {
+            tableView.reloadData()
+        }
+    }
+    
+    var tableModel: [[CellController]] = [] {
         didSet {
             tableView.reloadData()
         }
@@ -67,18 +73,21 @@ public class UserProfileViewController: UITableViewController, UITableViewDataSo
     }
     
     public override func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        cellControllers[indexPath.row].cancelLoad()
+        let dl = cellControllers[indexPath.row].delegate
+        dl?.tableView?(tableView, didEndDisplaying: cell, forRowAt: indexPath)
     }
     
     public func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
         indexPaths.forEach { indexPath in
-            cellControllers[indexPath.row].preload()
+            let dsp = cellControllers[indexPath.row].dataSourcePrefetching
+            dsp?.tableView(tableView, prefetchRowsAt: [indexPath])
         }
     }
     
     public func tableView(_ tableView: UITableView, cancelPrefetchingForRowsAt indexPaths: [IndexPath]) {
         indexPaths.forEach { indexPath in
-            cellControllers[indexPath.row].cancelLoad()
+            let dsp = cellControllers[indexPath.row].dataSourcePrefetching
+            dsp?.tableView?(tableView, cancelPrefetchingForRowsAt: [indexPath])
         }
     }
 }

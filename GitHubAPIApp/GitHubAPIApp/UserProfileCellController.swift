@@ -8,7 +8,7 @@
 import UIKit
 import GitHubAPI
 
-class UserProfileCellController: NSObject {
+class UserProfileCellController: NSObject, UITableViewDataSourcePrefetching, UITableViewDelegate, CellViewCreator {
     private let viewModel: UserProfileViewModel<UIImage>
     
     init(viewModel: UserProfileViewModel<UIImage>) {
@@ -46,12 +46,24 @@ class UserProfileCellController: NSObject {
         
         return cell
     }
+
+    func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
+        preload()
+    }
     
-    func preload() {
+    func tableView(_ tableView: UITableView, cancelPrefetchingForRowsAt indexPaths: [IndexPath]) {
+        cancelLoad()
+    }
+    
+    func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        cancelLoad()
+    }
+    
+    private func preload() {
         viewModel.loadImageData()
     }
     
-    func cancelLoad() {
+    private func cancelLoad() {
         viewModel.cancelLoadImageData()
     }
 }
