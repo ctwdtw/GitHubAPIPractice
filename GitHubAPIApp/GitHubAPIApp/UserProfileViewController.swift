@@ -27,7 +27,7 @@ public class UserProfileViewController: UITableViewController, UITableViewDataSo
     
     private var refresher: UserProfileRefreshController!
 
-    var cellControllers: [CellController] = [] {
+    var tableModel: [[CellController]] = [] {
         didSet {
             tableView.reloadData()
         }
@@ -55,33 +55,37 @@ public class UserProfileViewController: UITableViewController, UITableViewDataSo
     }
     
     public override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return cellControllers[indexPath.row].view(for: tableView, at: indexPath)
+        return cellController(at: indexPath).view(for: tableView, at: indexPath)
     }
     
     public override func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
+        return tableModel.count
     }
     
     public override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return cellControllers.count
+        return tableModel[section].count
     }
     
     public override func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        let dl = cellControllers[indexPath.row].delegate
+        let dl = cellController(at: indexPath).delegate
         dl?.tableView?(tableView, didEndDisplaying: cell, forRowAt: indexPath)
     }
     
     public func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
         indexPaths.forEach { indexPath in
-            let dsp = cellControllers[indexPath.row].dataSourcePrefetching
+            let dsp = cellController(at: indexPath).dataSourcePrefetching
             dsp?.tableView(tableView, prefetchRowsAt: [indexPath])
         }
     }
     
     public func tableView(_ tableView: UITableView, cancelPrefetchingForRowsAt indexPaths: [IndexPath]) {
         indexPaths.forEach { indexPath in
-            let dsp = cellControllers[indexPath.row].dataSourcePrefetching
+            let dsp = cellController(at: indexPath).dataSourcePrefetching
             dsp?.tableView?(tableView, cancelPrefetchingForRowsAt: [indexPath])
         }
+    }
+    
+    private func cellController(at indexPath: IndexPath) -> CellController {
+        tableModel[indexPath.section][indexPath.row]
     }
 }
