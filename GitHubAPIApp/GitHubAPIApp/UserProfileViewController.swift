@@ -33,12 +33,6 @@ public class UserProfileViewController: UITableViewController, UITableViewDataSo
         }
     }
     
-    var tableModel: [[CellController]] = [] {
-        didSet {
-            tableView.reloadData()
-        }
-    }
-    
     convenience init(refreshController: UserProfileRefreshController) {
         self.init()
         self.refresher = refreshController
