@@ -5,15 +5,15 @@
 import UIKit
 
 extension UIView {
-    func defaultSizeSnapshot() -> UIImage {
-        return snapshot(for: SnapshotConfiguration.init(size: bounds.size))
+    func defaultSizeSnapshot(style: UIUserInterfaceStyle = .light) -> UIImage {
+        return snapshot(size: bounds.size, style: style)
     }
     
-    func snapshot(size: CGSize) -> UIImage {
-        return snapshot(for: SnapshotConfiguration.init(size: size))
+    func snapshot(size: CGSize, style: UIUserInterfaceStyle) -> UIImage {
+        let traitCollection = UITraitCollection(traitsFrom: [.init(userInterfaceStyle: style)])
+        return snapshot(for: SnapshotConfiguration.init(size: size, traitCollection: traitCollection))
     }
     
-    @available(iOS 12.0, *)
     func snapshot(for configuration: SnapshotConfiguration) -> UIImage {
         let root = UIViewController()
         root.view = self

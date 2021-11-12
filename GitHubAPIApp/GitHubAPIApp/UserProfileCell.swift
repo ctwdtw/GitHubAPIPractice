@@ -135,7 +135,7 @@ public class UserProfileCell: UITableViewCell {
     }
     
     private func stylingContentView() {
-        contentView.backgroundColor = .white
+        contentView.backgroundColor = .systemBackground
     }
     
     private func stylingAvatarImageView() {
