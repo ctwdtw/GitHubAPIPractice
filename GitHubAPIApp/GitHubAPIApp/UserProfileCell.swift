@@ -67,7 +67,13 @@ public class UserProfileCell: UITableViewCell {
     public lazy var imageLoadingIndicator: UIActivityIndicatorView = {
         let view = UIActivityIndicatorView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        contentView.addSubview(view)
+        avatarImageView.addSubview(view)
+        
+        NSLayoutConstraint.activate([
+            view.centerXAnchor.constraint(equalTo: avatarImageView.centerXAnchor),
+            view.centerYAnchor.constraint(equalTo: avatarImageView.centerYAnchor)
+        ])
+        
         return view
     }()
     
