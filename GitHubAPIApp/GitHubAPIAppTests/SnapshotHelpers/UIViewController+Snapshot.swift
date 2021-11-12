@@ -16,6 +16,17 @@ struct SnapshotConfiguration {
 	let layoutMargins: UIEdgeInsets
 	let traitCollection: UITraitCollection
 	
+    init(size: CGSize = .zero,
+         safeAreaInsets: UIEdgeInsets = .zero,
+         layoutMargins: UIEdgeInsets = .zero,
+         traitCollection: UITraitCollection = UITraitCollection(traitsFrom: [])
+    ) {
+        self.size = size
+        self.safeAreaInsets = safeAreaInsets
+        self.layoutMargins = layoutMargins
+        self.traitCollection = traitCollection
+    }
+    
 	static func iPhone13(style: UIUserInterfaceStyle, contentSize: UIContentSizeCategory = .medium) -> SnapshotConfiguration {
 		return SnapshotConfiguration(
 			size: CGSize(width: 390, height: 844),
@@ -36,7 +47,7 @@ struct SnapshotConfiguration {
 	}
 }
 
-private final class SnapshotWindow: UIWindow {
+final class SnapshotWindow: UIWindow {
 	private var configuration: SnapshotConfiguration = .iPhone13(style: .light)
 	
 	convenience init(configuration: SnapshotConfiguration, root: UIViewController) {
