@@ -15,13 +15,6 @@ public protocol UserProfileLoader {
     func load(complete: @escaping Complete)
 }
 
-public protocol ImageDataLoader {
-    typealias Result = Swift.Result<Data, Error>
-    
-    typealias Complete = (Result) -> Void
-    
-    func load(url: URL, complete: @escaping Complete) -> ImageDataTask
-}
 
 public class UserProfileViewController: UITableViewController, UITableViewDataSourcePrefetching {
     

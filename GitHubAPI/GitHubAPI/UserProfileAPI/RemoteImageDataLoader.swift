@@ -8,21 +8,17 @@
 import Foundation
 import Alamofire
 
-public protocol ImageDataTask {
-    func cancel()
-}
-
-public class RemoteImageDataLoader {
+public class RemoteImageDataLoader: ImageDataLoader {
     public class RemoteImageDataTask: ImageDataTask {
         var request: DataRequest?
         
         public private(set) var completion: Complete?
         
-        init(complete: @escaping Complete) {
+        init(complete: @escaping ImageDataLoader.Complete) {
             self.completion = complete
         }
         
-        func complete(with result: Result) {
+        func complete(with result: ImageDataLoader.Result) {
             completion?(result)
         }
         
@@ -32,10 +28,6 @@ public class RemoteImageDataLoader {
         }
         
     }
-    
-    public typealias Result = Swift.Result<Data, Error>
-    
-    public typealias Complete = (Result) -> Void
     
     public enum Error: Swift.Error {
         case connectivity
@@ -64,17 +56,17 @@ public class RemoteImageDataLoader {
             }
             
             guard let statusCode = response.response?.statusCode else {
-                task.complete(with: .failure(.connectivity))
+                task.complete(with: .failure(Error.connectivity))
                 return
             }
             
             guard statusCode == 200 else {
-                task.complete(with: .failure(.invalidData))
+                task.complete(with: .failure(Error.invalidData))
                 return
             }
             
             guard let data = response.data else {
-                task.complete(with: .failure(.invalidData))
+                task.complete(with: .failure(Error.invalidData))
                 return
             }
             
