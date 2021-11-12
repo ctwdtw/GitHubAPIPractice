@@ -44,4 +44,14 @@ class UserProfileCellSnapshotTest: XCTestCase {
         assert(snapshot: image, named: "UserProfileCell-avatarLoading")
     }
     
+    func test_userProfileCell_showRetryButton() {
+        let sut = TableViewCellSnapshotContainer<UserProfileCell>(width: .iPhone11, cellConfigurator: { cell in
+            cell.loginLabel.text = "login-account"
+            cell.retryButton.isHidden = false
+        })
+        
+        let image = sut.defaultSizeSnapshot()
+        
+        assert(snapshot: image, named: "UserProfileCell-retryButton")
+    }
 }

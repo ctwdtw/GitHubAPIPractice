@@ -29,6 +29,7 @@
 		6392316A273E6808000532C5 /* UserProfileCell.png in Resources */ = {isa = PBXBuildFile; fileRef = 63923168273E6807000532C5 /* UserProfileCell.png */; };
 		6392316B273E6808000532C5 /* UserProfileCell-siteAdmin.png in Resources */ = {isa = PBXBuildFile; fileRef = 63923169273E6807000532C5 /* UserProfileCell-siteAdmin.png */; };
 		6392316D273E6ED7000532C5 /* UserProfileCell-avatarLoading.png in Resources */ = {isa = PBXBuildFile; fileRef = 6392316C273E6ED7000532C5 /* UserProfileCell-avatarLoading.png */; };
+		6392316F273E725D000532C5 /* UserProfileCell-retryButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 6392316E273E725D000532C5 /* UserProfileCell-retryButton.png */; };
 		63F55351270FF26C0002FA50 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63F55350270FF26C0002FA50 /* AppDelegate.swift */; };
 		63F55353270FF26C0002FA50 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63F55352270FF26C0002FA50 /* SceneDelegate.swift */; };
 		63F55355270FF26C0002FA50 /* UserProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63F55354270FF26C0002FA50 /* UserProfileViewController.swift */; };
@@ -89,6 +90,7 @@
 		63923168273E6807000532C5 /* UserProfileCell.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = UserProfileCell.png; sourceTree = "<group>"; };
 		63923169273E6807000532C5 /* UserProfileCell-siteAdmin.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "UserProfileCell-siteAdmin.png"; sourceTree = "<group>"; };
 		6392316C273E6ED7000532C5 /* UserProfileCell-avatarLoading.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "UserProfileCell-avatarLoading.png"; sourceTree = "<group>"; };
+		6392316E273E725D000532C5 /* UserProfileCell-retryButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "UserProfileCell-retryButton.png"; sourceTree = "<group>"; };
 		63F5534D270FF26C0002FA50 /* GitHubAPIApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GitHubAPIApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		63F55350270FF26C0002FA50 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		63F55352270FF26C0002FA50 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -154,6 +156,7 @@
 		63923163273D593A000532C5 /* snapshots */ = {
 			isa = PBXGroup;
 			children = (
+				6392316E273E725D000532C5 /* UserProfileCell-retryButton.png */,
 				6392316C273E6ED7000532C5 /* UserProfileCell-avatarLoading.png */,
 				63923169273E6807000532C5 /* UserProfileCell-siteAdmin.png */,
 				63923168273E6807000532C5 /* UserProfileCell.png */,
@@ -325,6 +328,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6392316A273E6808000532C5 /* UserProfileCell.png in Resources */,
+				6392316F273E725D000532C5 /* UserProfileCell-retryButton.png in Resources */,
 				6392316B273E6808000532C5 /* UserProfileCell-siteAdmin.png in Resources */,
 				6392316D273E6ED7000532C5 /* UserProfileCell-avatarLoading.png in Resources */,
 			);

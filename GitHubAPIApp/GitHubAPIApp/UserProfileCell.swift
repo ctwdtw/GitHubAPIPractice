@@ -77,10 +77,21 @@ public class UserProfileCell: UITableViewCell {
         return view
     }()
     
+    private let retryButtonWidth: CGFloat = 50.0
+    
     public private(set) lazy var retryButton: UIButton = {
         let btn = UIButton()
-        btn.translatesAutoresizingMaskIntoConstraints = false
         btn.addTarget(self, action: #selector(retryButtonTouchUpInside), for: .touchUpInside)
+        btn.translatesAutoresizingMaskIntoConstraints = false
+        avatarImageView.addSubview(btn)
+        
+        NSLayoutConstraint.activate([
+            btn.centerXAnchor.constraint(equalTo: avatarImageView.centerXAnchor),
+            btn.centerYAnchor.constraint(equalTo: avatarImageView.centerYAnchor),
+            btn.widthAnchor.constraint(equalToConstant: retryButtonWidth),
+            btn.heightAnchor.constraint(equalTo: btn.widthAnchor)
+        ])
+        
         return btn
     }()
     
@@ -101,19 +112,26 @@ public class UserProfileCell: UITableViewCell {
     }
     
     private func commonInit() {
-        _ = avatarImageView
-        _ = vStackView
-        
+        setupLayout()
         stylingContentView()
         stylingAvatarImageView()
+        stylingRetryButton()
         styingLoginLabel()
         stylingSiteAdminLabel()
+    }
+    
+    private func setupLayout() {
+        _ = avatarImageView
+        _ = imageLoadingIndicator
+        _ = retryButton
+        _ = vStackView
     }
     
     public override func layoutSubviews() {
         super.layoutSubviews()
         avatarImageView.roundCorner(radius: avatarWidth/2.0)
         siteAdminLabel.roundCorner(radius: siteAdminLabel.bounds.height/2.0)
+        retryButton.roundCorner(radius: 8.0)
     }
     
     private func stylingContentView() {
@@ -138,6 +156,12 @@ public class UserProfileCell: UITableViewCell {
         siteAdminLabel.textColor = .white
         siteAdminLabel.layer.masksToBounds = true
         siteAdminLabel.font = UIFont.systemFont(ofSize: 22)
+    }
+    
+    private func stylingRetryButton() {
+        retryButton.setTitle("Retry", for: .normal)
+        retryButton.backgroundColor = .systemPink
+        retryButton.isHidden = true
     }
     
 }
