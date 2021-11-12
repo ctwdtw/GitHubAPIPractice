@@ -17,12 +17,15 @@ public class UserProfileCell: UITableViewCell {
         
         view.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(view)
+        
+        let widthHeightConstraint = view.widthAnchor.constraint(equalTo: view.heightAnchor)
+        widthHeightConstraint.priority = UILayoutPriority(999)
         NSLayoutConstraint.activate([
             view.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: standardSpace),
             view.topAnchor.constraint(equalTo: contentView.topAnchor, constant: standardSpace),
             view.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -standardSpace),
-            view.widthAnchor.constraint(equalTo: view.heightAnchor),
-            view.widthAnchor.constraint(equalToConstant: avatarWidth)
+            view.widthAnchor.constraint(equalToConstant: avatarWidth),
+            widthHeightConstraint
         ])
         
         return view
