@@ -8,14 +8,6 @@
 import UIKit
 import GitHubAPI
 
-public protocol UserProfileLoader {
-    typealias Resource = UserProfileURLPackage
-    typealias Result = Swift.Result<Resource, Swift.Error>
-    typealias Complete = (Result) -> Void
-    func load(complete: @escaping Complete)
-}
-
-
 public class UserProfileViewController: UITableViewController, UITableViewDataSourcePrefetching {
     
     private var refresher: UserProfileRefreshController!
