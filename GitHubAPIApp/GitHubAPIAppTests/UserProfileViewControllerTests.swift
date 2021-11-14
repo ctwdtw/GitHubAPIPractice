@@ -292,6 +292,18 @@ class UserProfileViewControllerTests: XCTestCase {
         XCTAssertEqual(loaderSpy.cancelledAvatarUrls, [item0.avatarUrl, item1.avatarUrl], "Expect cancel second avatar url when second user profile view become not visible anymore")
     }
     
+    func test__userProfiles__doesNotRenderedLoadedImageWhenNotVisibleAnymore() {
+        let item0 = makeUserProfile()
+        let (sut, loaderSpy) = makeSUT()
+        sut.loadViewIfNeeded()
+        loaderSpy.complete(with: UserProfileURLPackage([item0]), at: 0)
+        
+        let queuedReusableCell = sut.simulateUserProfileViewIsNotVisible(at: 0)
+        loaderSpy.completeImageLoading(with: .success(UIImage.make(withColor: .red).pngData()!), at: 0)
+        
+        XCTAssertNil(queuedReusableCell?.avatarImageView.image)
+    }
+    
     private func makeUserProfile(id: Int = { Int.random(in: 0...999)  }(), login: String = "a-user-login-account", avatarUrl: URL = URL(string: "https://any-avatar-url")!, siteAdmin: Bool = false) -> UserProfile {
         return UserProfile(id: id, login: login, avatarUrl: avatarUrl, siteAdmin: siteAdmin)
     }
@@ -436,10 +448,12 @@ private extension UserProfileViewController {
         return cell
     }
     
-    func simulateUserProfileViewIsNotVisible(at idx: Int) {
+    @discardableResult
+    func simulateUserProfileViewIsNotVisible(at idx: Int) -> UserProfileCell? {
         let indexPath = IndexPath(row: idx, section: userProfileSection)
         let cell = simulateUserProfileViewIsVisible(at: idx)
         tableView.delegate?.tableView?(tableView, didEndDisplaying: cell!, forRowAt: indexPath)
+        return cell
     }
     
     func simulateUserProfileViewIsNearVisible(at idx: Int) {

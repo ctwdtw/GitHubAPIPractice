@@ -11,16 +11,18 @@ import GitHubAPI
 class UserProfileCellController: NSObject, UITableViewDataSourcePrefetching, UITableViewDelegate, CellViewCreator {
     private let viewModel: UserProfileViewModel<UIImage>
     
+    private var cell: UserProfileCell?
+    
     init(viewModel: UserProfileViewModel<UIImage>) {
         self.viewModel = viewModel
     }
-
+    
     func view(for tableView: UITableView, at indexPath: IndexPath) -> UITableViewCell {
-        let cell: UserProfileCell = binded(tableView.dequeueReusableCell(for: indexPath))
+        cell = binded(tableView.dequeueReusableCell(for: indexPath))
         
         viewModel.loadImageData()
         
-        return cell
+        return cell!
     }
     
     private func binded(_ cell: UserProfileCell) -> UserProfileCell {
@@ -28,20 +30,26 @@ class UserProfileCellController: NSObject, UITableViewDataSourcePrefetching, UIT
         cell.siteAdminLabel.isHidden = !viewModel.shouldShowSiteAdminLabel
         cell.onRetry = viewModel.loadImageData
         
-        viewModel.onImageLoadingStart = { [weak cell] in
-            cell?.avatarImageView.image = nil
-            cell?.imageLoadingIndicator.startAnimating()
-            cell?.retryButton.isHidden = true
+        viewModel.onImageLoadingStart = { [weak self] in
+            guard let cell = self?.cell else { return }
+            
+            cell.avatarImageView.image = nil
+            cell.imageLoadingIndicator.startAnimating()
+            cell.retryButton.isHidden = true
         }
         
-        viewModel.onImageLoadingSuccess = { [weak cell] image in
-            cell?.imageLoadingIndicator.stopAnimating()
-            cell?.avatarImageView.image = image
+        viewModel.onImageLoadingSuccess = { [weak self] image in
+            guard let cell = self?.cell else { return }
+            
+            cell.imageLoadingIndicator.stopAnimating()
+            cell.avatarImageView.image = image
         }
         
-        viewModel.onImageLoadingFailure = { [weak cell] _ in
-            cell?.imageLoadingIndicator.stopAnimating()
-            cell?.retryButton.isHidden = false
+        viewModel.onImageLoadingFailure = { [weak self] _ in
+            guard let cell = self?.cell else { return }
+            
+            cell.imageLoadingIndicator.stopAnimating()
+            cell.retryButton.isHidden = false
         }
         
         return cell
@@ -64,6 +72,11 @@ class UserProfileCellController: NSObject, UITableViewDataSourcePrefetching, UIT
     }
     
     private func cancelLoad() {
+        releaseCellForReuse()
         viewModel.cancelLoadImageData()
+    }
+    
+    private func releaseCellForReuse() {
+        cell = nil
     }
 }
