@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		01D0246486FAD663A8B0AE6A /* Pods_GitHubAPIApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4962640D7AF621FF379AC075 /* Pods_GitHubAPIApp.framework */; };
 		6325F2B42741073300C02429 /* UserProfileLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6325F2B32741073300C02429 /* UserProfileLoader.swift */; };
+		6325F2B9274138A600C02429 /* SceneDelegateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6325F2B8274138A600C02429 /* SceneDelegateTests.swift */; };
 		632B0C7D2737D76F00AA290E /* UserProfileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632B0C7C2737D76F00AA290E /* UserProfileCell.swift */; };
 		632B0C7F2737E1FD00AA290E /* UITableView+ReusingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632B0C7E2737E1FD00AA290E /* UITableView+ReusingCell.swift */; };
 		632B0C812737F4DB00AA290E /* UserProfileCellController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632B0C802737F4DB00AA290E /* UserProfileCellController.swift */; };
@@ -68,6 +69,7 @@
 		20ADFD321C7AE295CD180E2C /* Pods-GitHubAPIAppTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GitHubAPIAppTests.debug.xcconfig"; path = "Target Support Files/Pods-GitHubAPIAppTests/Pods-GitHubAPIAppTests.debug.xcconfig"; sourceTree = "<group>"; };
 		4962640D7AF621FF379AC075 /* Pods_GitHubAPIApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GitHubAPIApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6325F2B32741073300C02429 /* UserProfileLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileLoader.swift; sourceTree = "<group>"; };
+		6325F2B8274138A600C02429 /* SceneDelegateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegateTests.swift; sourceTree = "<group>"; };
 		632B0C7C2737D76F00AA290E /* UserProfileCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileCell.swift; sourceTree = "<group>"; };
 		632B0C7E2737E1FD00AA290E /* UITableView+ReusingCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableView+ReusingCell.swift"; sourceTree = "<group>"; };
 		632B0C802737F4DB00AA290E /* UserProfileCellController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileCellController.swift; sourceTree = "<group>"; };
@@ -237,8 +239,9 @@
 			children = (
 				63923160273D55D6000532C5 /* SnapshotHelpers */,
 				63923163273D593A000532C5 /* snapshots */,
-				63F55367270FF26F0002FA50 /* UserProfileViewControllerTests.swift */,
 				63923161273D57BA000532C5 /* UserProfileCellSnapshotTest.swift */,
+				63F55367270FF26F0002FA50 /* UserProfileViewControllerTests.swift */,
+				6325F2B8274138A600C02429 /* SceneDelegateTests.swift */,
 			);
 			path = GitHubAPIAppTests;
 			sourceTree = "<group>";
@@ -473,6 +476,7 @@
 				63923167273E604D000532C5 /* TableViewCellSnapshotContainer.swift in Sources */,
 				6392315F273D55C4000532C5 /* UIView+Snapshot.swift in Sources */,
 				6392315D273D55AC000532C5 /* UIImage+TestHelpers.swift in Sources */,
+				6325F2B9274138A600C02429 /* SceneDelegateTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

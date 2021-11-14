@@ -19,7 +19,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let scene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: scene)
-        
+        configureWindow()
+    }
+    
+    func configureWindow() {
         let url = URL(string: "https://api.github.com/users?since=0&per_page=20")!
         let config = URLSessionConfiguration.ephemeral
         let session = Session(configuration: config)
@@ -29,6 +32,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let vc = UserProfileUIComposer.make(userProfileLoader: loader, avatarImageDataLoader: imageDataLoader)
         window?.rootViewController = vc
         window?.makeKeyAndVisible()
+
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
