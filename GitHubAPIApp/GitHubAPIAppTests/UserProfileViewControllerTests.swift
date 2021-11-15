@@ -299,7 +299,7 @@ class UserProfileViewControllerTests: XCTestCase {
         loaderSpy.complete(with: UserProfileURLPackage([item0]), at: 0)
         
         let queuedReusableCell = sut.simulateUserProfileViewIsNotVisible(at: 0)
-        loaderSpy.completeImageLoading(with: .success(UIImage.make(withColor: .red).pngData()!), at: 0)
+        loaderSpy.completeImageLoading(with: .success(UIImage.image(with: .red).pngData()!), at: 0)
         
         XCTAssertNil(queuedReusableCell?.avatarImageView.image)
     }
@@ -415,85 +415,6 @@ class UserProfileViewControllerTests: XCTestCase {
 
 }
 
-private extension UserProfileViewController {
-    func userInitiatedLoadAction() {
-        refreshControl?.sendActions(for: .valueChanged)
-    }
-    
-    var isShowingLoadingIndicator: Bool {
-        return refreshControl?.isRefreshing == true
-    }
-    
-    var numberOfRenderedUserProfile: Int {
-        return tableView.numberOfRows(inSection: userProfileSection)
-    }
-    
-    var numberOfRenderedSections: Int {
-        return tableView.numberOfSections
-    }
-    
-    var userProfileSection: Int {
-        return 0
-    }
-    
-    func userProfileView(at row: Int) -> UITableViewCell? {
-        return tableView.dataSource?.tableView(tableView, cellForRowAt: IndexPath(row: row, section: userProfileSection))
-    }
-    
-    @discardableResult
-    func simulateUserProfileViewIsVisible(at idx: Int) -> UserProfileCell? {
-        let indexPath = IndexPath(row: idx, section: userProfileSection)
-        let cell = userProfileView(at: idx) as? UserProfileCell
-        tableView.delegate?.tableView?(tableView, willDisplay: cell!, forRowAt: indexPath)
-        return cell
-    }
-    
-    @discardableResult
-    func simulateUserProfileViewIsNotVisible(at idx: Int) -> UserProfileCell? {
-        let indexPath = IndexPath(row: idx, section: userProfileSection)
-        let cell = simulateUserProfileViewIsVisible(at: idx)
-        tableView.delegate?.tableView?(tableView, didEndDisplaying: cell!, forRowAt: indexPath)
-        return cell
-    }
-    
-    func simulateUserProfileViewIsNearVisible(at idx: Int) {
-        let indexPath = IndexPath(row: idx, section: userProfileSection)
-        tableView.prefetchDataSource?.tableView(tableView, prefetchRowsAt: [indexPath])
-    }
-    
-    func simulateUserProfileViewIsNotNearVisible(at idx: Int) {
-        let indexPath = IndexPath(row: idx, section: userProfileSection)
-        tableView.prefetchDataSource?.tableView?(tableView, cancelPrefetchingForRowsAt: [indexPath])
-    }
-    
-}
-
-private extension UserProfileCell {
-    var loginAccountText: String? {
-        return loginLabel.text
-    }
-    
-    var showSiteAdminLabel: Bool {
-        return !siteAdminLabel.isHidden
-    }
-    
-    var isShowingImageLoadingIndicator: Bool {
-        !imageLoadingIndicator.isHidden
-    }
-    
-    var renderedImage: Data? {
-        avatarImageView.image?.pngData()
-    }
-    
-    var isShowingRetryView: Bool {
-        !retryButton.isHidden
-    }
-    
-    func simulateTapRetryView() {
-        retryButton.sendActions(for: .touchUpInside)
-    }
-}
-
 private extension UserProfileURLPackage {
     static func empty() -> UserProfileURLPackage {
         UserProfileURLPackage([], nextURL: nil)
@@ -513,18 +434,5 @@ public extension XCTestCase {
     
     func XCTReceived<T: Equatable>(_ received: T, expected: T, message: String, file: StaticString = #filePath, line: UInt = #line) {
         XCTAssertEqual(received, expected, file: file,line: line)
-    }
-}
-
-private extension UIImage {
-    static func image(with color: UIColor) -> UIImage {
-        let rect = CGRect(x: 0, y: 0, width: 1, height: 1)
-        UIGraphicsBeginImageContext(rect.size)
-        let context = UIGraphicsGetCurrentContext()!
-        context.setFillColor(color.cgColor)
-        context.fill(rect)
-        let img = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        return img!
     }
 }

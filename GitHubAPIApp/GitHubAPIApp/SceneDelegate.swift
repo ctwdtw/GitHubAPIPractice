@@ -13,6 +13,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
     
+    lazy var session: Session = {
+        let config = URLSessionConfiguration.ephemeral
+        return Session(configuration: config)
+    }()
+    
+    convenience init(session: Session) {
+        self.init()
+        self.session = session
+    }
+    
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
@@ -24,8 +34,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     func configureWindow() {
         let url = URL(string: "https://api.github.com/users?since=0&per_page=20")!
-        let config = URLSessionConfiguration.ephemeral
-        let session = Session(configuration: config)
+        
         let loader = RemoteLoader<UserProfileURLPackage>(url: url, session: session, mapping: UserProfileMapper().map(_:))
         let imageDataLoader = RemoteImageDataLoader(session: session)
         

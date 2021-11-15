@@ -12,7 +12,7 @@ import GitHubAPIApp
 class UserProfileCellSnapshotTest: XCTestCase {
     func test_userProfileCell_showSiteAdminLabel() {
         let sut = TableViewCellSnapshotContainer<UserProfileCell>(width: .iPhone11, cellConfigurator: { cell in
-            cell.avatarImageView.image = UIImage.make(withColor: .blue)
+            cell.avatarImageView.image = UIImage.image(with: .blue)
             cell.loginLabel.text = "login-account"
             cell.siteAdminLabel.isHidden = false
         })
@@ -24,7 +24,7 @@ class UserProfileCellSnapshotTest: XCTestCase {
     
     func test_userProfileCell_hideSiteAdminLabel() {
         let sut = TableViewCellSnapshotContainer<UserProfileCell>(width: .iPhone11, cellConfigurator: { cell in
-            cell.avatarImageView.image = UIImage.make(withColor: .blue)
+            cell.avatarImageView.image = UIImage.image(with: .blue)
             cell.loginLabel.text = "login-account"
         })
         
