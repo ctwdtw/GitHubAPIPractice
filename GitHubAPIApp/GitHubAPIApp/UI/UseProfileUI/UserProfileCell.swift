@@ -12,7 +12,7 @@ public class UserProfileCell: UITableViewCell {
     
     private let avatarWidth: CGFloat = 80
     
-    public lazy var avatarImageView: UIImageView = {
+    public private(set) lazy var avatarImageView: UIImageView = {
         let view = UIImageView()
         
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -31,7 +31,7 @@ public class UserProfileCell: UITableViewCell {
         return view
     }()
     
-    public lazy var vStackView: UIStackView = {
+    private lazy var vStackView: UIStackView = {
         let view = UIStackView()
         view.axis = .vertical
         view.spacing = standardSpace/2.0
@@ -50,13 +50,13 @@ public class UserProfileCell: UITableViewCell {
         return view
     }()
     
-    public lazy var loginLabel: UILabel = {
+    public private(set) lazy var loginLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
-    public lazy var siteAdminLabel: UILabel = {
+    public private(set) lazy var siteAdminLabel: UILabel = {
         let label = UILabel()
         
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -67,7 +67,7 @@ public class UserProfileCell: UITableViewCell {
         return label
     }()
     
-    public lazy var imageLoadingIndicator: UIActivityIndicatorView = {
+    private lazy var imageLoadingIndicator: UIActivityIndicatorView = {
         let view = UIActivityIndicatorView()
         view.translatesAutoresizingMaskIntoConstraints = false
         avatarImageView.addSubview(view)
@@ -79,6 +79,22 @@ public class UserProfileCell: UITableViewCell {
         
         return view
     }()
+    
+    public var isLoadingImage: Bool {
+        set {
+            if newValue {
+                imageLoadingIndicator.startAnimating()
+                
+            } else {
+                imageLoadingIndicator.stopAnimating()
+                
+            }
+        }
+        
+        get {
+            imageLoadingIndicator.isAnimating
+        }
+    }
     
     private let retryButtonWidth: CGFloat = 50.0
     
@@ -141,9 +157,7 @@ public class UserProfileCell: UITableViewCell {
         contentView.backgroundColor = .systemBackground
     }
     
-    private func stylingAvatarImageView() {
-        siteAdminLabel.isHidden = true
-    }
+    private func stylingAvatarImageView() {}
     
     private func styingLoginLabel() {
         loginLabel.numberOfLines = 0
@@ -159,6 +173,7 @@ public class UserProfileCell: UITableViewCell {
         siteAdminLabel.textColor = .white
         siteAdminLabel.layer.masksToBounds = true
         siteAdminLabel.font = UIFont.systemFont(ofSize: 22)
+        siteAdminLabel.isHidden = true
     }
     
     private func stylingRetryButton() {

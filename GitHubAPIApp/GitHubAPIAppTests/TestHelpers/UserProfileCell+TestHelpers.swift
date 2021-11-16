@@ -18,7 +18,7 @@ extension UserProfileCell {
     }
     
     var isShowingImageLoadingIndicator: Bool {
-        !imageLoadingIndicator.isHidden
+        isLoadingImage
     }
     
     var renderedImage: Data? {

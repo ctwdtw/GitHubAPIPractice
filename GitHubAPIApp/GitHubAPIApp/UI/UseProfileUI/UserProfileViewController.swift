@@ -10,9 +10,11 @@ import GitHubAPI
 
 public class UserProfileViewController: UITableViewController, UITableViewDataSourcePrefetching {
     
-    private var refresher: UserProfileRefreshController!
+    public typealias TableModel = [[CellController]]
+    
+    private var refresher: UserProfileRefreshController?
 
-    var tableModel: [[CellController]] = [] {
+    private var tableModel: TableModel = [] {
         didSet {
             tableView.reloadData()
         }
@@ -27,7 +29,11 @@ public class UserProfileViewController: UITableViewController, UITableViewDataSo
         super.viewDidLoad()
         configureRefreshControl()
         configureTableView()
-        refresher.load()
+        refresher?.load()
+    }
+    
+    public func display(_ cellControllers: [[CellController]]) {
+        tableModel = cellControllers
     }
     
     private func configureTableView() {
@@ -36,7 +42,7 @@ public class UserProfileViewController: UITableViewController, UITableViewDataSo
     }
     
     private func configureRefreshControl() {
-        refreshControl = refresher.view()
+        refreshControl = refresher?.view()
     }
     
     public override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

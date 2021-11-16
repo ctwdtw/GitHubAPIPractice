@@ -6,7 +6,7 @@
 //
 
 import UIKit
-struct CellController {
+public struct CellController {
     private let viewCreator: CellViewCreator
     let delegate: UITableViewDelegate?
     let dataSourcePrefetching: UITableViewDataSourcePrefetching?

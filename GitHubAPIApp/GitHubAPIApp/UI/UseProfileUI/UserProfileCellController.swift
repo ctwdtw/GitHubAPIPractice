@@ -34,21 +34,22 @@ class UserProfileCellController: NSObject, UITableViewDataSourcePrefetching, UIT
             guard let cell = self?.cell else { return }
             
             cell.avatarImageView.image = nil
-            cell.imageLoadingIndicator.startAnimating()
+            cell.isLoadingImage = true
             cell.retryButton.isHidden = true
         }
         
         viewModel.onImageLoadingSuccess = { [weak self] image in
             guard let cell = self?.cell else { return }
             
-            cell.imageLoadingIndicator.stopAnimating()
             cell.avatarImageView.image = image
+            cell.isLoadingImage = false
+            
         }
         
         viewModel.onImageLoadingFailure = { [weak self] _ in
             guard let cell = self?.cell else { return }
             
-            cell.imageLoadingIndicator.stopAnimating()
+            cell.isLoadingImage = false
             cell.retryButton.isHidden = false
         }
         

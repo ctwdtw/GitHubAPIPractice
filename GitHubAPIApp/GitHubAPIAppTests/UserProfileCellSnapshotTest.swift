@@ -36,7 +36,7 @@ class UserProfileCellSnapshotTest: XCTestCase {
     func test_userProfileCell_showAvatarIndicator() {
         let sut = TableViewCellSnapshotContainer<UserProfileCell>(width: .iPhone11, cellConfigurator: { cell in
             cell.loginLabel.text = "login-account"
-            cell.imageLoadingIndicator.startAnimating()
+            cell.isLoadingImage = true
         })
         
         let image = sut.defaultSizeSnapshot()
