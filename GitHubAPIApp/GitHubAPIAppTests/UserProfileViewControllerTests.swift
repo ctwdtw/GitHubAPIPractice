@@ -304,6 +304,23 @@ class UserProfileViewControllerTests: XCTestCase {
         XCTAssertNil(queuedReusableCell?.avatarImageView.image)
     }
     
+    func test__renderEmptyUserProfiles__afterRenderNonEmptyUserProfiles() {
+        let item0 = makeUserProfile()
+        let item1 = makeUserProfile()
+        let (sut, loaderSpy) = makeSUT()
+        
+        sut.loadViewIfNeeded()
+        loaderSpy.complete(with: UserProfileURLPackage([item0, item1]), at: 0)
+        assertThat(sut, rendering: [item0, item1])
+        
+        sut.userInitiatedLoadAction()
+        loaderSpy.complete(with: UserProfileURLPackage([]), at: 1)
+        
+        sut.simulateUIKitRemoveUserProfileView(at: 0)
+        sut.simulateUIKitRemoveUserProfileView(at: 1)
+        assertThat(sut, rendering: [])
+    }
+    
     private func makeUserProfile(id: Int = { Int.random(in: 0...999)  }(), login: String = "a-user-login-account", avatarUrl: URL = URL(string: "https://any-avatar-url")!, siteAdmin: Bool = false) -> UserProfile {
         return UserProfile(id: id, login: login, avatarUrl: avatarUrl, siteAdmin: siteAdmin)
     }

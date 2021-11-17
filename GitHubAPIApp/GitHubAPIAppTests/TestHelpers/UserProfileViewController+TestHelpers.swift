@@ -63,4 +63,8 @@ extension UserProfileViewController {
         simulateUserProfileViewIsVisible(at: idx)?.avatarImageView.image?.pngData()
     }
     
+    func simulateUIKitRemoveUserProfileView(at idx: Int) {
+        tableView.delegate?.tableView?(tableView, didEndDisplaying: UserProfileCell(), forRowAt: IndexPath(row: idx, section: userProfileSection))
+    }
+    
 }
