@@ -55,7 +55,7 @@ class UserProfileViewControllerSnapshotTests: XCTestCase {
         [UserProfileStub(loginAccountText: "login-text", isSiteAdmin: false, avatarImage: UIImage.image(with: .red)),
          UserProfileStub(loginAccountText: "another-login-text", isSiteAdmin: true, avatarImage: UIImage.image(with: .green)),
          UserProfileStub(loginAccountText: "yet-another-login-text", avatarImage: UIImage.image(with: .blue))
-        ].map(CellController.init(viewCreator:))
+        ].map(CellController.init(dataSource:))
         
         return [cellControllers]
     }
@@ -65,7 +65,7 @@ class UserProfileViewControllerSnapshotTests: XCTestCase {
         [UserProfileStub(loginAccountText: "login-text", isSiteAdmin: false, avatarImage: nil, shouldRetry: true),
          UserProfileStub(loginAccountText: "another-login-text", isSiteAdmin: true, avatarImage: nil, shouldRetry: true),
          UserProfileStub(loginAccountText: "yet-another-login-text", avatarImage: nil, shouldRetry: true)
-        ].map(CellController.init(viewCreator:))
+        ].map(CellController.init(dataSource:))
         
         return [cellControllers]
     }
@@ -75,7 +75,7 @@ class UserProfileViewControllerSnapshotTests: XCTestCase {
         [UserProfileStub(loginAccountText: "login-text", isSiteAdmin: false, avatarImage: nil, isLoading: true),
          UserProfileStub(loginAccountText: "another-login-text", isSiteAdmin: true, avatarImage: nil, isLoading: true),
          UserProfileStub(loginAccountText: "yet-another-login-text", avatarImage: nil, isLoading: true)
-        ].map(CellController.init(viewCreator:))
+        ].map(CellController.init(dataSource:))
         
         return [cellControllers]
     }
@@ -85,7 +85,23 @@ class UserProfileViewControllerSnapshotTests: XCTestCase {
         return sut
     }
     
-    private class UserProfileStub: CellViewCreator {
+    private class UserProfileStub: NSObject, UITableViewDataSource {
+        private let dummyNumberOfSection = 0
+        
+        func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+            dummyNumberOfSection
+        }
+        
+        func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+            let cell = UserProfileCell()
+            cell.loginLabel.text = loginAccountText
+            cell.siteAdminLabel.isHidden = !isSiteAdmin
+            cell.avatarImageView.image = avatarImage
+            cell.isLoadingImage = isLoading
+            cell.retryButton.isHidden = !shouldRetry
+            return cell
+        }
+        
         private let loginAccountText: String
         
         private let isSiteAdmin: Bool
@@ -102,16 +118,6 @@ class UserProfileViewControllerSnapshotTests: XCTestCase {
             self.avatarImage = avatarImage
             self.isLoading = isLoading
             self.shouldRetry = shouldRetry
-        }
-        
-        func view(for tableView: UITableView, at indexPath: IndexPath) -> UITableViewCell {
-            let cell = UserProfileCell()
-            cell.loginLabel.text = loginAccountText
-            cell.siteAdminLabel.isHidden = !isSiteAdmin
-            cell.avatarImageView.image = avatarImage
-            cell.isLoadingImage = isLoading
-            cell.retryButton.isHidden = !shouldRetry
-            return cell
         }
     }
 

@@ -7,17 +7,13 @@
 
 import UIKit
 public struct CellController {
-    private let viewCreator: CellViewCreator
+    let dataSource: UITableViewDataSource
     let delegate: UITableViewDelegate?
     let dataSourcePrefetching: UITableViewDataSourcePrefetching?
     
-    init(viewCreator: CellViewCreator) {
-        self.viewCreator = viewCreator
-        self.delegate = viewCreator as? UITableViewDelegate
-        self.dataSourcePrefetching = viewCreator as? UITableViewDataSourcePrefetching
-    }
-    
-    func view(for tableView: UITableView, at indexPath: IndexPath) -> UITableViewCell {
-        return viewCreator.view(for: tableView, at: indexPath)
+    init(dataSource: UITableViewDataSource) {
+        self.dataSource = dataSource
+        self.delegate = dataSource as? UITableViewDelegate
+        self.dataSourcePrefetching = dataSource as? UITableViewDataSourcePrefetching
     }
 }

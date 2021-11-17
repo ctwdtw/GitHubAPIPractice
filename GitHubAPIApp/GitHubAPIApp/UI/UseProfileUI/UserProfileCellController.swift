@@ -8,21 +8,27 @@
 import UIKit
 import GitHubAPI
 
-class UserProfileCellController: NSObject, UITableViewDataSourcePrefetching, UITableViewDelegate, CellViewCreator {
+class UserProfileCellController: NSObject, UITableViewDataSourcePrefetching, UITableViewDelegate, UITableViewDataSource {
+    private let dummyNumberOfSection = 0
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        dummyNumberOfSection
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        cell = binded(tableView.dequeueReusableCell(for: indexPath))
+        
+        viewModel.loadImageData()
+        
+        return cell!
+    }
+    
     private let viewModel: UserProfileViewModel<UIImage>
     
     private var cell: UserProfileCell?
     
     init(viewModel: UserProfileViewModel<UIImage>) {
         self.viewModel = viewModel
-    }
-    
-    func view(for tableView: UITableView, at indexPath: IndexPath) -> UITableViewCell {
-        cell = binded(tableView.dequeueReusableCell(for: indexPath))
-        
-        viewModel.loadImageData()
-        
-        return cell!
     }
     
     private func binded(_ cell: UserProfileCell) -> UserProfileCell {

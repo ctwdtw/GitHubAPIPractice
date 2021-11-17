@@ -49,7 +49,8 @@ public class UserProfileViewController: UITableViewController, UITableViewDataSo
     }
     
     public override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return cellController(at: indexPath).view(for: tableView, at: indexPath)
+        let ds = cellController(at: indexPath).dataSource
+        return ds.tableView(tableView, cellForRowAt: indexPath)
     }
     
     public override func numberOfSections(in tableView: UITableView) -> Int {

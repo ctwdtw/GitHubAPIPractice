@@ -24,7 +24,7 @@ public class UserProfileUIComposer {
         let userProfileController = UserProfileViewController(refreshController: refresher)
         
         refreshViewModel.onRefreshed = { [weak userProfileController] cellControllers in
-            userProfileController?.display([cellControllers.map(CellController.init(viewCreator:))])
+            userProfileController?.display([cellControllers.map(CellController.init(dataSource:))])
             
         }
         

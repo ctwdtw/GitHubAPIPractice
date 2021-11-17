@@ -35,7 +35,6 @@
 		63547AA9272BB699001CE31F /* GitHubAPI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63547AA8272BB699001CE31F /* GitHubAPI.framework */; };
 		63547AAA272BB699001CE31F /* GitHubAPI.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 63547AA8272BB699001CE31F /* GitHubAPI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		63923155273CE70E000532C5 /* CellController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63923154273CE70E000532C5 /* CellController.swift */; };
-		63923157273CE757000532C5 /* CellViewCreator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63923156273CE757000532C5 /* CellViewCreator.swift */; };
 		6392315B273D55AC000532C5 /* XCTestCase+Snapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63923158273D55AC000532C5 /* XCTestCase+Snapshot.swift */; };
 		6392315C273D55AC000532C5 /* UIViewController+Snapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63923159273D55AC000532C5 /* UIViewController+Snapshot.swift */; };
 		6392315F273D55C4000532C5 /* UIView+Snapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6392315E273D55C4000532C5 /* UIView+Snapshot.swift */; };
@@ -110,7 +109,6 @@
 		63547AA4272BB5FC001CE31F /* Alamofire.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Alamofire.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		63547AA8272BB699001CE31F /* GitHubAPI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = GitHubAPI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		63923154273CE70E000532C5 /* CellController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CellController.swift; sourceTree = "<group>"; };
-		63923156273CE757000532C5 /* CellViewCreator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CellViewCreator.swift; sourceTree = "<group>"; };
 		63923158273D55AC000532C5 /* XCTestCase+Snapshot.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XCTestCase+Snapshot.swift"; sourceTree = "<group>"; };
 		63923159273D55AC000532C5 /* UIViewController+Snapshot.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController+Snapshot.swift"; sourceTree = "<group>"; };
 		6392315E273D55C4000532C5 /* UIView+Snapshot.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+Snapshot.swift"; sourceTree = "<group>"; };
@@ -178,7 +176,6 @@
 				632B0C8A273A914D00AA290E /* UserProfileRefreshViewModel.swift */,
 				632B0C88273A78C600AA290E /* UserProfileViewModel.swift */,
 				632B0C802737F4DB00AA290E /* UserProfileCellController.swift */,
-				63923156273CE757000532C5 /* CellViewCreator.swift */,
 				63923154273CE70E000532C5 /* CellController.swift */,
 				632B0C7C2737D76F00AA290E /* UserProfileCell.swift */,
 			);
@@ -525,7 +522,6 @@
 				63F55355270FF26C0002FA50 /* UserProfileViewController.swift in Sources */,
 				63923155273CE70E000532C5 /* CellController.swift in Sources */,
 				63F55351270FF26C0002FA50 /* AppDelegate.swift in Sources */,
-				63923157273CE757000532C5 /* CellViewCreator.swift in Sources */,
 				632B0C8527395ADD00AA290E /* UserProfileUIComposer.swift in Sources */,
 				6325F2D42743F12600C02429 /* UIColor+DarkModeSupport.swift in Sources */,
 				632B0C95273C274700AA290E /* UserProfileLoaderViewModelAdapter.swift in Sources */,
