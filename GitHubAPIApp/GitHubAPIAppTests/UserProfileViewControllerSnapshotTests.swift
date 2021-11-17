@@ -37,6 +37,15 @@ class UserProfileViewControllerSnapshotTests: XCTestCase {
         assert(snapshot: sut.snapshot(for: .iPhone13(style: .dark)), named: "UserProfileWithFailedAvatarLoading-dark")
     }
     
+    func test_userProfilesWhileLoadingAvatar() {
+        let sut = makeSUT()
+    
+        sut.display(userProfileWhileAvatarLoading())
+
+        assert(snapshot: sut.snapshot(for: .iPhone13(style: .light)), named: "UserProfileWhileAvatarLoading-light")
+        assert(snapshot: sut.snapshot(for: .iPhone13(style: .dark)), named: "UserProfileWhileAvatarLoading-dark")
+    }
+    
     private func emptyUserProfiles() -> UserProfileViewController.TableModel {
         return [[]]
     }
@@ -56,6 +65,16 @@ class UserProfileViewControllerSnapshotTests: XCTestCase {
         [UserProfileStub(loginAccountText: "login-text", isSiteAdmin: false, avatarImage: nil, shouldRetry: true),
          UserProfileStub(loginAccountText: "another-login-text", isSiteAdmin: true, avatarImage: nil, shouldRetry: true),
          UserProfileStub(loginAccountText: "yet-another-login-text", avatarImage: nil, shouldRetry: true)
+        ].map(CellController.init(viewCreator:))
+        
+        return [cellControllers]
+    }
+    
+    private func userProfileWhileAvatarLoading() -> UserProfileViewController.TableModel {
+        let cellControllers =
+        [UserProfileStub(loginAccountText: "login-text", isSiteAdmin: false, avatarImage: nil, isLoading: true),
+         UserProfileStub(loginAccountText: "another-login-text", isSiteAdmin: true, avatarImage: nil, isLoading: true),
+         UserProfileStub(loginAccountText: "yet-another-login-text", avatarImage: nil, isLoading: true)
         ].map(CellController.init(viewCreator:))
         
         return [cellControllers]

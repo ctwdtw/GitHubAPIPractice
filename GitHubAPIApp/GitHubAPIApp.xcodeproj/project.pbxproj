@@ -22,6 +22,8 @@
 		6325F2D22743EC7900C02429 /* UserProfileWithFailedAvatarLoading-light.png in Resources */ = {isa = PBXBuildFile; fileRef = 6325F2D02743EC7900C02429 /* UserProfileWithFailedAvatarLoading-light.png */; };
 		6325F2D42743F12600C02429 /* UIColor+DarkModeSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6325F2D32743F12600C02429 /* UIColor+DarkModeSupport.swift */; };
 		6325F2D62744009100C02429 /* ColorPalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6325F2D52744009100C02429 /* ColorPalette.swift */; };
+		6325F2D92744C88E00C02429 /* UserProfileWhileAvatarLoading-dark.png in Resources */ = {isa = PBXBuildFile; fileRef = 6325F2D72744C88E00C02429 /* UserProfileWhileAvatarLoading-dark.png */; };
+		6325F2DA2744C88E00C02429 /* UserProfileWhileAvatarLoading-light.png in Resources */ = {isa = PBXBuildFile; fileRef = 6325F2D82744C88E00C02429 /* UserProfileWhileAvatarLoading-light.png */; };
 		632B0C7D2737D76F00AA290E /* UserProfileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632B0C7C2737D76F00AA290E /* UserProfileCell.swift */; };
 		632B0C7F2737E1FD00AA290E /* UITableView+ReusingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632B0C7E2737E1FD00AA290E /* UITableView+ReusingCell.swift */; };
 		632B0C812737F4DB00AA290E /* UserProfileCellController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632B0C802737F4DB00AA290E /* UserProfileCellController.swift */; };
@@ -93,6 +95,8 @@
 		6325F2D02743EC7900C02429 /* UserProfileWithFailedAvatarLoading-light.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "UserProfileWithFailedAvatarLoading-light.png"; sourceTree = "<group>"; };
 		6325F2D32743F12600C02429 /* UIColor+DarkModeSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+DarkModeSupport.swift"; sourceTree = "<group>"; };
 		6325F2D52744009100C02429 /* ColorPalette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPalette.swift; sourceTree = "<group>"; };
+		6325F2D72744C88E00C02429 /* UserProfileWhileAvatarLoading-dark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "UserProfileWhileAvatarLoading-dark.png"; sourceTree = "<group>"; };
+		6325F2D82744C88E00C02429 /* UserProfileWhileAvatarLoading-light.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "UserProfileWhileAvatarLoading-light.png"; sourceTree = "<group>"; };
 		632B0C7C2737D76F00AA290E /* UserProfileCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileCell.swift; sourceTree = "<group>"; };
 		632B0C7E2737E1FD00AA290E /* UITableView+ReusingCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableView+ReusingCell.swift"; sourceTree = "<group>"; };
 		632B0C802737F4DB00AA290E /* UserProfileCellController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileCellController.swift; sourceTree = "<group>"; };
@@ -251,6 +255,8 @@
 				6325F2CC27434E8A00C02429 /* UserProfilesWithContent-light.png */,
 				6325F2CF2743EC7900C02429 /* UserProfileWithFailedAvatarLoading-dark.png */,
 				6325F2D02743EC7900C02429 /* UserProfileWithFailedAvatarLoading-light.png */,
+				6325F2D72744C88E00C02429 /* UserProfileWhileAvatarLoading-dark.png */,
+				6325F2D82744C88E00C02429 /* UserProfileWhileAvatarLoading-light.png */,
 			);
 			path = snapshots;
 			sourceTree = "<group>";
@@ -414,10 +420,12 @@
 				6325F2CE27434E8A00C02429 /* UserProfilesWithContent-light.png in Resources */,
 				6325F2CA2742A6A000C02429 /* EmptyUserProfiles-light.png in Resources */,
 				6325F2D12743EC7900C02429 /* UserProfileWithFailedAvatarLoading-dark.png in Resources */,
+				6325F2D92744C88E00C02429 /* UserProfileWhileAvatarLoading-dark.png in Resources */,
 				6325F2D22743EC7900C02429 /* UserProfileWithFailedAvatarLoading-light.png in Resources */,
 				6392316F273E725D000532C5 /* UserProfileCell-retryButton.png in Resources */,
 				6392316B273E6808000532C5 /* UserProfileCell-siteAdmin.png in Resources */,
 				6325F2C92742A6A000C02429 /* EmptyUserProfiles-dark.png in Resources */,
+				6325F2DA2744C88E00C02429 /* UserProfileWhileAvatarLoading-light.png in Resources */,
 				6325F2CD27434E8A00C02429 /* UserProfilesWithContent-dark.png in Resources */,
 				6392316D273E6ED7000532C5 /* UserProfileCell-avatarLoading.png in Resources */,
 			);
