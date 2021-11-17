@@ -96,7 +96,7 @@ public class UserProfileCell: UITableViewCell {
         }
     }
     
-    private let retryButtonWidth: CGFloat = 50.0
+    private let retryButtonWidth: CGFloat = 80.0
     
     public private(set) lazy var retryButton: UIButton = {
         let btn = UIButton()
@@ -150,7 +150,7 @@ public class UserProfileCell: UITableViewCell {
         super.layoutSubviews()
         avatarImageView.roundCorner(radius: avatarWidth/2.0)
         siteAdminLabel.roundCorner(radius: siteAdminLabel.bounds.height/2.0)
-        retryButton.roundCorner(radius: 8.0)
+        retryButton.roundCorner(radius: retryButtonWidth/2.0)
     }
     
     private func stylingContentView() {
@@ -178,7 +178,7 @@ public class UserProfileCell: UITableViewCell {
     
     private func stylingRetryButton() {
         retryButton.setTitle("Retry", for: .normal)
-        retryButton.backgroundColor = .systemPink
+        retryButton.backgroundColor = .pink
         retryButton.isHidden = true
     }
     
