@@ -17,8 +17,40 @@ class LoadMoreCell: UITableViewCell {
             view.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
         ])
         
-        view.startAnimating()
         return view
+    }()
+    
+    var isLoading: Bool {
+        get {
+            loadingIndicator.isAnimating
+        }
+        
+        set {
+            if newValue == true {
+                loadingIndicator.startAnimating()
+            } else {
+                loadingIndicator.stopAnimating()
+            }
+        }
+    }
+    
+    lazy private(set) var errorMessageLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        
+        contentView.addSubview(label)
+        
+        NSLayoutConstraint.activate([
+            label.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            label.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            label.topAnchor.constraint(equalTo: contentView.topAnchor),
+            label.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            label.heightAnchor.constraint(greaterThanOrEqualToConstant: 44.0)
+        ])
+        
+        label.textAlignment = .center
+        label.numberOfLines = 0
+        return label
     }()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {

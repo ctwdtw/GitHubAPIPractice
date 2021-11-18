@@ -55,6 +55,15 @@ class UserProfileViewControllerSnapshotTests: XCTestCase {
         assert(snapshot: sut.snapshot(for: .iPhone13(style: .dark)), named: "UserProfileWithLoadMoreIndicator-dark")
     }
     
+    func test_userProfilesWithLoadMoreErrors() {
+        let sut = makeSUT()
+    
+        sut.display(userProfilesWithLoadMoreError())
+
+        assert(snapshot: sut.snapshot(for: .iPhone13(style: .light)), named: "UserProfileWithLoadMoreError-light")
+        assert(snapshot: sut.snapshot(for: .iPhone13(style: .dark)), named: "UserProfileWithLoadMoreError-dark")
+    }
+    
     private func emptyUserProfiles() -> UserProfileViewController.TableModel {
         return [[]]
     }
@@ -90,13 +99,15 @@ class UserProfileViewControllerSnapshotTests: XCTestCase {
     }
     
     private func userProfilesWithLoadMoreIndicator() -> UserProfileViewController.TableModel {
-        let profiles =
-        [UserProfileStub(loginAccountText: "login-text", isSiteAdmin: false, avatarImage: UIImage.image(with: .red)),
-         UserProfileStub(loginAccountText: "another-login-text", isSiteAdmin: true, avatarImage: UIImage.image(with: .green)),
-         UserProfileStub(loginAccountText: "yet-another-login-text", avatarImage: UIImage.image(with: .blue))
-        ].map(CellController.init(dataSource:))
+        let profiles = userProfilesWithContent().first!
+        let loadMoreController = [CellController(dataSource: LoadMoreStub(isLoading: true))]
         
-        let loadMoreController = [CellController(dataSource: LoadMoreCellController())]
+        return [profiles, loadMoreController]
+    }
+    
+    private func userProfilesWithLoadMoreError() -> UserProfileViewController.TableModel {
+        let profiles = userProfilesWithContent().first!
+        let loadMoreController = [CellController(dataSource: LoadMoreStub(errorMessage: "a multi-line\n line1\n line2\n line3\n error message"))]
         
         return [profiles, loadMoreController]
     }
@@ -139,6 +150,32 @@ class UserProfileViewControllerSnapshotTests: XCTestCase {
             self.isLoading = isLoading
             self.shouldRetry = shouldRetry
         }
+    }
+    
+    private class LoadMoreStub: NSObject, UITableViewDataSource {
+        let cell = LoadMoreCell()
+        
+        private let isLoading: Bool
+        
+        private let errorMessage: String?
+        
+        init(isLoading: Bool = false, errorMessage: String? = nil) {
+            self.isLoading = isLoading
+            self.errorMessage = errorMessage
+        }
+        
+        func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+            tableView.dummyNumberOfSection
+        }
+        
+        func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+            cell.isLoading = isLoading
+            cell.errorMessageLabel.isHidden = errorMessage == nil
+            cell.errorMessageLabel.text = errorMessage
+            
+            return cell
+        }
+    
     }
 
 }
