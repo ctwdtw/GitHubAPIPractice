@@ -9,10 +9,9 @@ import UIKit
 import GitHubAPI
 
 class UserProfileCellController: NSObject, UITableViewDataSourcePrefetching, UITableViewDelegate, UITableViewDataSource {
-    private let dummyNumberOfSection = 0
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        dummyNumberOfSection
+        tableView.dummyNumberOfSection
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

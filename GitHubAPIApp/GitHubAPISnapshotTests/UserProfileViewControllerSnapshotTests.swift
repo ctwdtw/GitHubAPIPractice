@@ -46,6 +46,15 @@ class UserProfileViewControllerSnapshotTests: XCTestCase {
         assert(snapshot: sut.snapshot(for: .iPhone13(style: .dark)), named: "UserProfileWhileAvatarLoading-dark")
     }
     
+    func test_userProfilesWithLoadMoreIndicator() {
+        let sut = makeSUT()
+    
+        sut.display(userProfilesWithLoadMoreIndicator())
+
+        assert(snapshot: sut.snapshot(for: .iPhone13(style: .light)), named: "UserProfileWithLoadMoreIndicator-light")
+        assert(snapshot: sut.snapshot(for: .iPhone13(style: .dark)), named: "UserProfileWithLoadMoreIndicator-dark")
+    }
+    
     private func emptyUserProfiles() -> UserProfileViewController.TableModel {
         return [[]]
     }
@@ -80,16 +89,27 @@ class UserProfileViewControllerSnapshotTests: XCTestCase {
         return [cellControllers]
     }
     
+    private func userProfilesWithLoadMoreIndicator() -> UserProfileViewController.TableModel {
+        let profiles =
+        [UserProfileStub(loginAccountText: "login-text", isSiteAdmin: false, avatarImage: UIImage.image(with: .red)),
+         UserProfileStub(loginAccountText: "another-login-text", isSiteAdmin: true, avatarImage: UIImage.image(with: .green)),
+         UserProfileStub(loginAccountText: "yet-another-login-text", avatarImage: UIImage.image(with: .blue))
+        ].map(CellController.init(dataSource:))
+        
+        let loadMoreController = [CellController(dataSource: LoadMoreCellController())]
+        
+        return [profiles, loadMoreController]
+    }
+    
     private func makeSUT() -> UserProfileViewController {
         let sut = UserProfileViewController()
         return sut
     }
     
     private class UserProfileStub: NSObject, UITableViewDataSource {
-        private let dummyNumberOfSection = 0
         
         func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-            dummyNumberOfSection
+            tableView.dummyNumberOfSection
         }
         
         func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
