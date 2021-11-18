@@ -111,12 +111,12 @@ class LoadPaginatedUserProfileUseCaseTests: XCTestCase {
         }
     }
     
-    private func makeSUT(url: URL, mapping: @escaping URLPackageMapping.URLPackageMapping = UserProfileMapper().map(_:)) -> PaginatedUserProfileLoader {
+    private func makeSUT(url: URL, mapping: @escaping URLPackageMapping.URLPackageMapping = UserProfileMapper().map(_:)) -> PaginatedRemoteUserProfileLoader {
         let config = URLSessionConfiguration.af.default
         config.protocolClasses = [URLProtocolStub.self] + (config.protocolClasses ?? [])
         let session = Session(configuration: config)
         
-        return PaginatedUserProfileLoader(url: url, session: session, mapping: mapping)
+        return PaginatedRemoteUserProfileLoader(url: url, session: session, mapping: mapping)
     }
     
     private func assertThat(_ loadAction: () -> Void, request url: URL, httpMethod: String = "GET", file: StaticString = #filePath, line: UInt = #line) {

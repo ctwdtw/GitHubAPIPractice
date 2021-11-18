@@ -1,5 +1,5 @@
 //
-//  PaginatedUserProfileLoader.swift
+//  PaginatedRemoteUserProfileLoader.swift
 //  GitHubAPI
 //
 //  Created by Paul Lee on 2021/10/28.
@@ -8,7 +8,7 @@
 import Foundation
 import Alamofire
 
-public class PaginatedUserProfileLoader {
+public class PaginatedRemoteUserProfileLoader {
     public typealias Complete = PaginatedUserProfile.Complete
     
     public typealias Result = PaginatedUserProfile.Result
@@ -44,6 +44,6 @@ public class PaginatedUserProfileLoader {
     
     private func makeLoadMore(from package: UserProfileURLPackage) -> PaginatedUserProfile.LoadMoreAction? {
         guard let nextURL = package.nextURL else { return nil }
-        return PaginatedUserProfileLoader(url: nextURL, session: session, mapping: mapping, currentProfiles: currentProfiles).load(complete:)
+        return PaginatedRemoteUserProfileLoader(url: nextURL, session: session, mapping: mapping, currentProfiles: currentProfiles).load(complete:)
     }
 }
