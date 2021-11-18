@@ -29,6 +29,10 @@ extension UserProfileViewController {
         return 0
     }
     
+    var loadMoreSection: Int {
+        return 1
+    }
+    
     func userProfileView(at row: Int) -> UITableViewCell? {
         return tableView.dataSource?.tableView(tableView, cellForRowAt: IndexPath(row: row, section: userProfileSection))
     }
@@ -65,6 +69,19 @@ extension UserProfileViewController {
     
     func simulateUIKitRemoveUserProfileView(at idx: Int) {
         tableView.delegate?.tableView?(tableView, didEndDisplaying: UserProfileCell(), forRowAt: IndexPath(row: idx, section: userProfileSection))
+    }
+    
+    func simulateUserInitiatedLoadMoreAction() {
+        guard tableView.numberOfSections > loadMoreSection  else {
+            return
+        }
+
+        let indexPath = IndexPath(row: 0, section: loadMoreSection)
+        guard let cell = tableView.dataSource?.tableView(tableView, cellForRowAt: indexPath) else {
+            return
+        }
+        
+        tableView.delegate?.tableView?(tableView, willDisplay: cell, forRowAt: indexPath)
     }
     
 }

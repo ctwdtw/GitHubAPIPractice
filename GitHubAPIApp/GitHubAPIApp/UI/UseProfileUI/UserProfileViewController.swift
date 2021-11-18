@@ -34,9 +34,9 @@ public class UserProfileViewController: UITableViewController, UITableViewDataSo
         refresher?.load()
     }
     
-    public func display(_ cellControllers: [[CellController]]) {
+    public func display(_ model: TableModel) {
         loadingControllers = [:]
-        tableModel = cellControllers
+        tableModel = model
     }
     
     private func configureTableView() {
@@ -74,6 +74,11 @@ public class UserProfileViewController: UITableViewController, UITableViewDataSo
             let dsp = controller?.dataSourcePrefetching
             dsp?.tableView?(tableView, cancelPrefetchingForRowsAt: [indexPath])
         }
+    }
+    
+    public override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        let dl = cellController(at: indexPath).delegate
+        dl?.tableView?(tableView, willDisplay: cell, forRowAt: indexPath)
     }
     
     public override func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {

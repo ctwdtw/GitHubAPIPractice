@@ -37,8 +37,10 @@ class UserProfileLoaderViewModelAdapter {
         }
     }
     
-    private func cellControllers(_ resource: UserProfileLoader.Resource) -> [UserProfileCellController] {
-        resource.userProfiles.map { profile in
+    private func cellControllers(_ resource: UserProfileLoader.Resource) -> UserProfileViewController.TableModel {
+        var tableModel: UserProfileViewController.TableModel = []
+        
+        let profileControllers = resource.userProfiles.map { profile in
             UserProfileCellController(viewModel: UserProfileViewModel(model: profile, imageLoader: imageLoader, imageMapping: { data in
                 if let image = UIImage(data: data) {
                     return image
@@ -46,7 +48,18 @@ class UserProfileLoaderViewModelAdapter {
                     throw ImageDecodingError()
                 }
             }))
+        }.map(CellController.init(dataSource:))
+        
+        tableModel.append(profileControllers)
+        
+        if let loadMore = resource.loadMore {
+            tableModel.append([
+                // will receive previous items + new Items
+                CellController(dataSource: LoadMoreCellController( { loadMore { _ in  } } ))
+            ])
         }
+        
+        return tableModel
     }
 }
 

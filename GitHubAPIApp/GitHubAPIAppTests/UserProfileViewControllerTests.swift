@@ -321,6 +321,18 @@ class UserProfileViewControllerTests: XCTestCase {
         assertThat(sut, rendering: [])
     }
     
+    //MARK: - load more
+    func test__loadMoreAction__requestMoreFormLoader() {
+        let (sut, loaderSpy) = makeSUT()
+        sut.loadViewIfNeeded()
+        loaderSpy.complete(with: [makeUserProfile(), makeUserProfile()], hasMore: true, at: 0)
+        
+        XCTAssertEqual(loaderSpy.loadMoreCount, 0, "Expect no load more request until load more action")
+        
+        sut.simulateUserInitiatedLoadMoreAction()
+        XCTAssertEqual(loaderSpy.loadMoreCount, 1, "Expect 1 load more request")
+    }
+    
     private func makeUserProfile(id: Int = { Int.random(in: 0...999)  }(), login: String = "a-user-login-account", avatarUrl: URL = URL(string: "https://any-avatar-url")!, siteAdmin: Bool = false) -> UserProfile {
         return UserProfile(id: id, login: login, avatarUrl: avatarUrl, siteAdmin: siteAdmin)
     }
@@ -350,9 +362,17 @@ class UserProfileViewControllerTests: XCTestCase {
             loadProfileCompletes.append(complete)
         }
         
-        func complete(with items: [UserProfile], at index: Int, file: StaticString = #file, line: UInt = #line) {
+        private(set) var loadMoreCount = 0
+        
+        func complete(with items: [UserProfile], hasMore: Bool = false, at index: Int, file: StaticString = #file, line: UInt = #line) {
             if let complete = loadProfileCompletes[safe: index] {
-                let resource = UserProfileLoader.Resource.init(userProfiles: items, loadMore: nil)
+                
+                var loadMore: PaginatedUserProfile.LoadMoreAction?
+                loadMore = hasMore ? { _ in self.loadMoreCount += 1 } : nil
+                
+                let resource = UserProfileLoader.Resource.init(
+                    userProfiles: items,
+                    loadMore: loadMore)
                 complete(.success(resource))
             
             } else {

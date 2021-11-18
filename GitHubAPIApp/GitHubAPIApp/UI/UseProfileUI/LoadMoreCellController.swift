@@ -6,8 +6,14 @@
 //
 
 import UIKit
-class LoadMoreCellController: NSObject, UITableViewDataSource {
+class LoadMoreCellController: NSObject, UITableViewDataSource, UITableViewDelegate {
     let cell = LoadMoreCell()
+    
+    private let loadMoreCallback: () -> Void
+    
+    init(_ loadMoreCallBack: @escaping () -> Void) {
+        self.loadMoreCallback = loadMoreCallBack
+    }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return tableView.dummyNumberOfSection
@@ -16,4 +22,9 @@ class LoadMoreCellController: NSObject, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         return cell
     }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        loadMoreCallback()
+    }
+    
 }
