@@ -331,6 +331,11 @@ class UserProfileViewControllerTests: XCTestCase {
         
         sut.simulateUserInitiatedLoadMoreAction()
         XCTAssertEqual(loaderSpy.loadMoreCount, 1, "Expect 1 load more request")
+        
+        sut.simulateUserInitiatedLoadMoreAction()
+        XCTAssertEqual(loaderSpy.loadMoreCount, 1, "Expect no request while is loading more")
+        
+        
     }
     
     private func makeUserProfile(id: Int = { Int.random(in: 0...999)  }(), login: String = "a-user-login-account", avatarUrl: URL = URL(string: "https://any-avatar-url")!, siteAdmin: Bool = false) -> UserProfile {

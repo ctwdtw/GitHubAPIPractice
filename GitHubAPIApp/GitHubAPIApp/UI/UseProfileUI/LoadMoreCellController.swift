@@ -6,13 +6,29 @@
 //
 
 import UIKit
+
+class LoadMoreViewModel {
+    var onStartLoading: (() -> Void)?
+    
+    private let loadAction: () -> Void
+    
+    init(_ loadAction: @escaping () -> Void) {
+        self.loadAction = loadAction
+    }
+    
+    func load() {
+        onStartLoading?()
+        loadAction()
+    }
+}
+
 class LoadMoreCellController: NSObject, UITableViewDataSource, UITableViewDelegate {
     let cell = LoadMoreCell()
     
-    private let loadMoreCallback: () -> Void
+    private let viewModel: LoadMoreViewModel
     
-    init(_ loadMoreCallBack: @escaping () -> Void) {
-        self.loadMoreCallback = loadMoreCallBack
+    init(viewModel: LoadMoreViewModel) {
+        self.viewModel = viewModel
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -20,11 +36,23 @@ class LoadMoreCellController: NSObject, UITableViewDataSource, UITableViewDelega
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        return binded(cell)
+    }
+    
+    private func binded(_ cell: LoadMoreCell) -> LoadMoreCell {
+        viewModel.onStartLoading = { [weak cell] in
+            cell?.isLoading = true
+        }
+        
         return cell
     }
     
-    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        loadMoreCallback()
+    func tableView(_ tableView: UITableView, willDisplay: UITableViewCell, forRowAt indexPath: IndexPath) {
+        guard cell.isLoading == false else {
+            return
+        }
+        
+        viewModel.load()
     }
     
 }

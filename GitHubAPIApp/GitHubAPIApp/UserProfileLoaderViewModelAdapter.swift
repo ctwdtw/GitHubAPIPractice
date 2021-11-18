@@ -55,7 +55,7 @@ class UserProfileLoaderViewModelAdapter {
         if let loadMore = resource.loadMore {
             tableModel.append([
                 // will receive previous items + new Items
-                CellController(dataSource: LoadMoreCellController( { loadMore { _ in  } } ))
+                CellController(dataSource: LoadMoreCellController(viewModel: LoadMoreViewModel { loadMore { _ in  } }))
             ])
         }
         
