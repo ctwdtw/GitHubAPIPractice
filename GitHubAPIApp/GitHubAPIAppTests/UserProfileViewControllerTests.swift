@@ -59,7 +59,7 @@ class UserProfileViewControllerTests: XCTestCase {
         sut.loadViewIfNeeded()
         XCTAssertTrue(sut.isShowingLoadingIndicator, "expect show loading indicator once view is loaded")
         
-        loaderSpy.complete(with: UserProfileURLPackage.empty(), at: 0)
+        loaderSpy.complete(with: [], at: 0)
         XCTAssertFalse(sut.isShowingLoadingIndicator, "expect hide loading indicator once loading is complete with success")
         
         sut.userInitiatedLoadAction()
@@ -77,15 +77,15 @@ class UserProfileViewControllerTests: XCTestCase {
         
         let (sut, loaderSpy) = makeSUT()
         sut.loadViewIfNeeded()
-        loaderSpy.complete(with: UserProfileURLPackage.empty(), at: 0)
+        loaderSpy.complete(with: [], at: 0)
         assertThat(sut, rendering: [])
         
         sut.userInitiatedLoadAction()
-        loaderSpy.complete(with: UserProfileURLPackage([item0]), at: 1)
+        loaderSpy.complete(with: [item0], at: 1)
         assertThat(sut, rendering: [item0])
         
         sut.userInitiatedLoadAction()
-        loaderSpy.complete(with: UserProfileURLPackage([item1, item2]), at: 2)
+        loaderSpy.complete(with: [item1, item2], at: 2)
         assertThat(sut, rendering: [item1, item2])
     }
     
@@ -95,7 +95,7 @@ class UserProfileViewControllerTests: XCTestCase {
         
         let (sut, loaderSpy) = makeSUT()
         sut.loadViewIfNeeded()
-        loaderSpy.complete(with: UserProfileURLPackage([item0]), at: 0)
+        loaderSpy.complete(with: [item0], at: 0)
         assertThat(sut, rendering: [item0])
         
         sut.userInitiatedLoadAction()
@@ -110,7 +110,7 @@ class UserProfileViewControllerTests: XCTestCase {
         
         let (sut, loaderSpy) = makeSUT()
         sut.loadViewIfNeeded()
-        loaderSpy.complete(with: UserProfileURLPackage([item0, item1]), at: 0)
+        loaderSpy.complete(with: [item0, item1], at: 0)
         
         XCTAssertEqual(loaderSpy.avatarUrls, [], "Expect no avatar url request until user profile view become visible")
         
@@ -128,7 +128,7 @@ class UserProfileViewControllerTests: XCTestCase {
         
         let (sut, loaderSpy) = makeSUT()
         sut.loadViewIfNeeded()
-        loaderSpy.complete(with: UserProfileURLPackage([item0, item1]), at: 0)
+        loaderSpy.complete(with: [item0, item1], at: 0)
         
         XCTAssertEqual(loaderSpy.cancelledAvatarUrls, [], "Expect no cancelled avatar url request until user profile view is not visible")
         
@@ -144,7 +144,7 @@ class UserProfileViewControllerTests: XCTestCase {
         let (sut, loaderSpy) = makeSUT()
         
         sut.loadViewIfNeeded()
-        loaderSpy.complete(with: UserProfileURLPackage([makeUserProfile(), makeUserProfile()]), at: 0)
+        loaderSpy.complete(with: [makeUserProfile(), makeUserProfile()], at: 0)
         
         let view0 = sut.simulateUserProfileViewIsVisible(at: 0)
         let view1 = sut.simulateUserProfileViewIsVisible(at: 1)
@@ -172,7 +172,7 @@ class UserProfileViewControllerTests: XCTestCase {
         let (sut, loaderSpy) = makeSUT()
         
         sut.loadViewIfNeeded()
-        loaderSpy.complete(with: UserProfileURLPackage([makeUserProfile(), makeUserProfile()]), at: 0)
+        loaderSpy.complete(with: [makeUserProfile(), makeUserProfile()], at: 0)
         
         let view0 = sut.simulateUserProfileViewIsVisible(at: 0)
         let view1 = sut.simulateUserProfileViewIsVisible(at: 1)
@@ -194,7 +194,7 @@ class UserProfileViewControllerTests: XCTestCase {
         let (sut, loaderSpy) = makeSUT()
         
         sut.loadViewIfNeeded()
-        loaderSpy.complete(with: UserProfileURLPackage([makeUserProfile(), makeUserProfile()]), at: 0)
+        loaderSpy.complete(with: [makeUserProfile(), makeUserProfile()], at: 0)
         
         let view0 = sut.simulateUserProfileViewIsVisible(at: 0)
         let view1 = sut.simulateUserProfileViewIsVisible(at: 1)
@@ -222,7 +222,7 @@ class UserProfileViewControllerTests: XCTestCase {
         let (sut, loaderSpy) = makeSUT()
         
         sut.loadViewIfNeeded()
-        loaderSpy.complete(with: UserProfileURLPackage([makeUserProfile(), makeUserProfile()]), at: 0)
+        loaderSpy.complete(with: [makeUserProfile(), makeUserProfile()], at: 0)
         
         let view0 = sut.simulateUserProfileViewIsVisible(at: 0)
         let view1 = sut.simulateUserProfileViewIsVisible(at: 1)
@@ -244,7 +244,7 @@ class UserProfileViewControllerTests: XCTestCase {
         let item0 = makeUserProfile()
         let (sut, loaderSpy) = makeSUT()
         sut.loadViewIfNeeded()
-        loaderSpy.complete(with: UserProfileURLPackage([item0]), at: 0)
+        loaderSpy.complete(with: [item0], at: 0)
         
         let view0 = sut.simulateUserProfileViewIsVisible(at: 0)
         XCTAssertEqual(loaderSpy.avatarUrls, [item0.avatarUrl], "Expect one avatar url request for the visible profile view")
@@ -263,7 +263,7 @@ class UserProfileViewControllerTests: XCTestCase {
         let (sut, loaderSpy) = makeSUT()
         sut.loadViewIfNeeded()
         
-        loaderSpy.complete(with: UserProfileURLPackage([item0, item1]), at: 0)
+        loaderSpy.complete(with: [item0, item1], at: 0)
         XCTAssertEqual(loaderSpy.avatarUrls, [], "Expect no avatar url until first user profile view become near visible")
         
         sut.simulateUserProfileViewIsNearVisible(at: 0)
@@ -279,7 +279,7 @@ class UserProfileViewControllerTests: XCTestCase {
         let item1 = makeUserProfile()
         let (sut, loaderSpy) = makeSUT()
         sut.loadViewIfNeeded()
-        loaderSpy.complete(with: UserProfileURLPackage([item0, item1]), at: 0)
+        loaderSpy.complete(with: [item0, item1], at: 0)
         
         sut.simulateUserProfileViewIsNearVisible(at: 0)
         sut.simulateUserProfileViewIsNearVisible(at: 1)
@@ -296,7 +296,7 @@ class UserProfileViewControllerTests: XCTestCase {
         let item0 = makeUserProfile()
         let (sut, loaderSpy) = makeSUT()
         sut.loadViewIfNeeded()
-        loaderSpy.complete(with: UserProfileURLPackage([item0]), at: 0)
+        loaderSpy.complete(with: [item0], at: 0)
         
         let queuedReusableCell = sut.simulateUserProfileViewIsNotVisible(at: 0)
         loaderSpy.completeImageLoading(with: .success(UIImage.image(with: .red).pngData()!), at: 0)
@@ -310,11 +310,11 @@ class UserProfileViewControllerTests: XCTestCase {
         let (sut, loaderSpy) = makeSUT()
         
         sut.loadViewIfNeeded()
-        loaderSpy.complete(with: UserProfileURLPackage([item0, item1]), at: 0)
+        loaderSpy.complete(with: [item0, item1], at: 0)
         assertThat(sut, rendering: [item0, item1])
         
         sut.userInitiatedLoadAction()
-        loaderSpy.complete(with: UserProfileURLPackage([]), at: 1)
+        loaderSpy.complete(with: [], at: 1)
         
         sut.simulateUIKitRemoveUserProfileView(at: 0)
         sut.simulateUIKitRemoveUserProfileView(at: 1)
@@ -350,8 +350,9 @@ class UserProfileViewControllerTests: XCTestCase {
             loadProfileCompletes.append(complete)
         }
         
-        func complete(with resource: UserProfileLoader.Resource, at index: Int, file: StaticString = #file, line: UInt = #line) {
+        func complete(with items: [UserProfile], at index: Int, file: StaticString = #file, line: UInt = #line) {
             if let complete = loadProfileCompletes[safe: index] {
+                let resource = UserProfileLoader.Resource.init(userProfiles: items, loadMore: nil)
                 complete(.success(resource))
             
             } else {
@@ -430,12 +431,6 @@ class UserProfileViewControllerTests: XCTestCase {
         NSError(domain: "any-ns-error", code: -1, userInfo: nil)
     }
 
-}
-
-private extension UserProfileURLPackage {
-    static func empty() -> UserProfileURLPackage {
-        UserProfileURLPackage([], nextURL: nil)
-    }
 }
 
 extension Collection {

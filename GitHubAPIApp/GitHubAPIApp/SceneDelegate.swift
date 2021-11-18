@@ -35,7 +35,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func configureWindow() {
         let url = URL(string: "https://api.github.com/users?since=0&per_page=20")!
         
-        let loader = RemoteLoader<UserProfileURLPackage>(url: url, session: session, mapping: UserProfileMapper().map(_:))
+        //let loader = RemoteLoader<UserProfileURLPackage>(url: url, session: session, mapping: UserProfileMapper().map(_:))
+        let loader = PaginatedUserProfileLoader(url: url, session: session, mapping: UserProfileMapper().map(_:))
         let imageDataLoader = RemoteImageDataLoader(session: session)
         
         let vc = UserProfileUIComposer.make(userProfileLoader: loader, avatarImageDataLoader: imageDataLoader)
@@ -75,4 +76,4 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 }
 
-extension RemoteLoader: UserProfileLoader where Resource == UserProfileURLPackage {}
+extension PaginatedUserProfileLoader: UserProfileLoader {}
