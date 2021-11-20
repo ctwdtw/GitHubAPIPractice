@@ -6,19 +6,33 @@
 //
 
 import UIKit
+import GitHubAPI
 
 class LoadMoreViewModel {
     var onStartLoading: (() -> Void)?
     
-    private let loadAction: () -> Void
+    var onFinishLoading: (() -> Void)?
     
-    init(_ loadAction: @escaping () -> Void) {
+    var onLoaded: ((UserProfileLoader.Resource) -> Void)?
+    
+    private let loadAction: UserProfileLoader.Resource.LoadMoreAction
+    
+    init(_ loadAction: @escaping UserProfileLoader.Resource.LoadMoreAction) {
         self.loadAction = loadAction
     }
     
     func load() {
         onStartLoading?()
-        loadAction()
+        loadAction { [weak self] result in
+            switch result {
+            case .success(let resource):
+                self?.onLoaded?(resource)
+            case .failure:
+                break
+            }
+            
+            self?.onFinishLoading?()
+        }
     }
 }
 
@@ -42,6 +56,10 @@ class LoadMoreCellController: NSObject, UITableViewDataSource, UITableViewDelega
     private func binded(_ cell: LoadMoreCell) -> LoadMoreCell {
         viewModel.onStartLoading = { [weak cell] in
             cell?.isLoading = true
+        }
+        
+        viewModel.onFinishLoading = { [weak cell] in
+            cell?.isLoading = false
         }
         
         return cell

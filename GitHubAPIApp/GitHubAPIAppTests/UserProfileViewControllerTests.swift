@@ -330,12 +330,22 @@ class UserProfileViewControllerTests: XCTestCase {
         XCTAssertEqual(loaderSpy.loadMoreCount, 0, "Expect no load more request until load more action")
         
         sut.simulateUserInitiatedLoadMoreAction()
-        XCTAssertEqual(loaderSpy.loadMoreCount, 1, "Expect 1 load more request")
+        XCTAssertEqual(loaderSpy.loadMoreCount, 1, "Expect one load more request")
         
         sut.simulateUserInitiatedLoadMoreAction()
         XCTAssertEqual(loaderSpy.loadMoreCount, 1, "Expect no request while is loading more")
         
+        loaderSpy.completeLoadMore(hasMore: true, at: 0)
+        sut.simulateUserInitiatedLoadMoreAction()
+        XCTAssertEqual(loaderSpy.loadMoreCount, 2, "Expect request after load more complete with more pages")
         
+        loaderSpy.completeLoadMore(with: anyNSError(), at: 1)
+        sut.simulateUserInitiatedLoadMoreAction()
+        XCTAssertEqual(loaderSpy.loadMoreCount, 3, "Expect request after load more complete with error")
+        
+        loaderSpy.completeLoadMore(hasMore: false, at: 2)
+        sut.simulateUserInitiatedLoadMoreAction()
+        XCTAssertEqual(loaderSpy.loadMoreCount, 3, "Expect no request after loading all pages")
     }
     
     private func makeUserProfile(id: Int = { Int.random(in: 0...999)  }(), login: String = "a-user-login-account", avatarUrl: URL = URL(string: "https://any-avatar-url")!, siteAdmin: Bool = false) -> UserProfile {
@@ -367,13 +377,15 @@ class UserProfileViewControllerTests: XCTestCase {
             loadProfileCompletes.append(complete)
         }
         
-        private(set) var loadMoreCount = 0
-        
-        func complete(with items: [UserProfile], hasMore: Bool = false, at index: Int, file: StaticString = #file, line: UInt = #line) {
+        func complete(with items: [UserProfile], hasMore: Bool = false, at index: Int, file: StaticString = #filePath, line: UInt = #line) {
             if let complete = loadProfileCompletes[safe: index] {
                 
-                var loadMore: PaginatedUserProfile.LoadMoreAction?
-                loadMore = hasMore ? { _ in self.loadMoreCount += 1 } : nil
+                var loadMore: PaginatedUserProfile.LoadMoreAction!
+                if hasMore {
+                    loadMore = { [weak self] loadMoreComplete in
+                        self?.loadMoreCompletes.append(loadMoreComplete)
+                    }
+                }
                 
                 let resource = UserProfileLoader.Resource.init(
                     userProfiles: items,
@@ -386,7 +398,7 @@ class UserProfileViewControllerTests: XCTestCase {
             }
         }
         
-        func complete(with error: Error, at index: Int, file: StaticString = #file, line: UInt = #line) {
+        func complete(with error: Error, at index: Int, file: StaticString = #filePath, line: UInt = #line) {
             if let complete = loadProfileCompletes[safe: index] {
                 complete(.failure(error))
             
@@ -396,6 +408,40 @@ class UserProfileViewControllerTests: XCTestCase {
             }
         }
         
+        
+        //MARK: - load more
+        var loadMoreCount: Int {
+            loadMoreCompletes.count
+        }
+        
+        private var loadMoreCompletes: [PaginatedUserProfile.Complete] = []
+    
+        func completeLoadMore(with items: [UserProfile] = [], hasMore: Bool, at idx: Int, file: StaticString = #filePath, line: UInt = #line) {
+            guard let loadMoreComplete = loadMoreCompletes[safe: idx] else {
+                XCTFail("load more completions index out of range", file: file, line: line)
+                return
+            }
+            
+            var loadMore: PaginatedUserProfile.LoadMoreAction!
+            if hasMore {
+                loadMore = { [weak self] loadMoreComplete in
+                    self?.loadMoreCompletes.append(loadMoreComplete)
+                }
+            }
+            
+            loadMoreComplete(.success(PaginatedUserProfile(userProfiles: items, loadMore: loadMore)))
+        }
+        
+        func completeLoadMore(with error: Error, at idx: Int, file: StaticString = #filePath, line: UInt = #line) {
+            guard let loadMoreComplete = loadMoreCompletes[safe: idx] else {
+                XCTFail("load more completions index out of range", file: file, line: line)
+                return
+            }
+            
+            loadMoreComplete(.failure(error))
+        }
+        
+        //MARK: - image loading
         private(set) var avatarUrls: [URL] = []
         
         private(set) var cancelledAvatarUrls: [URL] = []
