@@ -84,4 +84,21 @@ extension UserProfileViewController {
         tableView.delegate?.tableView?(tableView, willDisplay: cell, forRowAt: indexPath)
     }
     
+    var isShowingLoadMoreFeedIndicator: Bool {
+            return loadMoreFeedCell()?.isLoading == true
+    }
+    
+    private func loadMoreFeedCell() -> LoadMoreCell? {
+        guard tableView.numberOfSections > loadMoreSection  else {
+            return nil
+        }
+        
+        let indexPath = IndexPath(row: 0, section: loadMoreSection)
+        guard let cell = tableView.dataSource?.tableView(tableView, cellForRowAt: indexPath) as? LoadMoreCell else {
+            return nil
+        }
+        
+        return cell
+    }
+    
 }

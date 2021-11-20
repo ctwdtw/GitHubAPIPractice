@@ -6,7 +6,7 @@
 //
 
 import UIKit
-class LoadMoreCell: UITableViewCell {
+public class LoadMoreCell: UITableViewCell {
     private lazy var loadingIndicator: UIActivityIndicatorView = {
         let view = UIActivityIndicatorView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -20,7 +20,7 @@ class LoadMoreCell: UITableViewCell {
         return view
     }()
     
-    var isLoading: Bool {
+    public var isLoading: Bool {
         get {
             loadingIndicator.isAnimating
         }
