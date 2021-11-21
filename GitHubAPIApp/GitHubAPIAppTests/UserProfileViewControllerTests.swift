@@ -25,12 +25,12 @@ import GitHubAPIApp
 */
 
 /*
- [] Layout
- [] Infinite Scroll Experience
-     [] Trigger Load More action on scroll to bottom
-         [] Only if there are more items to load
-         [] Only if not already loading
-     [] Show loading indicator while loading
+ [v] Layout
+ [v] Infinite Scroll Experience
+     [v] Trigger Load More action on scroll to bottom
+         [v] Only if there are more items to load
+         [v] Only if not already loading
+     [v] Show loading indicator while loading
      [] Show error message on failure
        [] Tap on error to retry
  */
@@ -125,29 +125,53 @@ class UserProfileViewControllerTests: XCTestCase {
         
         let (sut, loaderSpy) = makeSUT()
         sut.loadViewIfNeeded()
-        loaderSpy.complete(with: [], at: 0)
         assertThat(sut, rendering: [])
         
         sut.userInitiatedLoadAction()
         loaderSpy.complete(with: [item0], at: 1)
         assertThat(sut, rendering: [item0])
-        
+
         sut.userInitiatedLoadAction()
         loaderSpy.complete(with: [item1, item2], at: 2)
         assertThat(sut, rendering: [item1, item2])
     }
     
+    func test__renderEmptyUserProfiles__afterRenderNonEmptyUserProfiles() {
+        let item0 = makeUserProfile()
+        let item1 = makeUserProfile()
+        let (sut, loaderSpy) = makeSUT()
+        
+        sut.loadViewIfNeeded()
+        loaderSpy.complete(with: [item0], hasMore: true, at: 0)
+        assertThat(sut, rendering: [item0])
+        
+        sut.simulateUserInitiatedLoadMoreAction()
+        loaderSpy.completeLoadMore(with: [item0, item1], hasMore: false, at: 0)
+        assertThat(sut, rendering: [item0, item1])
+        
+        sut.userInitiatedLoadAction()
+        loaderSpy.complete(with: [], at: 1)
+        
+        sut.simulateUIKitRemoveUserProfileView(at: 0)
+        sut.simulateUIKitRemoveUserProfileView(at: 1)
+        assertThat(sut, rendering: [])
+    }
+    
     // [v] Image loading experience
     func test__doesNotAlterRenderedUserProfile__onLoaderCompleteWithFailure() {
-        let item0 = UserProfile(id: 0, login: "user-login-account", avatarUrl: URL(string: "https://any-url.com")!, siteAdmin: false)
+        let item0 = makeUserProfile()
         
         let (sut, loaderSpy) = makeSUT()
         sut.loadViewIfNeeded()
-        loaderSpy.complete(with: [item0], at: 0)
+        loaderSpy.complete(with: [item0], hasMore: true, at: 0)
         assertThat(sut, rendering: [item0])
         
         sut.userInitiatedLoadAction()
         loaderSpy.complete(with: anyNSError(), at: 1)
+        assertThat(sut, rendering: [item0])
+        
+        sut.simulateUserInitiatedLoadMoreAction()
+        loaderSpy.completeLoadMore(with: anyNSError(), at: 0)
         assertThat(sut, rendering: [item0])
     }
     
@@ -352,23 +376,6 @@ class UserProfileViewControllerTests: XCTestCase {
         XCTAssertNil(queuedReusableCell?.avatarImageView.image)
     }
     
-    func test__renderEmptyUserProfiles__afterRenderNonEmptyUserProfiles() {
-        let item0 = makeUserProfile()
-        let item1 = makeUserProfile()
-        let (sut, loaderSpy) = makeSUT()
-        
-        sut.loadViewIfNeeded()
-        loaderSpy.complete(with: [item0, item1], at: 0)
-        assertThat(sut, rendering: [item0, item1])
-        
-        sut.userInitiatedLoadAction()
-        loaderSpy.complete(with: [], at: 1)
-        
-        sut.simulateUIKitRemoveUserProfileView(at: 0)
-        sut.simulateUIKitRemoveUserProfileView(at: 1)
-        assertThat(sut, rendering: [])
-    }
-    
     private func makeUserProfile(id: Int = { Int.random(in: 0...999)  }(), login: String = "a-user-login-account", avatarUrl: URL = URL(string: "https://any-avatar-url")!, siteAdmin: Bool = false) -> UserProfile {
         return UserProfile(id: id, login: login, avatarUrl: avatarUrl, siteAdmin: siteAdmin)
     }
@@ -500,7 +507,6 @@ class UserProfileViewControllerTests: XCTestCase {
                             file: StaticString = #filePath,
                             line: UInt = #line
     ) {
-        XCTAssertEqual(sut.numberOfRenderedSections, 1, "receive \(sut.numberOfRenderedSections) sections, but expect \(1)", file: file, line: line)
         XCTAssertEqual(sut.numberOfRenderedUserProfile, userProfiles.count, "receive \(sut.numberOfRenderedUserProfile) user profiles, but expect \(userProfiles.count)", file: file, line: line)
         
         userProfiles.enumerated().forEach { (idx, userProfile) in

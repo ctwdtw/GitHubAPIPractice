@@ -16,7 +16,7 @@ public class UserProfileViewController: UITableViewController, UITableViewDataSo
     
     private var refresher: UserProfileRefreshController?
 
-    private var tableModel: TableModel = [] {
+    private var tableModel: TableModel = [[]] {
         didSet {
             tableView.reloadData()
         }
