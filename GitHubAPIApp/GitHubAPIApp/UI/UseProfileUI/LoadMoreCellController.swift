@@ -50,6 +50,7 @@ class LoadMoreCellController: NSObject, UITableViewDataSource, UITableViewDelega
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        cell.selectionStyle = .none
         return binded(cell)
     }
     
@@ -68,6 +69,14 @@ class LoadMoreCellController: NSObject, UITableViewDataSource, UITableViewDelega
     }
     
     func tableView(_ tableView: UITableView, willDisplay: UITableViewCell, forRowAt indexPath: IndexPath) {
+        reloadIfNeeded()
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        reloadIfNeeded()
+    }
+    
+    private func reloadIfNeeded() {
         guard cell.isLoading == false else {
             return
         }

@@ -172,6 +172,22 @@ class UserProfileViewControllerTests: XCTestCase {
         XCTAssertEqual(sut.loadMoreFeedErrorMessage, nil)
     }
     
+    func test_tapOnLoadMoreErrorView_loadsMore() {
+        let (sut, loaderSpy) = makeSUT()
+        sut.loadViewIfNeeded()
+        loaderSpy.complete(with: [makeUserProfile(), makeUserProfile()], hasMore: true, at: 0)
+        
+        sut.simulateUserInitiatedLoadMoreAction()
+        XCTAssertEqual(loaderSpy.loadMoreCount, 1, "expect one load more request")
+        
+        sut.simulateTapOnRetryLoadMore()
+        XCTAssertEqual(loaderSpy.loadMoreCount, 1, "expect no new load more request when retry load more before previous request complete")
+        
+        loaderSpy.completeLoadMore(with: anyNSError(), at: 0)
+        sut.simulateTapOnRetryLoadMore()
+        XCTAssertEqual(loaderSpy.loadMoreCount, 2, "expect two load more request when retry load more after previous request complete")
+    }
+    
     // [v] Image loading experience
     func test__doesNotAlterRenderedUserProfile__onLoaderCompleteWithFailure() {
         let item0 = makeUserProfile()

@@ -84,6 +84,11 @@ extension UserProfileViewController {
         tableView.delegate?.tableView?(tableView, willDisplay: cell, forRowAt: indexPath)
     }
     
+    func simulateTapOnRetryLoadMore() {
+        let indexPath = IndexPath(row: 0, section: loadMoreSection)
+        tableView.delegate?.tableView?(tableView, didSelectRowAt: indexPath)
+    }
+    
     var isShowingLoadMoreFeedIndicator: Bool {
             return loadMoreFeedCell()?.isLoading == true
     }

@@ -87,6 +87,11 @@ public class UserProfileViewController: UITableViewController, UITableViewDataSo
         dl?.tableView?(tableView, didEndDisplaying: cell, forRowAt: indexPath)
     }
     
+    public override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let dl = cellController(at: indexPath).delegate
+        dl?.tableView?(tableView, didSelectRowAt: indexPath)
+    }
+    
     private func cellController(at indexPath: IndexPath) -> CellController {
         let controller = tableModel[indexPath.section][indexPath.row]
         loadingControllers[indexPath] = controller
@@ -98,5 +103,4 @@ public class UserProfileViewController: UITableViewController, UITableViewDataSo
         loadingControllers[indexPath] = nil
         return controller
     }
-    
 }
