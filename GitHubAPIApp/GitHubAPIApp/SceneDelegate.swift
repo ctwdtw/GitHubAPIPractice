@@ -36,10 +36,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let url = URL(string: "https://api.github.com/users?since=0&per_page=20")!
         
         //let loader = RemoteLoader<UserProfileURLPackage>(url: url, session: session, mapping: UserProfileMapper().map(_:))
-        let loader = PaginatedRemoteUserProfileLoader(url: url, session: session, mapping: UserProfileMapper().map(_:))
-        let imageDataLoader = RemoteImageDataLoader(session: session)
+        //let loader = PaginatedRemoteUserProfileLoader(url: url, session: session, mapping: UserProfileMapper().map(_:))
         
-        let vc = UserProfileUIComposer.make(userProfileLoader: loader, avatarImageDataLoader: imageDataLoader)
+        let factory = { [session] in PaginatedRemoteUserProfileLoader(url: url, session: session, mapping: UserProfileMapper().map(_:)) }
+        
+        let imageDataLoader = RemoteImageDataLoader(session: session)
+    
+        let vc = UserProfileUIComposer.make(userProfileLoaderFactory: factory, avatarImageDataLoader: imageDataLoader)
         window?.rootViewController = vc
         window?.makeKeyAndVisible()
 

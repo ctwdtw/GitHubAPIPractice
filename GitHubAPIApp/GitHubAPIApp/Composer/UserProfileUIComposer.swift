@@ -11,11 +11,10 @@ import UIKit
 
 public class UserProfileUIComposer {
     private init() {}
-    // TODO: - inject a factory of UserProfile Loader to fix load-more-pull-to-refresh bug.
-    public static func make(userProfileLoader: UserProfileLoader, avatarImageDataLoader: ImageDataLoader) -> UserProfileViewController {
+    public static func make(userProfileLoaderFactory: @escaping () -> UserProfileLoader, avatarImageDataLoader: ImageDataLoader) -> UserProfileViewController {
         let refreshViewModel = UserProfileRefreshViewModel()
         
-        let profileViewModelAdapter = UserProfileLoaderViewModelAdapter(loader: userProfileLoader, viewModel: refreshViewModel, imageLoader: avatarImageDataLoader)
+        let profileViewModelAdapter = UserProfileLoaderViewModelAdapter(loaderFactory: userProfileLoaderFactory, viewModel: refreshViewModel, imageLoader: avatarImageDataLoader)
         
         refreshViewModel.loadAction = profileViewModelAdapter.load
         

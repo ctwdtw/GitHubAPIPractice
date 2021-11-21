@@ -9,14 +9,17 @@ import UIKit
 import GitHubAPI
 
 class UserProfileLoaderViewModelAdapter {
-    private let loader: UserProfileLoader
+    
+    private let loaderFactory: () -> UserProfileLoader
+    
+    private var loader: UserProfileLoader?
     
     private unowned let viewModel: UserProfileRefreshViewModel
     
     private let imageLoader: ImageDataLoader
     
-    init(loader: UserProfileLoader, viewModel: UserProfileRefreshViewModel, imageLoader: ImageDataLoader) {
-        self.loader = loader
+    init(loaderFactory: @escaping () -> UserProfileLoader, viewModel: UserProfileRefreshViewModel, imageLoader: ImageDataLoader) {
+        self.loaderFactory = loaderFactory
         self.viewModel = viewModel
         self.imageLoader = imageLoader
     }
@@ -24,8 +27,9 @@ class UserProfileLoaderViewModelAdapter {
     struct ImageDecodingError: Error {}
 
     func load() {
+        loader = loaderFactory()
         viewModel.onStartLoading?()
-        loader.load { [weak self] result in
+        loader?.load { [weak self] result in
             guard let self = self else { return }
             
             if let resource = try? result.get() {

@@ -413,7 +413,7 @@ class UserProfileViewControllerTests: XCTestCase {
     
     private func makeSUT(file: StaticString = #file, line: UInt = #line) -> (UserProfileViewController, LoaderSpy) {
         let loaderSpy = LoaderSpy()
-        let sut = UserProfileUIComposer.make(userProfileLoader: loaderSpy, avatarImageDataLoader: loaderSpy)
+        let sut = UserProfileUIComposer.make(userProfileLoaderFactory: { loaderSpy }, avatarImageDataLoader: loaderSpy)
         trackForMemoryLeak(loaderSpy, file: file, line: line)
         trackForMemoryLeak(sut, file: file, line: line)
         return (sut, loaderSpy)
