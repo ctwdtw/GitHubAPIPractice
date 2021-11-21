@@ -157,6 +157,21 @@ class UserProfileViewControllerTests: XCTestCase {
         assertThat(sut, rendering: [])
     }
     
+    func test_loadMoreCompletion_rendersErrorMessageOnError() {
+        let (sut, loaderSpy) = makeSUT()
+        sut.loadViewIfNeeded()
+        loaderSpy.complete(with: [makeUserProfile(), makeUserProfile()], hasMore: true, at: 0)
+        
+        sut.simulateUserInitiatedLoadMoreAction()
+        XCTAssertEqual(sut.loadMoreFeedErrorMessage, nil)
+        
+        loaderSpy.completeLoadMore(with: anyNSError(), at: 0)
+        XCTAssertEqual(sut.loadMoreFeedErrorMessage, anyNSError().localizedDescription)
+        
+        sut.simulateUserInitiatedLoadMoreAction()
+        XCTAssertEqual(sut.loadMoreFeedErrorMessage, nil)
+    }
+    
     // [v] Image loading experience
     func test__doesNotAlterRenderedUserProfile__onLoaderCompleteWithFailure() {
         let item0 = makeUserProfile()

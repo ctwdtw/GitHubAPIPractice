@@ -88,6 +88,10 @@ extension UserProfileViewController {
             return loadMoreFeedCell()?.isLoading == true
     }
     
+    var loadMoreFeedErrorMessage: String? {
+        return loadMoreFeedCell()?.message
+    }
+    
     private func loadMoreFeedCell() -> LoadMoreCell? {
         guard tableView.numberOfSections > loadMoreSection  else {
             return nil

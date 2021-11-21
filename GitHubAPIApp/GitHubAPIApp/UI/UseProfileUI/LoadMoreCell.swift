@@ -34,7 +34,7 @@ public class LoadMoreCell: UITableViewCell {
         }
     }
     
-    lazy private(set) var errorMessageLabel: UILabel = {
+    lazy private var errorMessageLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         
@@ -53,6 +53,11 @@ public class LoadMoreCell: UITableViewCell {
         return label
     }()
     
+    public var message: String? {
+        get { errorMessageLabel.text }
+        set { errorMessageLabel.text = newValue; errorMessageLabel.isHidden = (newValue == nil) }
+    }
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         commonInit()
@@ -64,6 +69,7 @@ public class LoadMoreCell: UITableViewCell {
     }
     
     private func commonInit() {
+        _ = errorMessageLabel
         _ = loadingIndicator
     }
 }

@@ -54,7 +54,7 @@ class UserProfileLoaderViewModelAdapter {
         
         if let loadMore = resource.loadMore {
             let loadMoreViewModel = LoadMoreViewModel(loadMore)
-            loadMoreViewModel.onLoaded = { [weak self] resource in
+            loadMoreViewModel.onLoadMore = { [weak self] resource in
                 guard let self = self else { return }
                 let controllers = self.cellControllers(resource)
                 self.viewModel.onRefreshed?(controllers)

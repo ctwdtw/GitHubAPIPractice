@@ -9,11 +9,11 @@ import UIKit
 import GitHubAPI
 
 class LoadMoreViewModel {
-    var onStartLoading: (() -> Void)?
+    var onLoadMoreStart: (() -> Void)?
     
-    var onFinishLoading: (() -> Void)?
+    var onLoadMoreFinished: ((Error?) -> Void)?
     
-    var onLoaded: ((UserProfileLoader.Resource) -> Void)?
+    var onLoadMore: ((UserProfileLoader.Resource) -> Void)?
     
     private let loadAction: UserProfileLoader.Resource.LoadMoreAction
     
@@ -22,16 +22,16 @@ class LoadMoreViewModel {
     }
     
     func load() {
-        onStartLoading?()
+        onLoadMoreStart?()
         loadAction { [weak self] result in
             switch result {
             case .success(let resource):
-                self?.onLoaded?(resource)
-            case .failure:
-                break
+                self?.onLoadMore?(resource)
+                self?.onLoadMoreFinished?(nil)
+            case .failure(let error):
+                self?.onLoadMoreFinished?(error)
+                
             }
-            
-            self?.onFinishLoading?()
         }
     }
 }
@@ -54,12 +54,14 @@ class LoadMoreCellController: NSObject, UITableViewDataSource, UITableViewDelega
     }
     
     private func binded(_ cell: LoadMoreCell) -> LoadMoreCell {
-        viewModel.onStartLoading = { [weak cell] in
+        viewModel.onLoadMoreStart = { [weak cell] in
             cell?.isLoading = true
+            cell?.message = nil
         }
         
-        viewModel.onFinishLoading = { [weak cell] in
+        viewModel.onLoadMoreFinished = { [weak cell] error in
             cell?.isLoading = false
+            cell?.message = error?.localizedDescription
         }
         
         return cell
