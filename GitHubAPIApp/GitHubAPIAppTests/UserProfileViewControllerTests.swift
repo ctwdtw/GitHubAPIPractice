@@ -52,6 +52,32 @@ class UserProfileViewControllerTests: XCTestCase {
         XCTAssertEqual(loaderSpy.loadCount, 3, "expect yet another loading request once user initiate another reload")
     }
     
+    func test__loadMoreAction__requestMoreFormLoader() {
+        let (sut, loaderSpy) = makeSUT()
+        sut.loadViewIfNeeded()
+        loaderSpy.complete(with: [makeUserProfile(), makeUserProfile()], hasMore: true, at: 0)
+        
+        XCTAssertEqual(loaderSpy.loadMoreCount, 0, "Expect no load more request until load more action")
+        
+        sut.simulateUserInitiatedLoadMoreAction()
+        XCTAssertEqual(loaderSpy.loadMoreCount, 1, "Expect one load more request")
+        
+        sut.simulateUserInitiatedLoadMoreAction()
+        XCTAssertEqual(loaderSpy.loadMoreCount, 1, "Expect no request while is loading more")
+        
+        loaderSpy.completeLoadMore(hasMore: true, at: 0)
+        sut.simulateUserInitiatedLoadMoreAction()
+        XCTAssertEqual(loaderSpy.loadMoreCount, 2, "Expect request after load more complete with more pages")
+        
+        loaderSpy.completeLoadMore(with: anyNSError(), at: 1)
+        sut.simulateUserInitiatedLoadMoreAction()
+        XCTAssertEqual(loaderSpy.loadMoreCount, 3, "Expect request after load more complete with error")
+        
+        loaderSpy.completeLoadMore(hasMore: false, at: 2)
+        sut.simulateUserInitiatedLoadMoreAction()
+        XCTAssertEqual(loaderSpy.loadMoreCount, 3, "Expect no request after loading all pages")
+    }
+
     // [v] Show a loading indicator while loading feed
     func test__loadingIndicator__isDisplayedProperlyWhileLoadingUserProfile() {
         let (sut, loaderSpy) = makeSUT()
@@ -67,6 +93,28 @@ class UserProfileViewControllerTests: XCTestCase {
 
         loaderSpy.complete(with: anyNSError(), at: 1)
         XCTAssertFalse(sut.isShowingLoadingIndicator, "expect hide loading indicator once user initiated loading is complete with failure")
+    }
+    
+    func test_loadingMoreIndicator_isVisibleWhileLoadingMore() {
+        let (sut, loaderSpy) = makeSUT()
+        
+        sut.loadViewIfNeeded()
+        XCTAssertFalse(sut.isShowingLoadMoreFeedIndicator, "Expected no loading indicator once view is loaded")
+        
+        loaderSpy.complete(with: [makeUserProfile(), makeUserProfile()], hasMore: true, at: 0)
+        XCTAssertFalse(sut.isShowingLoadMoreFeedIndicator, "Expected no loading indicator once loading completes successfully")
+        
+        sut.simulateUserInitiatedLoadMoreAction()
+        XCTAssertTrue(sut.isShowingLoadMoreFeedIndicator, "Expected loading indicator on load more action")
+        
+        loaderSpy.completeLoadMore(hasMore: true, at: 0)
+        XCTAssertFalse(sut.isShowingLoadMoreFeedIndicator, "Expected no loading indicator once user initiated loading completes successfully")
+        
+        sut.simulateUserInitiatedLoadMoreAction()
+        XCTAssertTrue(sut.isShowingLoadMoreFeedIndicator, "Expected loading indicator on second load more action")
+        
+        loaderSpy.completeLoadMore(with: anyNSError(), at: 1)
+        XCTAssertFalse(sut.isShowingLoadMoreFeedIndicator, "Expected no loading indicator once user initiated loading completes with error")
     }
     
     // [v] Image loading experience
@@ -319,55 +367,6 @@ class UserProfileViewControllerTests: XCTestCase {
         sut.simulateUIKitRemoveUserProfileView(at: 0)
         sut.simulateUIKitRemoveUserProfileView(at: 1)
         assertThat(sut, rendering: [])
-    }
-    
-    //MARK: - load more
-    func test__loadMoreAction__requestMoreFormLoader() {
-        let (sut, loaderSpy) = makeSUT()
-        sut.loadViewIfNeeded()
-        loaderSpy.complete(with: [makeUserProfile(), makeUserProfile()], hasMore: true, at: 0)
-        
-        XCTAssertEqual(loaderSpy.loadMoreCount, 0, "Expect no load more request until load more action")
-        
-        sut.simulateUserInitiatedLoadMoreAction()
-        XCTAssertEqual(loaderSpy.loadMoreCount, 1, "Expect one load more request")
-        
-        sut.simulateUserInitiatedLoadMoreAction()
-        XCTAssertEqual(loaderSpy.loadMoreCount, 1, "Expect no request while is loading more")
-        
-        loaderSpy.completeLoadMore(hasMore: true, at: 0)
-        sut.simulateUserInitiatedLoadMoreAction()
-        XCTAssertEqual(loaderSpy.loadMoreCount, 2, "Expect request after load more complete with more pages")
-        
-        loaderSpy.completeLoadMore(with: anyNSError(), at: 1)
-        sut.simulateUserInitiatedLoadMoreAction()
-        XCTAssertEqual(loaderSpy.loadMoreCount, 3, "Expect request after load more complete with error")
-        
-        loaderSpy.completeLoadMore(hasMore: false, at: 2)
-        sut.simulateUserInitiatedLoadMoreAction()
-        XCTAssertEqual(loaderSpy.loadMoreCount, 3, "Expect no request after loading all pages")
-    }
-    
-    func test_loadingMoreIndicator_isVisibleWhileLoadingMore() {
-        let (sut, loaderSpy) = makeSUT()
-        
-        sut.loadViewIfNeeded()
-        XCTAssertFalse(sut.isShowingLoadMoreFeedIndicator, "Expected no loading indicator once view is loaded")
-        
-        loaderSpy.complete(with: [makeUserProfile(), makeUserProfile()], hasMore: true, at: 0)
-        XCTAssertFalse(sut.isShowingLoadMoreFeedIndicator, "Expected no loading indicator once loading completes successfully")
-        
-        sut.simulateUserInitiatedLoadMoreAction()
-        XCTAssertTrue(sut.isShowingLoadMoreFeedIndicator, "Expected loading indicator on load more action")
-        
-        loaderSpy.completeLoadMore(hasMore: true, at: 0)
-        XCTAssertFalse(sut.isShowingLoadMoreFeedIndicator, "Expected no loading indicator once user initiated loading completes successfully")
-        
-        sut.simulateUserInitiatedLoadMoreAction()
-        XCTAssertTrue(sut.isShowingLoadMoreFeedIndicator, "Expected loading indicator on second load more action")
-        
-        loaderSpy.completeLoadMore(with: anyNSError(), at: 1)
-        XCTAssertFalse(sut.isShowingLoadMoreFeedIndicator, "Expected no loading indicator once user initiated loading completes with error")
     }
     
     private func makeUserProfile(id: Int = { Int.random(in: 0...999)  }(), login: String = "a-user-login-account", avatarUrl: URL = URL(string: "https://any-avatar-url")!, siteAdmin: Bool = false) -> UserProfile {

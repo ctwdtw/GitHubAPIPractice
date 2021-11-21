@@ -11,7 +11,7 @@ import UIKit
 
 public class UserProfileUIComposer {
     private init() {}
-    
+    // TODO: - inject a factory of UserProfile Loader to fix load-more-pull-to-refresh bug.
     public static func make(userProfileLoader: UserProfileLoader, avatarImageDataLoader: ImageDataLoader) -> UserProfileViewController {
         let refreshViewModel = UserProfileRefreshViewModel()
         
