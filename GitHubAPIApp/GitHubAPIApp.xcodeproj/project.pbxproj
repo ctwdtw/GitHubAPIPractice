@@ -206,16 +206,9 @@
 			isa = PBXGroup;
 			children = (
 				6325F2D52744009100C02429 /* ColorPalette.swift */,
-				63F55354270FF26C0002FA50 /* UserProfileViewController.swift */,
-				632B0C82273805AB00AA290E /* UserProfileRefreshController.swift */,
-				632B0C8A273A914D00AA290E /* UserProfileRefreshViewModel.swift */,
-				632B0C88273A78C600AA290E /* UserProfileViewModel.swift */,
-				632B0C802737F4DB00AA290E /* UserProfileCellController.swift */,
-				63737FDC274B5167003FD251 /* LoadMoreViewModel.swift */,
-				63D146C527462E3300C3DB7E /* LoadMoreCellController.swift */,
-				63D146C727462E5300C3DB7E /* LoadMoreCell.swift */,
-				63923154273CE70E000532C5 /* CellController.swift */,
-				632B0C7C2737D76F00AA290E /* UserProfileCell.swift */,
+				63737FDF274BB9FD003FD251 /* ViewModels */,
+				63737FE0274BBCE3003FD251 /* Controllers */,
+				63737FDE274BB9D2003FD251 /* Views */,
 			);
 			path = UseProfileUI;
 			sourceTree = "<group>";
@@ -235,6 +228,7 @@
 				632B0C7E2737E1FD00AA290E /* UITableView+ReusingCell.swift */,
 				6325F2D32743F12600C02429 /* UIColor+DarkModeSupport.swift */,
 				63D146BF2746270800C3DB7E /* UITableView+DummyHelpers.swift */,
+				63923154273CE70E000532C5 /* CellController.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -256,6 +250,36 @@
 				6325F2BD2742543600C02429 /* UserProfileViewController+TestHelpers.swift */,
 			);
 			path = TestHelpers;
+			sourceTree = "<group>";
+		};
+		63737FDE274BB9D2003FD251 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				632B0C7C2737D76F00AA290E /* UserProfileCell.swift */,
+				63D146C727462E5300C3DB7E /* LoadMoreCell.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		63737FDF274BB9FD003FD251 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				632B0C8A273A914D00AA290E /* UserProfileRefreshViewModel.swift */,
+				632B0C88273A78C600AA290E /* UserProfileViewModel.swift */,
+				63737FDC274B5167003FD251 /* LoadMoreViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		63737FE0274BBCE3003FD251 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				632B0C82273805AB00AA290E /* UserProfileRefreshController.swift */,
+				63F55354270FF26C0002FA50 /* UserProfileViewController.swift */,
+				632B0C802737F4DB00AA290E /* UserProfileCellController.swift */,
+				63D146C527462E3300C3DB7E /* LoadMoreCellController.swift */,
+			);
+			path = Controllers;
 			sourceTree = "<group>";
 		};
 		63923163273D593A000532C5 /* snapshots */ = {
