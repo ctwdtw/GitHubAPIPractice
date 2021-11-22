@@ -8,34 +8,6 @@
 import UIKit
 import GitHubAPI
 
-class LoadMoreViewModel {
-    var onLoadMoreStart: (() -> Void)?
-    
-    var onLoadMoreFinished: ((Error?) -> Void)?
-    
-    var onLoadMore: ((UserProfileLoader.Resource) -> Void)?
-    
-    private let loadAction: UserProfileLoader.Resource.LoadMoreAction
-    
-    init(_ loadAction: @escaping UserProfileLoader.Resource.LoadMoreAction) {
-        self.loadAction = loadAction
-    }
-    
-    func load() {
-        onLoadMoreStart?()
-        loadAction { [weak self] result in
-            switch result {
-            case .success(let resource):
-                self?.onLoadMore?(resource)
-                self?.onLoadMoreFinished?(nil)
-            case .failure(let error):
-                self?.onLoadMoreFinished?(error)
-                
-            }
-        }
-    }
-}
-
 class LoadMoreCellController: NSObject, UITableViewDataSource, UITableViewDelegate {
     let cell = LoadMoreCell()
     

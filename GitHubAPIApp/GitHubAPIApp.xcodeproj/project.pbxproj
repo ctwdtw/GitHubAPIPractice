@@ -32,6 +32,7 @@
 		63547AA9272BB699001CE31F /* GitHubAPI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63547AA8272BB699001CE31F /* GitHubAPI.framework */; };
 		63547AAA272BB699001CE31F /* GitHubAPI.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 63547AA8272BB699001CE31F /* GitHubAPI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		63737FDB274B50DD003FD251 /* UserProfileLoaderCacheDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63737FDA274B50DD003FD251 /* UserProfileLoaderCacheDecorator.swift */; };
+		63737FDD274B5167003FD251 /* LoadMoreViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63737FDC274B5167003FD251 /* LoadMoreViewModel.swift */; };
 		63923155273CE70E000532C5 /* CellController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63923154273CE70E000532C5 /* CellController.swift */; };
 		6392316A273E6808000532C5 /* UserProfileCell.png in Resources */ = {isa = PBXBuildFile; fileRef = 63923168273E6807000532C5 /* UserProfileCell.png */; };
 		6392316B273E6808000532C5 /* UserProfileCell-siteAdmin.png in Resources */ = {isa = PBXBuildFile; fileRef = 63923169273E6807000532C5 /* UserProfileCell-siteAdmin.png */; };
@@ -125,6 +126,7 @@
 		63547AA4272BB5FC001CE31F /* Alamofire.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Alamofire.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		63547AA8272BB699001CE31F /* GitHubAPI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = GitHubAPI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		63737FDA274B50DD003FD251 /* UserProfileLoaderCacheDecorator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileLoaderCacheDecorator.swift; sourceTree = "<group>"; };
+		63737FDC274B5167003FD251 /* LoadMoreViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadMoreViewModel.swift; sourceTree = "<group>"; };
 		63923154273CE70E000532C5 /* CellController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CellController.swift; sourceTree = "<group>"; };
 		63923158273D55AC000532C5 /* XCTestCase+Snapshot.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XCTestCase+Snapshot.swift"; sourceTree = "<group>"; };
 		63923159273D55AC000532C5 /* UIViewController+Snapshot.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController+Snapshot.swift"; sourceTree = "<group>"; };
@@ -209,6 +211,7 @@
 				632B0C8A273A914D00AA290E /* UserProfileRefreshViewModel.swift */,
 				632B0C88273A78C600AA290E /* UserProfileViewModel.swift */,
 				632B0C802737F4DB00AA290E /* UserProfileCellController.swift */,
+				63737FDC274B5167003FD251 /* LoadMoreViewModel.swift */,
 				63D146C527462E3300C3DB7E /* LoadMoreCellController.swift */,
 				63D146C727462E5300C3DB7E /* LoadMoreCell.swift */,
 				63923154273CE70E000532C5 /* CellController.swift */,
@@ -624,6 +627,7 @@
 				6325F2D62744009100C02429 /* ColorPalette.swift in Sources */,
 				632B0C812737F4DB00AA290E /* UserProfileCellController.swift in Sources */,
 				632B0C7F2737E1FD00AA290E /* UITableView+ReusingCell.swift in Sources */,
+				63737FDD274B5167003FD251 /* LoadMoreViewModel.swift in Sources */,
 				632B0C89273A78C600AA290E /* UserProfileViewModel.swift in Sources */,
 				632B0C8B273A914D00AA290E /* UserProfileRefreshViewModel.swift in Sources */,
 			);
