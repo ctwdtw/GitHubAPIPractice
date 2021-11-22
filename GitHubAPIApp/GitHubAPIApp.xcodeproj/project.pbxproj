@@ -31,6 +31,7 @@
 		632B0C95273C274700AA290E /* UserProfileLoaderViewModelAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632B0C94273C274600AA290E /* UserProfileLoaderViewModelAdapter.swift */; };
 		63547AA9272BB699001CE31F /* GitHubAPI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63547AA8272BB699001CE31F /* GitHubAPI.framework */; };
 		63547AAA272BB699001CE31F /* GitHubAPI.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 63547AA8272BB699001CE31F /* GitHubAPI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		63737FDB274B50DD003FD251 /* UserProfileLoaderCacheDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63737FDA274B50DD003FD251 /* UserProfileLoaderCacheDecorator.swift */; };
 		63923155273CE70E000532C5 /* CellController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63923154273CE70E000532C5 /* CellController.swift */; };
 		6392316A273E6808000532C5 /* UserProfileCell.png in Resources */ = {isa = PBXBuildFile; fileRef = 63923168273E6807000532C5 /* UserProfileCell.png */; };
 		6392316B273E6808000532C5 /* UserProfileCell-siteAdmin.png in Resources */ = {isa = PBXBuildFile; fileRef = 63923169273E6807000532C5 /* UserProfileCell-siteAdmin.png */; };
@@ -123,6 +124,7 @@
 		63547A9C272BB3E7001CE31F /* GitHubAPI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = GitHubAPI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		63547AA4272BB5FC001CE31F /* Alamofire.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Alamofire.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		63547AA8272BB699001CE31F /* GitHubAPI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = GitHubAPI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		63737FDA274B50DD003FD251 /* UserProfileLoaderCacheDecorator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileLoaderCacheDecorator.swift; sourceTree = "<group>"; };
 		63923154273CE70E000532C5 /* CellController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CellController.swift; sourceTree = "<group>"; };
 		63923158273D55AC000532C5 /* XCTestCase+Snapshot.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XCTestCase+Snapshot.swift"; sourceTree = "<group>"; };
 		63923159273D55AC000532C5 /* UIViewController+Snapshot.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController+Snapshot.swift"; sourceTree = "<group>"; };
@@ -326,6 +328,7 @@
 			children = (
 				6325F2BC2741F35400C02429 /* Composer */,
 				632B0C94273C274600AA290E /* UserProfileLoaderViewModelAdapter.swift */,
+				63737FDA274B50DD003FD251 /* UserProfileLoaderCacheDecorator.swift */,
 				63F55350270FF26C0002FA50 /* AppDelegate.swift */,
 				63F55352270FF26C0002FA50 /* SceneDelegate.swift */,
 				6325F2B6274107C500C02429 /* UI */,
@@ -617,6 +620,7 @@
 				6325F2D42743F12600C02429 /* UIColor+DarkModeSupport.swift in Sources */,
 				632B0C95273C274700AA290E /* UserProfileLoaderViewModelAdapter.swift in Sources */,
 				63F55353270FF26C0002FA50 /* SceneDelegate.swift in Sources */,
+				63737FDB274B50DD003FD251 /* UserProfileLoaderCacheDecorator.swift in Sources */,
 				6325F2D62744009100C02429 /* ColorPalette.swift in Sources */,
 				632B0C812737F4DB00AA290E /* UserProfileCellController.swift in Sources */,
 				632B0C7F2737E1FD00AA290E /* UITableView+ReusingCell.swift in Sources */,
