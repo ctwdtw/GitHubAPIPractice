@@ -11,16 +11,18 @@ import UIKit
 
 public class UserProfileUIComposer {
     private init() {}
-    public static func make(userProfileLoaderFactory: @escaping () -> UserProfileLoader, avatarImageDataLoader: ImageDataLoader) -> UserProfileViewController {
-        let refreshViewModel = UserProfileRefreshViewModel()
+    public static func make(userProfileLoaderFactory: @escaping () -> UserProfileLoader, avatarImageDataLoader: ImageDataLoader) -> ListViewController {
+        let refreshViewModel = RefreshViewModel()
         
         let profileViewModelAdapter = UserProfileLoaderViewModelAdapter(loaderFactory: userProfileLoaderFactory, viewModel: refreshViewModel, imageLoader: avatarImageDataLoader)
         
         refreshViewModel.loadAction = profileViewModelAdapter.load
         
-        let refresher = UserProfileRefreshController(viewModel: refreshViewModel)
+        let refresher = RefreshController(viewModel: refreshViewModel)
         
-        let userProfileController = UserProfileViewController(refreshController: refresher)
+        let userProfileController = ListViewController(refreshController: refresher)
+        
+        userProfileController.prototypeCellInstances = [UserProfileCell()]
         
         refreshViewModel.onRefreshed = { [weak userProfileController] tableModel in
             userProfileController?.display(tableModel)

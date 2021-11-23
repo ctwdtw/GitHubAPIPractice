@@ -1,5 +1,5 @@
 //
-//  UserProfileViewController+TestHelpers.swift
+//  ListViewController+TestHelpers.swift
 //  GitHubAPIAppTests
 //
 //  Created by Paul Lee on 2021/11/15.
@@ -8,7 +8,7 @@
 import UIKit
 import GitHubAPIApp
 
-extension UserProfileViewController {
+extension ListViewController {
     func userInitiatedLoadAction() {
         refreshControl?.sendActions(for: .valueChanged)
     }

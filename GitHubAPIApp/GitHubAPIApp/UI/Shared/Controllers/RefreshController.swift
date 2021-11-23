@@ -1,5 +1,5 @@
 //
-//  UserProfileRefreshController.swift
+//  RefreshController.swift
 //  GitHubAPIApp
 //
 //  Created by Paul Lee on 2021/11/7.
@@ -8,12 +8,12 @@
 import UIKit
 import GitHubAPI
 
-public class UserProfileRefreshController: NSObject {
+public class RefreshController: NSObject {
     private lazy var refreshControl: UIRefreshControl = binded(UIRefreshControl())
     
-    private let viewModel: UserProfileRefreshViewModel
+    private let viewModel: RefreshViewModel
     
-    init(viewModel: UserProfileRefreshViewModel) {
+    init(viewModel: RefreshViewModel) {
         self.viewModel = viewModel
     }
     

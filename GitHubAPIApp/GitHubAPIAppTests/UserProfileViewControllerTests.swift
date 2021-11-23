@@ -411,7 +411,7 @@ class UserProfileViewControllerTests: XCTestCase {
         return UserProfile(id: id, login: login, avatarUrl: avatarUrl, siteAdmin: siteAdmin)
     }
     
-    private func makeSUT(file: StaticString = #file, line: UInt = #line) -> (UserProfileViewController, LoaderSpy) {
+    private func makeSUT(file: StaticString = #file, line: UInt = #line) -> (ListViewController, LoaderSpy) {
         let loaderSpy = LoaderSpy()
         let sut = UserProfileUIComposer.make(userProfileLoaderFactory: { loaderSpy }, avatarImageDataLoader: loaderSpy)
         trackForMemoryLeak(loaderSpy, file: file, line: line)
@@ -533,7 +533,7 @@ class UserProfileViewControllerTests: XCTestCase {
         }
     }
 
-    private func assertThat(_ sut: UserProfileViewController,
+    private func assertThat(_ sut: ListViewController,
                             rendering userProfiles: [UserProfile],
                             file: StaticString = #filePath,
                             line: UInt = #line
@@ -545,7 +545,7 @@ class UserProfileViewControllerTests: XCTestCase {
         }
     }
     
-    private func assertThat(_ sut: UserProfileViewController, hasViewConfiguredFor userProfile: UserProfile, at idx: Int, file: StaticString = #filePath, line: UInt = #line) {
+    private func assertThat(_ sut: ListViewController, hasViewConfiguredFor userProfile: UserProfile, at idx: Int, file: StaticString = #filePath, line: UInt = #line) {
         let view = sut.userProfileView(at: idx)
         guard let cell =  view as? UserProfileCell else {
             return XCTFail("receive \(String(describing: view)) instead, but expect it to be \(UserProfileCell.self) instance at index: \(idx), but got", file: file, line: line)

@@ -1,5 +1,5 @@
 //
-//  UserProfileViewController.swift
+//  ListViewController.swift
 //  GitHubAPIApp
 //
 //  Created by Paul Lee on 2021/10/8.
@@ -8,13 +8,15 @@
 import UIKit
 import GitHubAPI
 
-public class UserProfileViewController: UITableViewController, UITableViewDataSourcePrefetching {
+public class ListViewController: UITableViewController, UITableViewDataSourcePrefetching {
+    
+    public var prototypeCellInstances: [UITableViewCell] = []
     
     public typealias TableModel = [[CellController]]
     
     private var loadingControllers: [IndexPath: CellController] = [:]
     
-    private var refresher: UserProfileRefreshController?
+    private var refresher: RefreshController?
 
     private var tableModel: TableModel = [[]] {
         didSet {
@@ -22,7 +24,7 @@ public class UserProfileViewController: UITableViewController, UITableViewDataSo
         }
     }
     
-    convenience init(refreshController: UserProfileRefreshController) {
+    convenience init(refreshController: RefreshController) {
         self.init()
         self.refresher = refreshController
     }
@@ -41,7 +43,9 @@ public class UserProfileViewController: UITableViewController, UITableViewDataSo
     
     private func configureTableView() {
         tableView.prefetchDataSource = self
-        tableView.registerCell(type: UserProfileCell.self)
+        prototypeCellInstances.forEach { cell in
+            tableView.registerCell(cell)
+        }
     }
     
     private func configureRefreshControl() {

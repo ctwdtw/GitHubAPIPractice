@@ -24,10 +24,10 @@
 		632B0C7D2737D76F00AA290E /* UserProfileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632B0C7C2737D76F00AA290E /* UserProfileCell.swift */; };
 		632B0C7F2737E1FD00AA290E /* UITableView+ReusingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632B0C7E2737E1FD00AA290E /* UITableView+ReusingCell.swift */; };
 		632B0C812737F4DB00AA290E /* UserProfileCellController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632B0C802737F4DB00AA290E /* UserProfileCellController.swift */; };
-		632B0C83273805AB00AA290E /* UserProfileRefreshController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632B0C82273805AB00AA290E /* UserProfileRefreshController.swift */; };
+		632B0C83273805AB00AA290E /* RefreshController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632B0C82273805AB00AA290E /* RefreshController.swift */; };
 		632B0C8527395ADD00AA290E /* UserProfileUIComposer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632B0C8427395ADD00AA290E /* UserProfileUIComposer.swift */; };
 		632B0C89273A78C600AA290E /* UserProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632B0C88273A78C600AA290E /* UserProfileViewModel.swift */; };
-		632B0C8B273A914D00AA290E /* UserProfileRefreshViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632B0C8A273A914D00AA290E /* UserProfileRefreshViewModel.swift */; };
+		632B0C8B273A914D00AA290E /* RefreshViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632B0C8A273A914D00AA290E /* RefreshViewModel.swift */; };
 		632B0C95273C274700AA290E /* UserProfileLoaderViewModelAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632B0C94273C274600AA290E /* UserProfileLoaderViewModelAdapter.swift */; };
 		63547AA9272BB699001CE31F /* GitHubAPI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63547AA8272BB699001CE31F /* GitHubAPI.framework */; };
 		63547AAA272BB699001CE31F /* GitHubAPI.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 63547AA8272BB699001CE31F /* GitHubAPI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -57,7 +57,7 @@
 		63D146CC2746319700C3DB7E /* UserProfileWithLoadMoreError-light.png in Resources */ = {isa = PBXBuildFile; fileRef = 63D146CA2746319700C3DB7E /* UserProfileWithLoadMoreError-light.png */; };
 		63F55351270FF26C0002FA50 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63F55350270FF26C0002FA50 /* AppDelegate.swift */; };
 		63F55353270FF26C0002FA50 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63F55352270FF26C0002FA50 /* SceneDelegate.swift */; };
-		63F55355270FF26C0002FA50 /* UserProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63F55354270FF26C0002FA50 /* UserProfileViewController.swift */; };
+		63F55355270FF26C0002FA50 /* ListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63F55354270FF26C0002FA50 /* ListViewController.swift */; };
 		63F5535A270FF26E0002FA50 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 63F55359270FF26E0002FA50 /* Assets.xcassets */; };
 		63F5535D270FF26E0002FA50 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 63F5535B270FF26E0002FA50 /* LaunchScreen.storyboard */; };
 		D912BA7AF50C4F92249A684A /* Pods_GitHubAPIAppTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 901878BAB19BF7715F5C362B /* Pods_GitHubAPIAppTests.framework */; };
@@ -116,10 +116,10 @@
 		632B0C7C2737D76F00AA290E /* UserProfileCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileCell.swift; sourceTree = "<group>"; };
 		632B0C7E2737E1FD00AA290E /* UITableView+ReusingCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableView+ReusingCell.swift"; sourceTree = "<group>"; };
 		632B0C802737F4DB00AA290E /* UserProfileCellController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileCellController.swift; sourceTree = "<group>"; };
-		632B0C82273805AB00AA290E /* UserProfileRefreshController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileRefreshController.swift; sourceTree = "<group>"; };
+		632B0C82273805AB00AA290E /* RefreshController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefreshController.swift; sourceTree = "<group>"; };
 		632B0C8427395ADD00AA290E /* UserProfileUIComposer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileUIComposer.swift; sourceTree = "<group>"; };
 		632B0C88273A78C600AA290E /* UserProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileViewModel.swift; sourceTree = "<group>"; };
-		632B0C8A273A914D00AA290E /* UserProfileRefreshViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileRefreshViewModel.swift; sourceTree = "<group>"; };
+		632B0C8A273A914D00AA290E /* RefreshViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefreshViewModel.swift; sourceTree = "<group>"; };
 		632B0C94273C274600AA290E /* UserProfileLoaderViewModelAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileLoaderViewModelAdapter.swift; sourceTree = "<group>"; };
 		63547A94272A9CE4001CE31F /* GitHubAPI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = GitHubAPI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		63547A9C272BB3E7001CE31F /* GitHubAPI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = GitHubAPI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -149,7 +149,7 @@
 		63F5534D270FF26C0002FA50 /* GitHubAPIApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GitHubAPIApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		63F55350270FF26C0002FA50 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		63F55352270FF26C0002FA50 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		63F55354270FF26C0002FA50 /* UserProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileViewController.swift; sourceTree = "<group>"; };
+		63F55354270FF26C0002FA50 /* ListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListViewController.swift; sourceTree = "<group>"; };
 		63F55359270FF26E0002FA50 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		63F5535C270FF26E0002FA50 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		63F5535E270FF26E0002FA50 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -225,10 +225,9 @@
 		6325F2B7274107D600C02429 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
-				632B0C7E2737E1FD00AA290E /* UITableView+ReusingCell.swift */,
-				6325F2D32743F12600C02429 /* UIColor+DarkModeSupport.swift */,
-				63D146BF2746270800C3DB7E /* UITableView+DummyHelpers.swift */,
-				63923154273CE70E000532C5 /* CellController.swift */,
+				634DE998274CF10B000FC6E2 /* Helpers */,
+				634DE997274CF0FF000FC6E2 /* ViewModels */,
+				634DE996274CF0F1000FC6E2 /* Controllers */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -252,6 +251,34 @@
 			path = TestHelpers;
 			sourceTree = "<group>";
 		};
+		634DE996274CF0F1000FC6E2 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				632B0C82273805AB00AA290E /* RefreshController.swift */,
+				63F55354270FF26C0002FA50 /* ListViewController.swift */,
+				63923154273CE70E000532C5 /* CellController.swift */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		634DE997274CF0FF000FC6E2 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				632B0C8A273A914D00AA290E /* RefreshViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		634DE998274CF10B000FC6E2 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				632B0C7E2737E1FD00AA290E /* UITableView+ReusingCell.swift */,
+				6325F2D32743F12600C02429 /* UIColor+DarkModeSupport.swift */,
+				63D146BF2746270800C3DB7E /* UITableView+DummyHelpers.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
 		63737FDE274BB9D2003FD251 /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -264,7 +291,6 @@
 		63737FDF274BB9FD003FD251 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
-				632B0C8A273A914D00AA290E /* UserProfileRefreshViewModel.swift */,
 				632B0C88273A78C600AA290E /* UserProfileViewModel.swift */,
 				63737FDC274B5167003FD251 /* LoadMoreViewModel.swift */,
 			);
@@ -274,8 +300,6 @@
 		63737FE0274BBCE3003FD251 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				632B0C82273805AB00AA290E /* UserProfileRefreshController.swift */,
-				63F55354270FF26C0002FA50 /* UserProfileViewController.swift */,
 				632B0C802737F4DB00AA290E /* UserProfileCellController.swift */,
 				63D146C527462E3300C3DB7E /* LoadMoreCellController.swift */,
 			);
@@ -637,8 +661,8 @@
 				63D146C627462E3300C3DB7E /* LoadMoreCellController.swift in Sources */,
 				632B0C7D2737D76F00AA290E /* UserProfileCell.swift in Sources */,
 				6325F2B42741073300C02429 /* UserProfileLoader.swift in Sources */,
-				632B0C83273805AB00AA290E /* UserProfileRefreshController.swift in Sources */,
-				63F55355270FF26C0002FA50 /* UserProfileViewController.swift in Sources */,
+				632B0C83273805AB00AA290E /* RefreshController.swift in Sources */,
+				63F55355270FF26C0002FA50 /* ListViewController.swift in Sources */,
 				63D146C02746270800C3DB7E /* UITableView+DummyHelpers.swift in Sources */,
 				63D146C827462E5300C3DB7E /* LoadMoreCell.swift in Sources */,
 				63923155273CE70E000532C5 /* CellController.swift in Sources */,
@@ -653,7 +677,7 @@
 				632B0C7F2737E1FD00AA290E /* UITableView+ReusingCell.swift in Sources */,
 				63737FDD274B5167003FD251 /* LoadMoreViewModel.swift in Sources */,
 				632B0C89273A78C600AA290E /* UserProfileViewModel.swift in Sources */,
-				632B0C8B273A914D00AA290E /* UserProfileRefreshViewModel.swift in Sources */,
+				632B0C8B273A914D00AA290E /* RefreshViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

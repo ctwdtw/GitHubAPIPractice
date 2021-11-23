@@ -17,6 +17,6 @@ class SceneDelegateTests: XCTestCase {
         sut.configureWindow()
         
         let root = sut.window?.rootViewController
-        XCTAssertTrue(sut.window?.rootViewController is UserProfileViewController, "Expected `UserProfileViewController` as root, got \(String(describing: root)) instead")
+        XCTAssertTrue(sut.window?.rootViewController is ListViewController, "Expected `ListViewController` as root, got \(String(describing: root)) instead")
     }
 }

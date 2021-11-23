@@ -14,11 +14,11 @@ class UserProfileLoaderViewModelAdapter {
     
     private var loader: UserProfileLoader?
     
-    private unowned let viewModel: UserProfileRefreshViewModel
+    private unowned let viewModel: RefreshViewModel
     
     private let imageLoader: ImageDataLoader
     
-    init(loaderFactory: @escaping () -> UserProfileLoader, viewModel: UserProfileRefreshViewModel, imageLoader: ImageDataLoader) {
+    init(loaderFactory: @escaping () -> UserProfileLoader, viewModel: RefreshViewModel, imageLoader: ImageDataLoader) {
         self.loaderFactory = loaderFactory
         self.viewModel = viewModel
         self.imageLoader = imageLoader
@@ -41,8 +41,8 @@ class UserProfileLoaderViewModelAdapter {
         }
     }
     
-    private func cellControllers(_ resource: UserProfileLoader.Resource) -> UserProfileViewController.TableModel {
-        var tableModel: UserProfileViewController.TableModel = []
+    private func cellControllers(_ resource: UserProfileLoader.Resource) -> ListViewController.TableModel {
+        var tableModel: ListViewController.TableModel = []
         
         let profileControllers = resource.userProfiles.map { profile in
             UserProfileCellController(viewModel: UserProfileViewModel(model: profile, imageLoader: imageLoader, imageMapping: { data in

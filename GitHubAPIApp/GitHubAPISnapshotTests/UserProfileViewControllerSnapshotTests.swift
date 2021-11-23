@@ -64,11 +64,11 @@ class UserProfileViewControllerSnapshotTests: XCTestCase {
         assert(snapshot: sut.snapshot(for: .iPhone13(style: .dark)), named: "UserProfileWithLoadMoreError-dark")
     }
     
-    private func emptyUserProfiles() -> UserProfileViewController.TableModel {
+    private func emptyUserProfiles() -> ListViewController.TableModel {
         return [[]]
     }
     
-    private func userProfilesWithContent() -> UserProfileViewController.TableModel {
+    private func userProfilesWithContent() -> ListViewController.TableModel {
         let cellControllers =
         [UserProfileStub(loginAccountText: "login-text", isSiteAdmin: false, avatarImage: UIImage.image(with: .red)),
          UserProfileStub(loginAccountText: "another-login-text", isSiteAdmin: true, avatarImage: UIImage.image(with: .green)),
@@ -78,7 +78,7 @@ class UserProfileViewControllerSnapshotTests: XCTestCase {
         return [cellControllers]
     }
     
-    private func userProfilesWithFailedAvatarLoading() -> UserProfileViewController.TableModel {
+    private func userProfilesWithFailedAvatarLoading() -> ListViewController.TableModel {
         let cellControllers =
         [UserProfileStub(loginAccountText: "login-text", isSiteAdmin: false, avatarImage: nil, shouldRetry: true),
          UserProfileStub(loginAccountText: "another-login-text", isSiteAdmin: true, avatarImage: nil, shouldRetry: true),
@@ -88,7 +88,7 @@ class UserProfileViewControllerSnapshotTests: XCTestCase {
         return [cellControllers]
     }
     
-    private func userProfileWhileAvatarLoading() -> UserProfileViewController.TableModel {
+    private func userProfileWhileAvatarLoading() -> ListViewController.TableModel {
         let cellControllers =
         [UserProfileStub(loginAccountText: "login-text", isSiteAdmin: false, avatarImage: nil, isLoading: true),
          UserProfileStub(loginAccountText: "another-login-text", isSiteAdmin: true, avatarImage: nil, isLoading: true),
@@ -98,22 +98,22 @@ class UserProfileViewControllerSnapshotTests: XCTestCase {
         return [cellControllers]
     }
     
-    private func userProfilesWithLoadMoreIndicator() -> UserProfileViewController.TableModel {
+    private func userProfilesWithLoadMoreIndicator() -> ListViewController.TableModel {
         let profiles = userProfilesWithContent().first!
         let loadMoreController = [CellController(dataSource: LoadMoreStub(isLoading: true))]
         
         return [profiles, loadMoreController]
     }
     
-    private func userProfilesWithLoadMoreError() -> UserProfileViewController.TableModel {
+    private func userProfilesWithLoadMoreError() -> ListViewController.TableModel {
         let profiles = userProfilesWithContent().first!
         let loadMoreController = [CellController(dataSource: LoadMoreStub(errorMessage: "a multi-line\n line1\n line2\n line3\n error message"))]
         
         return [profiles, loadMoreController]
     }
     
-    private func makeSUT() -> UserProfileViewController {
-        let sut = UserProfileViewController()
+    private func makeSUT() -> ListViewController {
+        let sut = ListViewController()
         return sut
     }
     
