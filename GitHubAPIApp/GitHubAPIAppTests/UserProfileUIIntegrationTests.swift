@@ -9,35 +9,7 @@ import XCTest
 import GitHubAPI
 import GitHubAPIApp
 
-/*
-    [v] Load feed automatically when view is presented
-    [v] Allow customer to manually reload feed (pull to refresh)
-    [v] Show a loading indicator while loading feed
-       -> 包含 view is presented 和 user pull to refresh 兩種情況下的 loading,
-          都要考慮 loading indicator
-    [v] Render all loaded feed items (location, image, description)
-    [v] Image loading experience
-        [v] Load when image view is visible (on screen)
-        [v] Cancel when image view is out of screen
-        [v] Show a loading indicator while loading image (shimmer)
-        [v] Option to retry on image download error
-        [v] Preload when image view is near visible
-*/
-
-/*
- [v] Layout
- [v] Infinite Scroll Experience
-     [v] Trigger Load More action on scroll to bottom
-         [v] Only if there are more items to load
-         [v] Only if not already loading
-     [v] Show loading indicator while loading
-     [] Show error message on failure
-       [] Tap on error to retry
- */
-
-class UserProfileViewControllerTests: XCTestCase {
-    // [v] Load feed automatically when view is presented
-    // [v] Allow customer to manually reload feed (pull to refresh)
+class UserProfileUIIntegrationTests: XCTestCase {
     func test__loadUserProfileActions__requestUserProfilesFromLoader() {
         let (sut, loaderSpy) = makeSUT()
         XCTAssertEqual(loaderSpy.loadCount, 0, "expect no loading request before view is loaded")
@@ -78,7 +50,6 @@ class UserProfileViewControllerTests: XCTestCase {
         XCTAssertEqual(loaderSpy.loadMoreCount, 3, "Expect no request after loading all pages")
     }
 
-    // [v] Show a loading indicator while loading feed
     func test__loadingIndicator__isDisplayedProperlyWhileLoadingUserProfile() {
         let (sut, loaderSpy) = makeSUT()
         
@@ -117,7 +88,6 @@ class UserProfileViewControllerTests: XCTestCase {
         XCTAssertFalse(sut.isShowingLoadMoreFeedIndicator, "Expected no loading indicator once user initiated loading completes with error")
     }
     
-    // [v] Image loading experience
     func test__renderingUserProfiles__onLoaderComplete() {
         let item0 = UserProfile(id: 0, login: "user-login-account", avatarUrl: URL(string: "https://any-url.com")!, siteAdmin: false)
         let item1 = UserProfile(id: 1, login: "another-user-login-account", avatarUrl: URL(string: "https://any-url.com")!, siteAdmin: true)
@@ -188,7 +158,6 @@ class UserProfileViewControllerTests: XCTestCase {
         XCTAssertEqual(loaderSpy.loadMoreCount, 2, "expect two load more request when retry load more after previous request complete")
     }
     
-    // [v] Image loading experience
     func test__doesNotAlterRenderedUserProfile__onLoaderCompleteWithFailure() {
         let item0 = makeUserProfile()
         
@@ -206,7 +175,6 @@ class UserProfileViewControllerTests: XCTestCase {
         assertThat(sut, rendering: [item0])
     }
     
-    // [v] Load when image view is visible (on screen)
     func test__loadImage__whenUserProfileViewIsVisible() {
         let item0 = makeUserProfile(avatarUrl: URL(string: "https://a-avatar-url.com")!)
         let item1 = makeUserProfile(avatarUrl: URL(string: "https://another-avatar-url.com")!)
@@ -224,7 +192,6 @@ class UserProfileViewControllerTests: XCTestCase {
         XCTAssertEqual(loaderSpy.avatarUrls, [item0.avatarUrl, item1.avatarUrl], "Expect second request avatar url when second user profile view also become visible")
     }
     
-    // [v] Cancel when image view is out of screen
     func test__cancelLoadImage__whenUserProfileViewIsNotVisibleAnymore() {
         let item0 = makeUserProfile(avatarUrl: URL(string: "https://a-avatar-url.com")!)
         let item1 = makeUserProfile(avatarUrl: URL(string: "https://another-avatar-url.com")!)
@@ -242,7 +209,6 @@ class UserProfileViewControllerTests: XCTestCase {
         XCTAssertEqual(loaderSpy.cancelledAvatarUrls, [item0.avatarUrl, item1.avatarUrl], "Expect second cancelled avatar url request when second user profile view become not visible anymore")
     }
     
-    // [v] Show a loading indicator while loading image (shimmer)
     func test__displayImageLoadingIndicator_whileLoadingImage() {
         let (sut, loaderSpy) = makeSUT()
         
@@ -267,7 +233,6 @@ class UserProfileViewControllerTests: XCTestCase {
         XCTAssertEqual(view1?.isShowingImageLoadingIndicator, true, "Expect loading indicator for second view when avatar image loading is retried.")
     }
     
-    // [v] Image loading experience
     func test__renderLoadedImage__onImageDataLoadingComplete() {
         let image0 = UIImage.image(with: .red).pngData()!
         let image1 = UIImage.image(with: .blue).pngData()!
@@ -291,7 +256,6 @@ class UserProfileViewControllerTests: XCTestCase {
         XCTAssertEqual(view1?.renderedImage, image1, "Expect render image1 on second view when second image loading is complete successfully")
     }
     
-    // [v] Option to retry on image download error
     func test__showRetryActionView__onImageDataLoadingCompleteWithError() {
         let image0 = UIImage.image(with: .red).pngData()!
         let (sut, loaderSpy) = makeSUT()
@@ -318,7 +282,6 @@ class UserProfileViewControllerTests: XCTestCase {
         XCTAssertEqual(view1?.isShowingRetryView, false, "Expect no retry action view for the second view when user initiate a retry action for the second view")
     }
     
-    // [v] Option to retry on image download error
     func test__showRetryActionView__onLoadedInvalidImageData() {
         let image0 = UIImage.image(with: .red).pngData()!
         let invalidImage = Data()
@@ -342,7 +305,6 @@ class UserProfileViewControllerTests: XCTestCase {
         XCTAssertEqual(view1?.isShowingRetryView, true, "Expect retry action view for second view when complete loading second image but with invalid image data")
     }
     
-    // [v] Option to retry on image download error
     func test__retryImageLoadingAction__onTapRetryActionView() {
         let item0 = makeUserProfile()
         let (sut, loaderSpy) = makeSUT()
@@ -359,7 +321,6 @@ class UserProfileViewControllerTests: XCTestCase {
         XCTAssertEqual(loaderSpy.avatarUrls, [item0.avatarUrl, item0.avatarUrl], "Expect two avatar url request for the visible profile view when user initiate a retry action")
     }
     
-    // [v] Preload when image view is near visible
     func test__preloadAvatarImage__whenProfileViewIsNearVisible() {
         let item0 = makeUserProfile()
         let item1 = makeUserProfile()
@@ -376,7 +337,6 @@ class UserProfileViewControllerTests: XCTestCase {
         XCTAssertEqual(loaderSpy.avatarUrls, [item0.avatarUrl, item1.avatarUrl], "Expect second avatar url once second user profile view become near visible")
     }
     
-    // [v] Preload when image view is near visible
     func test__cancelPreloadAvatarImage__whenProfileViewIsNotNearVisible() {
         let item0 = makeUserProfile()
         let item1 = makeUserProfile()
@@ -418,162 +378,5 @@ class UserProfileViewControllerTests: XCTestCase {
         trackForMemoryLeak(sut, file: file, line: line)
         return (sut, loaderSpy)
     }
-    
-    private func trackForMemoryLeak(_ instance: AnyObject, file: StaticString = #filePath, line: UInt = #line) {
-        addTeardownBlock { [weak instance] in
-            XCTAssertNil(instance, file: file, line: line)
-        }
-    }
-    
-    private class LoaderSpy: UserProfileLoader, ImageDataLoader {
-        var loadProfileCompletes: [UserProfileLoader.Complete] = []
-        
-        var loadCount: Int {
-            loadProfileCompletes.count
-        }
-        
-        func load(complete: @escaping UserProfileLoader.Complete) {
-            loadProfileCompletes.append(complete)
-        }
-        
-        func complete(with items: [UserProfile], hasMore: Bool = false, at index: Int, file: StaticString = #filePath, line: UInt = #line) {
-            if let complete = loadProfileCompletes[safe: index] {
-                
-                var loadMore: PaginatedUserProfile.LoadMoreAction!
-                if hasMore {
-                    loadMore = { [weak self] loadMoreComplete in
-                        self?.loadMoreCompletes.append(loadMoreComplete)
-                    }
-                }
-                
-                let resource = UserProfileLoader.Resource.init(
-                    userProfiles: items,
-                    loadMore: loadMore)
-                complete(.success(resource))
-            
-            } else {
-                XCTFail("load completions index out of range", file: file, line: line)
-            
-            }
-        }
-        
-        func complete(with error: Error, at index: Int, file: StaticString = #filePath, line: UInt = #line) {
-            if let complete = loadProfileCompletes[safe: index] {
-                complete(.failure(error))
-            
-            } else {
-                XCTFail("load completions index out of range", file: file, line: line)
-            
-            }
-        }
-        
-        
-        //MARK: - load more
-        var loadMoreCount: Int {
-            loadMoreCompletes.count
-        }
-        
-        private var loadMoreCompletes: [PaginatedUserProfile.Complete] = []
-    
-        func completeLoadMore(with items: [UserProfile] = [], hasMore: Bool, at idx: Int, file: StaticString = #filePath, line: UInt = #line) {
-            guard let loadMoreComplete = loadMoreCompletes[safe: idx] else {
-                XCTFail("load more completions index out of range", file: file, line: line)
-                return
-            }
-            
-            var loadMore: PaginatedUserProfile.LoadMoreAction!
-            if hasMore {
-                loadMore = { [weak self] loadMoreComplete in
-                    self?.loadMoreCompletes.append(loadMoreComplete)
-                }
-            }
-            
-            loadMoreComplete(.success(PaginatedUserProfile(userProfiles: items, loadMore: loadMore)))
-        }
-        
-        func completeLoadMore(with error: Error, at idx: Int, file: StaticString = #filePath, line: UInt = #line) {
-            guard let loadMoreComplete = loadMoreCompletes[safe: idx] else {
-                XCTFail("load more completions index out of range", file: file, line: line)
-                return
-            }
-            
-            loadMoreComplete(.failure(error))
-        }
-        
-        //MARK: - image loading
-        private(set) var avatarUrls: [URL] = []
-        
-        private(set) var cancelledAvatarUrls: [URL] = []
-        
-        private(set) var imageLoadingCompletions = [ImageDataLoader.Complete]()
-        
-        func load(url: URL, complete: @escaping ImageDataLoader.Complete) -> ImageDataTask {
-            avatarUrls.append(url)
-            imageLoadingCompletions.append(complete)
-            return SpyImageDataTask(cancelCallback: { [weak self] in
-                self?.cancelledAvatarUrls.append(url)
-            })
-        }
-        
-        func completeImageLoading(with result: ImageDataLoader.Result, at idx: Int) {
-            if let completion = imageLoadingCompletions[safe: idx] {
-                completion(result)
-            }
-        }
-    }
-    
-    private class SpyImageDataTask: ImageDataTask {
-        private var cancelCallback: (() -> Void)?
-        init(cancelCallback: @escaping ()-> Void) {
-            self.cancelCallback = cancelCallback
-        }
-        func cancel() {
-            cancelCallback?()
-            cancelCallback = nil
-        }
-    }
 
-    private func assertThat(_ sut: ListViewController,
-                            rendering userProfiles: [UserProfile],
-                            file: StaticString = #filePath,
-                            line: UInt = #line
-    ) {
-        XCTAssertEqual(sut.numberOfRenderedUserProfile, userProfiles.count, "receive \(sut.numberOfRenderedUserProfile) user profiles, but expect \(userProfiles.count)", file: file, line: line)
-        
-        userProfiles.enumerated().forEach { (idx, userProfile) in
-            assertThat(sut, hasViewConfiguredFor: userProfile, at: idx, file: file, line: line)
-        }
-    }
-    
-    private func assertThat(_ sut: ListViewController, hasViewConfiguredFor userProfile: UserProfile, at idx: Int, file: StaticString = #filePath, line: UInt = #line) {
-        let view = sut.userProfileView(at: idx)
-        guard let cell =  view as? UserProfileCell else {
-            return XCTFail("receive \(String(describing: view)) instead, but expect it to be \(UserProfileCell.self) instance at index: \(idx), but got", file: file, line: line)
-        }
-        
-        XCTAssertEqual(cell.loginAccountText, userProfile.login, "receive login account text \(String(describing: cell.loginAccountText)), but expect it to be \(userProfile.login) instead.", file: file, line: line)
-        
-        XCTAssertEqual(cell.showSiteAdminLabel, userProfile.siteAdmin, "receive show site admin label to be \(cell.showSiteAdminLabel), but expect it to be \(userProfile.siteAdmin) ", file: file, line: line)
-    }
-    
-    private func anyNSError() -> Error {
-        NSError(domain: "any-ns-error", code: -1, userInfo: nil)
-    }
-
-}
-
-extension Collection {
-    subscript (safe index: Index) -> Element? {
-        return indices.contains(index) ? self[index] : nil
-    }
-}
-
-public extension XCTestCase {
-    func XCTExpected<T: Equatable>(_ expected: T, received: T, message: String, file: StaticString = #filePath, line: UInt = #line) {
-        XCTAssertEqual(expected, received, message, file: file,line: line)
-    }
-    
-    func XCTReceived<T: Equatable>(_ received: T, expected: T, message: String, file: StaticString = #filePath, line: UInt = #line) {
-        XCTAssertEqual(received, expected, file: file,line: line)
-    }
 }
