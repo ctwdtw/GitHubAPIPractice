@@ -8,12 +8,14 @@
 import Foundation
 import GitHubAPI
 
-class RefreshViewModel {
+public class RefreshViewModel {
     var onStartLoading: (() -> Void)?
     
     var onFinishLoading: (() -> Void)?
     
     var onRefreshed: ((ListViewController.TableModel) -> Void)?
     
-    var loadAction: (() -> Void)?
+    public var loadAction: (() -> Void)?
+    
+    public init() {}
 }
