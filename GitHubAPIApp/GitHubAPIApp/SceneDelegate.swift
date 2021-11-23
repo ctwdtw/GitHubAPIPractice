@@ -41,7 +41,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let factory = { [session] in PaginatedRemoteUserProfileLoader(url: url, session: session, mapping: UserProfileMapper().map(_:)) }
         
         let imageDataLoader = RemoteImageDataLoader(session: session)
-        let remoteImageDataLoaderWithCache = UserProfileLoaderCacheDecorator(decoratee: imageDataLoader)
+        let remoteImageDataLoaderWithCache = ImageDataLoaderCacheDecorator(decoratee: imageDataLoader)
         
         let vc = UserProfileUIComposer.make(userProfileLoaderFactory: factory, avatarImageDataLoader: remoteImageDataLoaderWithCache)
         window?.rootViewController = vc

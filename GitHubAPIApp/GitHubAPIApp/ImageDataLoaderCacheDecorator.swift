@@ -1,5 +1,5 @@
 //
-//  UserProfileLoaderCacheDecorator.swift
+//  ImageDataLoaderCacheDecorator.swift
 //  GitHubAPIApp
 //
 //  Created by Paul Lee on 2021/11/22.
@@ -8,7 +8,7 @@
 import Foundation
 import GitHubAPI
 
-class UserProfileLoaderCacheDecorator: ImageDataLoader {
+class ImageDataLoaderCacheDecorator: ImageDataLoader {
     private let decoratee: ImageDataLoader
     
     private var inMemoryCache: [URL: Data] = [:]
