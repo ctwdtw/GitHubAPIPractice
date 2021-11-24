@@ -18,8 +18,10 @@ public class ImageDataLoaderCacheDecorator: ImageDataLoader {
         self.inMemoryCache = cache
     }
     
-    class DecoratorImageDataTask: ImageDataTask {
+    class DecorateeImageDataTaskWrapper: ImageDataTask {
         private var complete: ImageDataLoader.Complete?
+        
+        var task: ImageDataTask?
         
         init(complete: @escaping ImageDataLoader.Complete) {
             self.complete = complete
@@ -31,30 +33,35 @@ public class ImageDataLoaderCacheDecorator: ImageDataLoader {
         }
         
         func cancel() {
+            task?.cancel()
+            task = nil
             complete = nil
         }
     }
     
     public func load(url: URL, complete: @escaping Complete) -> ImageDataTask {
         if let data = inMemoryCache[url] {
-            let task = DecoratorImageDataTask(complete: complete)
+            let task = DecorateeImageDataTaskWrapper(complete: complete)
             task.complete(with: .success(data))
             return task
         }
         
-        let task = decoratee.load(url: url) { [weak self] result in
+        let wrappedTask = DecorateeImageDataTaskWrapper(complete: complete)
+        
+        wrappedTask.task = decoratee.load(url: url) { [weak self] result in
             guard let self = self else { return }
             
             do {
                 let  data = try result.get()
                 self.inMemoryCache[url] = data
-                complete(.success(data))
+                wrappedTask.complete(with: .success(data))
                 
             } catch {
-                complete(.failure(error))
+                wrappedTask.complete(with: .failure(error))
+                
             }
         }
-        
-        return task
+    
+        return wrappedTask
     }
 }

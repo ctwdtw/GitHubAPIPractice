@@ -104,6 +104,21 @@ class ImageDataLoaderCacheDecoratorTests: XCTestCase {
         
         XCTAssertEqual(decorateeSpy.cancelURLs, [url])
     }
+    
+    func test_cancelTask_doesNotDeliverResult() {
+        let (sut, decorateeSpy) = makeSUT()
+
+        var receivedResult: ImageDataLoader.Result?
+        let task = sut.load(url: anyURL()) { result in
+            receivedResult = result
+        }
+
+        task.cancel()
+        
+        decorateeSpy.complete(with: randomImageData())
+
+        XCTAssertNil(receivedResult)
+    }
         
     func test_load_doesNotDeliverResultOnSutDeallocated() {
         let docoratee = DecorateeSpy()
