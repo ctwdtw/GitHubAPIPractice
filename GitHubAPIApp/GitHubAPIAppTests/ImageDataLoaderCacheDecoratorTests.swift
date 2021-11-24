@@ -30,27 +30,18 @@ class ImageDataLoaderCacheDecoratorTests: XCTestCase {
     func test_load_deliverDataOnDecorateeSuccess() {
         let data1 = imageData(color: .red)
         let (sut, decorateeSpy) = makeSUT()
-
-        var receivedData: Data?
-        let _ = sut.load(url: anyURL()) { result in
-            receivedData = try? result.get()
-        }
-
-        decorateeSpy.complete(with: data1)
-
-        XCTAssertEqual(receivedData, data1)
+        
+        assert(sut, receive: .success(data1) , when: {
+            decorateeSpy.complete(with: data1)
+        })
     }
     
     func test_load_deliversErrorOnDecorateeError() {
         let (sut, decorateeSpy) = makeSUT()
 
-        var receivedError: Error?
-        let _ = sut.load(url: anyURL()) { result in
-            receivedError = result.error
-        }
-
-        decorateeSpy.complete(with: anyNSError())
-        XCTAssertEqualError(receivedError, anyNSError())
+        assert(sut, receive: .failure(anyNSError()), when: {
+            decorateeSpy.complete(with: anyNSError())
+        })
     }
     
     func test_load_deliverCachedDataOnNonEmptyCache() {
@@ -62,13 +53,7 @@ class ImageDataLoaderCacheDecoratorTests: XCTestCase {
         ]
         
         let (sut, _) = makeSUT(stubCache: stubCache)
-        
-        var receivedData: Data?
-        _ = sut.load(url: targetURL) { result in
-            receivedData = try? result.get()
-        }
-        
-        XCTAssertEqual(receivedData, targetColorData)
+        assert(sut, loadWith: targetURL, receive: .success(targetColorData))
     }
     
     func test_cacheLoadedData_onDecorateeSuccess() {
@@ -142,8 +127,31 @@ class ImageDataLoaderCacheDecoratorTests: XCTestCase {
         return (sut, spy)
     }
     
-    private func imageData(color: UIColor) -> Data {
-        return UIImage.image(with: color).pngData()!
+    func assert(_ sut: ImageDataLoaderCacheDecorator, loadWith url: URL = anyURL(), receive expectedResult: ImageDataLoader.Result, when action: () -> Void = {}, file: StaticString = #filePath, line: UInt = #line) {
+        
+        let loadAction = { complete in sut.load(url: url, complete: complete) }
+        
+        let exp = expectation(description: "wait for complete")
+        var receivedResult: ImageDataLoader.Result?
+        _ = loadAction { result in
+            exp.fulfill()
+            receivedResult = result
+        }
+        
+        action()
+        
+        wait(for: [exp], timeout: 1.0)
+        
+        switch (receivedResult, expectedResult) {
+        case let (.success(receivedImageData), .success(expectedImageData)):
+            XCTAssertEqual(receivedImageData, expectedImageData, "image data should match", file: file, line: line)
+        
+        case let (.failure(receivedError), .failure(expectedError)):
+            XCTAssertReceivedError(receivedError, equalsTo: expectedError, "received error: \(receivedError), but expect \(expectedError)", file: file, line: line)
+        
+        default:
+            XCTFail("receive \(String(describing: receivedResult)), but expect \(expectedResult)")
+        }
     }
     
     //MARK: - test doulbe
