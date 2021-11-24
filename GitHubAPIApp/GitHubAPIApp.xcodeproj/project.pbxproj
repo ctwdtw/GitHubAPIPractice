@@ -35,6 +35,9 @@
 		634DE9A0274CFAEB000FC6E2 /* XCTestCase+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 634DE99F274CFAEB000FC6E2 /* XCTestCase+Helpers.swift */; };
 		634DE9A2274D0752000FC6E2 /* ImageDataLoaderCacheDecoratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 634DE9A1274D0752000FC6E2 /* ImageDataLoaderCacheDecoratorTests.swift */; };
 		634DE9A4274E29F8000FC6E2 /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 634DE9A3274E29F8000FC6E2 /* Helpers.swift */; };
+		634DE9A6274E4487000FC6E2 /* ImageDataLoaderCacheDecoratorTests+TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 634DE9A5274E4487000FC6E2 /* ImageDataLoaderCacheDecoratorTests+TestHelpers.swift */; };
+		634DE9A8274E4511000FC6E2 /* ImageDataLoaderCacheDecoratorTests+Assertions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 634DE9A7274E4511000FC6E2 /* ImageDataLoaderCacheDecoratorTests+Assertions.swift */; };
+		634DE9AA274E457A000FC6E2 /* ImageDataLoaderCacheDecoratorTests+DecorateeSpy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 634DE9A9274E457A000FC6E2 /* ImageDataLoaderCacheDecoratorTests+DecorateeSpy.swift */; };
 		63547AA9272BB699001CE31F /* GitHubAPI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63547AA8272BB699001CE31F /* GitHubAPI.framework */; };
 		63547AAA272BB699001CE31F /* GitHubAPI.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 63547AA8272BB699001CE31F /* GitHubAPI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		63737FDB274B50DD003FD251 /* ImageDataLoaderCacheDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63737FDA274B50DD003FD251 /* ImageDataLoaderCacheDecorator.swift */; };
@@ -133,6 +136,9 @@
 		634DE99F274CFAEB000FC6E2 /* XCTestCase+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTestCase+Helpers.swift"; sourceTree = "<group>"; };
 		634DE9A1274D0752000FC6E2 /* ImageDataLoaderCacheDecoratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDataLoaderCacheDecoratorTests.swift; sourceTree = "<group>"; };
 		634DE9A3274E29F8000FC6E2 /* Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
+		634DE9A5274E4487000FC6E2 /* ImageDataLoaderCacheDecoratorTests+TestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImageDataLoaderCacheDecoratorTests+TestHelpers.swift"; sourceTree = "<group>"; };
+		634DE9A7274E4511000FC6E2 /* ImageDataLoaderCacheDecoratorTests+Assertions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImageDataLoaderCacheDecoratorTests+Assertions.swift"; sourceTree = "<group>"; };
+		634DE9A9274E457A000FC6E2 /* ImageDataLoaderCacheDecoratorTests+DecorateeSpy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImageDataLoaderCacheDecoratorTests+DecorateeSpy.swift"; sourceTree = "<group>"; };
 		63547A94272A9CE4001CE31F /* GitHubAPI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = GitHubAPI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		63547A9C272BB3E7001CE31F /* GitHubAPI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = GitHubAPI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		63547AA4272BB5FC001CE31F /* Alamofire.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Alamofire.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -264,6 +270,9 @@
 				6325F2BD2742543600C02429 /* UserProfileViewController+TestHelpers.swift */,
 				634DE999274CF8E7000FC6E2 /* UserProfileUIIntegrationTests+LoaderSpy.swift */,
 				634DE99D274CFA5C000FC6E2 /* UserProfileUIIntegrationTests+Assertions.swift */,
+				634DE9A5274E4487000FC6E2 /* ImageDataLoaderCacheDecoratorTests+TestHelpers.swift */,
+				634DE9A7274E4511000FC6E2 /* ImageDataLoaderCacheDecoratorTests+Assertions.swift */,
+				634DE9A9274E457A000FC6E2 /* ImageDataLoaderCacheDecoratorTests+DecorateeSpy.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -706,12 +715,15 @@
 				63D146B32746123F00C3DB7E /* UserProfileCell+TestHelpers.swift in Sources */,
 				63D146B0274611A000C3DB7E /* UserProfileUIIntegrationTests.swift in Sources */,
 				63D146BA2746128E00C3DB7E /* UserProfileViewController+TestHelpers.swift in Sources */,
+				634DE9AA274E457A000FC6E2 /* ImageDataLoaderCacheDecoratorTests+DecorateeSpy.swift in Sources */,
+				634DE9A6274E4487000FC6E2 /* ImageDataLoaderCacheDecoratorTests+TestHelpers.swift in Sources */,
 				634DE9A2274D0752000FC6E2 /* ImageDataLoaderCacheDecoratorTests.swift in Sources */,
 				634DE9A4274E29F8000FC6E2 /* Helpers.swift in Sources */,
 				6325F2B9274138A600C02429 /* SceneDelegateTests.swift in Sources */,
 				634DE9A0274CFAEB000FC6E2 /* XCTestCase+Helpers.swift in Sources */,
 				634DE99E274CFA5C000FC6E2 /* UserProfileUIIntegrationTests+Assertions.swift in Sources */,
 				6325F2C22742617C00C02429 /* UIImage+TestHelpers.swift in Sources */,
+				634DE9A8274E4511000FC6E2 /* ImageDataLoaderCacheDecoratorTests+Assertions.swift in Sources */,
 				634DE99C274CF97C000FC6E2 /* Collection+TestHelpers.swift in Sources */,
 				634DE99A274CF8E7000FC6E2 /* UserProfileUIIntegrationTests+LoaderSpy.swift in Sources */,
 			);
