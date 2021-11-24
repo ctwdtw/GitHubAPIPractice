@@ -8,13 +8,14 @@
 import Foundation
 import GitHubAPI
 
-class ImageDataLoaderCacheDecorator: ImageDataLoader {
+public class ImageDataLoaderCacheDecorator: ImageDataLoader {
     private let decoratee: ImageDataLoader
     
-    private var inMemoryCache: [URL: Data] = [:]
+    public private(set) var inMemoryCache: [URL: Data] = [:]
     
-    init(decoratee: ImageDataLoader) {
+    public init(decoratee: ImageDataLoader, cache: [URL: Data] = [:]) {
         self.decoratee = decoratee
+        self.inMemoryCache = cache
     }
     
     class DecoratorImageDataTask: ImageDataTask {
@@ -34,7 +35,7 @@ class ImageDataLoaderCacheDecorator: ImageDataLoader {
         }
     }
     
-    func load(url: URL, complete: @escaping Complete) -> ImageDataTask {
+    public func load(url: URL, complete: @escaping Complete) -> ImageDataTask {
         if let data = inMemoryCache[url] {
             let task = DecoratorImageDataTask(complete: complete)
             task.complete(with: .success(data))
