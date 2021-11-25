@@ -30,7 +30,7 @@ class UserDetailUIIntegrationTests: UserProfileUIIntegrationTests {
         sut.loadViewIfNeeded()
         XCTAssertTrue(sut.isShowingLoadingIndicator, "expect show loading indicator once view is loaded")
         
-        loaderSpy.complete(with: [], at: 0)
+        loaderSpy.complete(with: makeUserDetail(), at: 0)
         XCTAssertFalse(sut.isShowingLoadingIndicator, "expect hide loading indicator once loading is complete with success")
         
         sut.userInitiatedLoadAction()
@@ -48,7 +48,7 @@ class UserDetailUIIntegrationTests: UserProfileUIIntegrationTests {
         assertThat(sut, rendering: [])
         
         sut.userInitiatedLoadAction()
-        loaderSpy.complete(with: [item0], at: 1)
+        loaderSpy.complete(with: item0, at: 1)
         assertThat(sut, rendering: [item0])
     }
     
@@ -57,7 +57,7 @@ class UserDetailUIIntegrationTests: UserProfileUIIntegrationTests {
         
         let (sut, loaderSpy) = makeSUT()
         sut.loadViewIfNeeded()
-        loaderSpy.complete(with: [item0], at: 0)
+        loaderSpy.complete(with: item0, at: 0)
         assertThat(sut, rendering: [item0])
         
         sut.userInitiatedLoadAction()
@@ -276,9 +276,9 @@ class UserDetailUIIntegrationTests: UserProfileUIIntegrationTests {
             loadDetailCompletes.append(complete)
         }
         
-        func complete(with items: [UserDetail], at index: Int, file: StaticString = #filePath, line: UInt = #line) {
+        func complete(with item: UserDetail, at index: Int, file: StaticString = #filePath, line: UInt = #line) {
             if let complete = loadDetailCompletes[safe: index] {
-                complete(.success(items))
+                complete(.success(item))
                 
             } else {
                 XCTFail("load completions index out of range", file: file, line: line)

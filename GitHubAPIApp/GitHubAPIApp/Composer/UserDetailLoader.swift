@@ -9,7 +9,7 @@ import Foundation
 import GitHubAPI
 
 public protocol UserDetailLoader {
-    typealias Resource = [UserDetail]
+    typealias Resource = UserDetail
     typealias Result = Swift.Result<Resource, Swift.Error>
     typealias Complete = (Result) -> Void
     func load(complete: @escaping Complete)
