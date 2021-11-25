@@ -27,14 +27,14 @@ public class UserDetailUIComposer {
         
         let refresher = RefreshController(viewModel: refreshViewModel)
         
-        let userProfileController = ListViewController(refreshController: refresher)
+        let userDetailController = ListViewController(refreshController: refresher)
         
-        refreshViewModel.onRefreshed = { [weak userProfileController] tableModel in
-            userProfileController?.display(tableModel)
+        refreshViewModel.onRefreshed = { [weak userDetailController] tableModel in
+            userDetailController?.display(tableModel)
         }
         
-        userProfileController.prototypeCellInstances = [UserProfileCell()]
+        userDetailController.prototypeCellInstances = [UserProfileCell()]
         
-        return userProfileController
+        return userDetailController
     }
 }
