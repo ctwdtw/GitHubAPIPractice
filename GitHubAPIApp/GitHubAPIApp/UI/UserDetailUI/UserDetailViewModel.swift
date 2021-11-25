@@ -9,7 +9,7 @@ import Foundation
 import GitHubAPI
 
 class UserDetailViewModel<Image> {
-    private let model: UserDetailProfile
+    private let model: UserDetail
     
     private let imageLoader: ImageDataLoader
     
@@ -23,7 +23,7 @@ class UserDetailViewModel<Image> {
     
     var onImageLoadingFailure: ((Error) -> Void)?
     
-    init(model: UserDetailProfile, imageLoader: ImageDataLoader, imageMapping: @escaping (Data) throws -> Image) {
+    init(model: UserDetail, imageLoader: ImageDataLoader, imageMapping: @escaping (Data) throws -> Image) {
         self.model = model
         self.imageLoader = imageLoader
         self.imageMapping = imageMapping

@@ -295,8 +295,8 @@ class UserDetailUIIntegrationTests: UserProfileUIIntegrationTests {
         siteAdmin: Bool = false,
         location: String? = nil,
         blog: URL? = nil
-    ) -> UserDetailProfile {
-        return UserDetailProfile(
+    ) -> UserDetail {
+        return UserDetail(
             id: id,
             avatarUrl: avatarUrl,
             name: name,
@@ -317,7 +317,7 @@ class UserDetailUIIntegrationTests: UserProfileUIIntegrationTests {
     }
     
     func assertThat(_ sut: ListViewController,
-                            rendering userProfiles: [UserDetailProfile],
+                            rendering userProfiles: [UserDetail],
                             file: StaticString = #filePath,
                             line: UInt = #line
     ) {
@@ -328,7 +328,7 @@ class UserDetailUIIntegrationTests: UserProfileUIIntegrationTests {
         }
     }
 
-    func assertThat(_ sut: ListViewController, hasViewConfiguredFor userProfile: UserDetailProfile, at idx: Int, file: StaticString = #filePath, line: UInt = #line) {
+    func assertThat(_ sut: ListViewController, hasViewConfiguredFor userProfile: UserDetail, at idx: Int, file: StaticString = #filePath, line: UInt = #line) {
         let view = sut.userProfileView(at: idx)
         guard let cell =  view as? UserProfileCell else {
             return XCTFail("receive \(String(describing: view)) instead, but expect it to be \(UserProfileCell.self) instance at index: \(idx), but got", file: file, line: line)
@@ -350,7 +350,7 @@ class UserDetailUIIntegrationTests: UserProfileUIIntegrationTests {
             loadDetailCompletes.append(complete)
         }
         
-        func complete(with items: [UserDetailProfile], at index: Int, file: StaticString = #filePath, line: UInt = #line) {
+        func complete(with items: [UserDetail], at index: Int, file: StaticString = #filePath, line: UInt = #line) {
             if let complete = loadDetailCompletes[safe: index] {
                 complete(.success(items))
                 

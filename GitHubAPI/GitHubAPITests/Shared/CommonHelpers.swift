@@ -38,7 +38,7 @@ func makeUserDetailProfile(
     siteAdmin: Bool = false,
     location: String? = nil,
     blog: String? = nil
-) -> (model: UserDetailProfile, json: [String: Any?]) {
+) -> (model: UserDetail, json: [String: Any?]) {
     let json: [String: Any?] =
     [ "id": id,
       "avatar_url": avatarUrl,
@@ -55,7 +55,7 @@ func makeUserDetailProfile(
         url = URL(string: blog)
     }
     
-    let model = UserDetailProfile(
+    let model = UserDetail(
         id: id,
         avatarUrl: URL(string: avatarUrl)!,
         name: name,

@@ -36,14 +36,14 @@ public class UserDetailProfileMapper {
     
     public init() {}
     
-    public func map(_ response: DataResponse<Data, AFError>) throws -> [UserDetailProfile] {
+    public func map(_ response: DataResponse<Data, AFError>) throws -> [UserDetail] {
         
         do {
             try validateStatusCode(for: response)
             let data = try response.result.get()
             let remoteProfiles = try decode(of: [RemoteUserDetailProfile].self, data: data)
             return remoteProfiles.map {
-                UserDetailProfile(
+                UserDetail(
                     id: $0.id,
                     avatarUrl: $0.avatar_url,
                     name: $0.name,

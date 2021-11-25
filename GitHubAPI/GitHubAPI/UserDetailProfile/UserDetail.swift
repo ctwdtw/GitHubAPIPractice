@@ -1,12 +1,12 @@
 //
-//  UserDetailProfile.swift
+//  UserDetail.swift
 //  GitHubAPI
 //
 //  Created by Paul Lee on 2021/10/18.
 //
 
 import Foundation
-public struct UserDetailProfile: Equatable {
+public struct UserDetail: Equatable {
     public let id: Int
     public let avatarUrl: URL
     public let name: String?
