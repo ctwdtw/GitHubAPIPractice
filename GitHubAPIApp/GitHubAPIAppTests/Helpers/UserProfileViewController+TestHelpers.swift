@@ -17,12 +17,16 @@ extension ListViewController {
         return refreshControl?.isRefreshing == true
     }
     
-    var numberOfRenderedUserProfile: Int {
-        return tableView.numberOfRows(inSection: userProfileSection)
-    }
-    
     var numberOfRenderedSections: Int {
         return tableView.numberOfSections
+    }
+    
+}
+
+//MARK: - UserProfile
+extension ListViewController {
+    var numberOfRenderedUserProfile: Int {
+        return tableView.numberOfRows(inSection: userProfileSection)
     }
     
     var userProfileSection: Int {
@@ -107,6 +111,37 @@ extension ListViewController {
             return nil
         }
         
+        return cell
+    }
+}
+
+//MARK: - UserDetail
+extension ListViewController {
+    var numberOfRenderedUserDetail: Int {
+        return tableView.numberOfRows(inSection: userDetailSection)
+    }
+    
+    var userDetailSection: Int {
+        return 0
+    }
+    
+    func userDetailView(at row: Int) -> UITableViewCell? {
+        return tableView.dataSource?.tableView(tableView, cellForRowAt: IndexPath(row: row, section: userDetailSection))
+    }
+    
+    @discardableResult
+    func simulateUserDetailViewIsVisible(at idx: Int) -> UserProfileCell? {
+        let indexPath = IndexPath(row: idx, section: userProfileSection)
+        let cell = userProfileView(at: idx) as? UserProfileCell
+        tableView.delegate?.tableView?(tableView, willDisplay: cell!, forRowAt: indexPath)
+        return cell
+    }
+    
+    @discardableResult
+    func simulateUserDetailViewIsNotVisible(at idx: Int) -> UserProfileCell? {
+        let indexPath = IndexPath(row: idx, section: userProfileSection)
+        let cell = simulateUserProfileViewIsVisible(at: idx)
+        tableView.delegate?.tableView?(tableView, didEndDisplaying: cell!, forRowAt: indexPath)
         return cell
     }
     

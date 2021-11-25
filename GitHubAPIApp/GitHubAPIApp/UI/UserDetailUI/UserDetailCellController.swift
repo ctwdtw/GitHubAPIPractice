@@ -24,13 +24,13 @@ class UserDetailCellController: NSObject, UITableViewDataSourcePrefetching, UITa
     
     private let viewModel: UserDetailViewModel<UIImage>
     
-    private var cell: UserProfileCell?
+    private var cell: UserDetailCell?
     
     init(viewModel: UserDetailViewModel<UIImage>) {
         self.viewModel = viewModel
     }
     
-    private func binded(_ cell: UserProfileCell) -> UserProfileCell {
+    private func binded(_ cell: UserDetailCell) -> UserDetailCell {
         cell.loginLabel.text = viewModel.loginAccountText
         cell.siteAdminLabel.isHidden = !viewModel.shouldShowSiteAdminLabel
         cell.onRetry = viewModel.loadImageData

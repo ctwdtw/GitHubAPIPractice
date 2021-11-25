@@ -33,7 +33,7 @@ public class UserDetailUIComposer {
             userDetailController?.display(tableModel)
         }
         
-        userDetailController.prototypeCellInstances = [UserProfileCell()]
+        userDetailController.prototypeCellInstances = [UserDetailCell()]
         
         return userDetailController
     }

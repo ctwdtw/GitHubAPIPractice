@@ -1,13 +1,13 @@
 //
-//  UserProfileCell.swift
+//  UserDetailCell.swift
 //  GitHubAPIApp
 //
-//  Created by Paul Lee on 2021/11/7.
+//  Created by Paul Lee on 2021/11/25.
 //
 
 import UIKit
 
-public class UserProfileCell: UITableViewCell {
+public class UserDetailCell: UITableViewCell {
     private let standardSpace: CGFloat = 8.0
     
     private let avatarWidth: CGFloat = 80
@@ -181,6 +181,5 @@ public class UserProfileCell: UITableViewCell {
         retryButton.backgroundColor = .pink
         retryButton.isHidden = true
     }
-    
-}
 
+}
