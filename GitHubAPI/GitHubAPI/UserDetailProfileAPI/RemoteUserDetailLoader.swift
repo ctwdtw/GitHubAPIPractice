@@ -8,4 +8,4 @@
 import Foundation
 import Alamofire
 
-public typealias RemoteUserDetailLoader = RemoteLoader<[UserDetail]>
+public typealias RemoteUserDetailLoader = RemoteLoader<UserDetail>
