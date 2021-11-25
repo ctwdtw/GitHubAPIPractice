@@ -82,4 +82,4 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 extension PaginatedRemoteUserProfileLoader: UserProfileLoader {}
 
-extension RemoteUserDetailProfileLoader: UserDetailLoader {}
+extension RemoteUserDetailLoader: UserDetailLoader {}

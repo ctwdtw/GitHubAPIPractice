@@ -60,16 +60,16 @@ class LoadUserDetailProfileFromRemoteUseCaseTests: XCTestCase {
         assertThat(sut.load(complete:), receive: .success([model1, model2]))
     }
             
-    func makeSUT(url: URL? = nil) -> RemoteUserDetailProfileLoader {
+    func makeSUT(url: URL? = nil) -> RemoteUserDetailLoader {
         let url = url == nil ? anyURL() : url!
         let config = URLSessionConfiguration.af.default
         config.protocolClasses = [URLProtocolStub.self] + (config.protocolClasses ?? [])
         let session = Session(configuration: config)
-        return RemoteUserDetailProfileLoader(url: url, session: session, mapping: UserDetailProfileMapper().map(_:))
+        return RemoteUserDetailLoader(url: url, session: session, mapping: UserDetailProfileMapper().map(_:))
     }
     
     //MARK: - helpers
-    private typealias LoadAction = ((@escaping RemoteUserDetailProfileLoader.Complete) -> Void)
+    private typealias LoadAction = ((@escaping RemoteUserDetailLoader.Complete) -> Void)
     private func assertThat(_ loadAction: LoadAction, request url: URL, httpMethod: String = "GET", file: StaticString = #filePath, line: UInt = #line) {
         let exp = expectation(description: "wait for request")
         
@@ -87,9 +87,9 @@ class LoadUserDetailProfileFromRemoteUseCaseTests: XCTestCase {
     }
     
     @discardableResult
-    private func assertThat(_ loadAction: LoadAction, receive expectedResult:  RemoteUserDetailProfileLoader.Result, file: StaticString = #filePath, line: UInt = #line) -> RemoteUserDetailProfileLoader.Result? {
+    private func assertThat(_ loadAction: LoadAction, receive expectedResult:  RemoteUserDetailLoader.Result, file: StaticString = #filePath, line: UInt = #line) -> RemoteUserDetailLoader.Result? {
         let exp = expectation(description: "wait for result")
-        var receivedResult: RemoteUserDetailProfileLoader.Result?
+        var receivedResult: RemoteUserDetailLoader.Result?
         loadAction() { result in
             exp.fulfill()
             receivedResult = result
@@ -117,7 +117,7 @@ class LoadUserDetailProfileFromRemoteUseCaseTests: XCTestCase {
 
 private extension RemoteUserDetailProfileLoader {
     @discardableResult
-    func stub(data: Data?, response: HTTPURLResponse?, error: Swift.Error?) -> RemoteUserDetailProfileLoader {
+    func stub(data: Data?, response: HTTPURLResponse?, error: Swift.Error?) -> RemoteUserDetailLoader {
         URLProtocolStub.stub(data: data, response: response, error: error)
         return self
     }
