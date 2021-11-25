@@ -38,6 +38,12 @@
 		634DE9A6274E4487000FC6E2 /* ImageDataLoaderCacheDecoratorTests+TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 634DE9A5274E4487000FC6E2 /* ImageDataLoaderCacheDecoratorTests+TestHelpers.swift */; };
 		634DE9A8274E4511000FC6E2 /* ImageDataLoaderCacheDecoratorTests+Assertions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 634DE9A7274E4511000FC6E2 /* ImageDataLoaderCacheDecoratorTests+Assertions.swift */; };
 		634DE9AA274E457A000FC6E2 /* ImageDataLoaderCacheDecoratorTests+DecorateeSpy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 634DE9A9274E457A000FC6E2 /* ImageDataLoaderCacheDecoratorTests+DecorateeSpy.swift */; };
+		634DE9AC274F51DA000FC6E2 /* UserDetailCellController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 634DE9AB274F51DA000FC6E2 /* UserDetailCellController.swift */; };
+		634DE9B0274F540A000FC6E2 /* UserDetailUIIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 634DE9AF274F540A000FC6E2 /* UserDetailUIIntegrationTests.swift */; };
+		634DE9B3274F9605000FC6E2 /* UserDetailUIComposer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 634DE9B2274F9605000FC6E2 /* UserDetailUIComposer.swift */; };
+		634DE9B5274F9CFD000FC6E2 /* UserDetailLoaderViewModelAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 634DE9B4274F9CFD000FC6E2 /* UserDetailLoaderViewModelAdapter.swift */; };
+		634DE9B7274FAB1F000FC6E2 /* UserDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 634DE9B6274FAB1F000FC6E2 /* UserDetailViewModel.swift */; };
+		634DE9B9274FAD18000FC6E2 /* UserDetailLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 634DE9B8274FAD18000FC6E2 /* UserDetailLoader.swift */; };
 		63547AA9272BB699001CE31F /* GitHubAPI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63547AA8272BB699001CE31F /* GitHubAPI.framework */; };
 		63547AAA272BB699001CE31F /* GitHubAPI.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 63547AA8272BB699001CE31F /* GitHubAPI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		63737FDB274B50DD003FD251 /* ImageDataLoaderCacheDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63737FDA274B50DD003FD251 /* ImageDataLoaderCacheDecorator.swift */; };
@@ -139,6 +145,12 @@
 		634DE9A5274E4487000FC6E2 /* ImageDataLoaderCacheDecoratorTests+TestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImageDataLoaderCacheDecoratorTests+TestHelpers.swift"; sourceTree = "<group>"; };
 		634DE9A7274E4511000FC6E2 /* ImageDataLoaderCacheDecoratorTests+Assertions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImageDataLoaderCacheDecoratorTests+Assertions.swift"; sourceTree = "<group>"; };
 		634DE9A9274E457A000FC6E2 /* ImageDataLoaderCacheDecoratorTests+DecorateeSpy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImageDataLoaderCacheDecoratorTests+DecorateeSpy.swift"; sourceTree = "<group>"; };
+		634DE9AB274F51DA000FC6E2 /* UserDetailCellController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailCellController.swift; sourceTree = "<group>"; };
+		634DE9AF274F540A000FC6E2 /* UserDetailUIIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailUIIntegrationTests.swift; sourceTree = "<group>"; };
+		634DE9B2274F9605000FC6E2 /* UserDetailUIComposer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailUIComposer.swift; sourceTree = "<group>"; };
+		634DE9B4274F9CFD000FC6E2 /* UserDetailLoaderViewModelAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailLoaderViewModelAdapter.swift; sourceTree = "<group>"; };
+		634DE9B6274FAB1F000FC6E2 /* UserDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailViewModel.swift; sourceTree = "<group>"; };
+		634DE9B8274FAD18000FC6E2 /* UserDetailLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailLoader.swift; sourceTree = "<group>"; };
 		63547A94272A9CE4001CE31F /* GitHubAPI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = GitHubAPI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		63547A9C272BB3E7001CE31F /* GitHubAPI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = GitHubAPI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		63547AA4272BB5FC001CE31F /* Alamofire.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Alamofire.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -236,6 +248,7 @@
 			children = (
 				6325F2B7274107D600C02429 /* Shared */,
 				6325F2B5274107A000C02429 /* UseProfileUI */,
+				634DE9AD274F51DF000FC6E2 /* UserDetailUI */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -254,7 +267,9 @@
 			isa = PBXGroup;
 			children = (
 				6325F2B32741073300C02429 /* UserProfileLoader.swift */,
+				634DE9B8274FAD18000FC6E2 /* UserDetailLoader.swift */,
 				632B0C8427395ADD00AA290E /* UserProfileUIComposer.swift */,
+				634DE9B2274F9605000FC6E2 /* UserDetailUIComposer.swift */,
 			);
 			path = Composer;
 			sourceTree = "<group>";
@@ -303,6 +318,31 @@
 				63D146BF2746270800C3DB7E /* UITableView+DummyHelpers.swift */,
 			);
 			path = Helpers;
+			sourceTree = "<group>";
+		};
+		634DE9AD274F51DF000FC6E2 /* UserDetailUI */ = {
+			isa = PBXGroup;
+			children = (
+				634DE9AB274F51DA000FC6E2 /* UserDetailCellController.swift */,
+				634DE9B6274FAB1F000FC6E2 /* UserDetailViewModel.swift */,
+			);
+			path = UserDetailUI;
+			sourceTree = "<group>";
+		};
+		634DE9AE274F53E8000FC6E2 /* UserProfileUI */ = {
+			isa = PBXGroup;
+			children = (
+				63F55367270FF26F0002FA50 /* UserProfileUIIntegrationTests.swift */,
+			);
+			path = UserProfileUI;
+			sourceTree = "<group>";
+		};
+		634DE9B1274F540F000FC6E2 /* UserDetailUI */ = {
+			isa = PBXGroup;
+			children = (
+				634DE9AF274F540A000FC6E2 /* UserDetailUIIntegrationTests.swift */,
+			);
+			path = UserDetailUI;
 			sourceTree = "<group>";
 		};
 		63737FDE274BB9D2003FD251 /* Views */ = {
@@ -405,6 +445,7 @@
 			children = (
 				6325F2BC2741F35400C02429 /* Composer */,
 				632B0C94273C274600AA290E /* UserProfileLoaderViewModelAdapter.swift */,
+				634DE9B4274F9CFD000FC6E2 /* UserDetailLoaderViewModelAdapter.swift */,
 				63737FDA274B50DD003FD251 /* ImageDataLoaderCacheDecorator.swift */,
 				63F55350270FF26C0002FA50 /* AppDelegate.swift */,
 				63F55352270FF26C0002FA50 /* SceneDelegate.swift */,
@@ -420,9 +461,10 @@
 			isa = PBXGroup;
 			children = (
 				6325F2C3274262BF00C02429 /* Helpers */,
-				6325F2B8274138A600C02429 /* SceneDelegateTests.swift */,
-				63F55367270FF26F0002FA50 /* UserProfileUIIntegrationTests.swift */,
 				634DE9A1274D0752000FC6E2 /* ImageDataLoaderCacheDecoratorTests.swift */,
+				6325F2B8274138A600C02429 /* SceneDelegateTests.swift */,
+				634DE9AE274F53E8000FC6E2 /* UserProfileUI */,
+				634DE9B1274F540F000FC6E2 /* UserDetailUI */,
 			);
 			path = GitHubAPIAppTests;
 			sourceTree = "<group>";
@@ -691,15 +733,20 @@
 				632B0C83273805AB00AA290E /* RefreshController.swift in Sources */,
 				63F55355270FF26C0002FA50 /* ListViewController.swift in Sources */,
 				63D146C02746270800C3DB7E /* UITableView+DummyHelpers.swift in Sources */,
+				634DE9B9274FAD18000FC6E2 /* UserDetailLoader.swift in Sources */,
 				63D146C827462E5300C3DB7E /* LoadMoreCell.swift in Sources */,
 				63923155273CE70E000532C5 /* CellController.swift in Sources */,
 				63F55351270FF26C0002FA50 /* AppDelegate.swift in Sources */,
 				632B0C8527395ADD00AA290E /* UserProfileUIComposer.swift in Sources */,
+				634DE9AC274F51DA000FC6E2 /* UserDetailCellController.swift in Sources */,
+				634DE9B5274F9CFD000FC6E2 /* UserDetailLoaderViewModelAdapter.swift in Sources */,
+				634DE9B3274F9605000FC6E2 /* UserDetailUIComposer.swift in Sources */,
 				6325F2D42743F12600C02429 /* UIColor+DarkModeSupport.swift in Sources */,
 				632B0C95273C274700AA290E /* UserProfileLoaderViewModelAdapter.swift in Sources */,
 				63F55353270FF26C0002FA50 /* SceneDelegate.swift in Sources */,
 				63737FDB274B50DD003FD251 /* ImageDataLoaderCacheDecorator.swift in Sources */,
 				6325F2D62744009100C02429 /* ColorPalette.swift in Sources */,
+				634DE9B7274FAB1F000FC6E2 /* UserDetailViewModel.swift in Sources */,
 				632B0C812737F4DB00AA290E /* UserProfileCellController.swift in Sources */,
 				632B0C7F2737E1FD00AA290E /* UITableView+ReusingCell.swift in Sources */,
 				63737FDD274B5167003FD251 /* LoadMoreViewModel.swift in Sources */,
@@ -717,6 +764,7 @@
 				63D146BA2746128E00C3DB7E /* UserProfileViewController+TestHelpers.swift in Sources */,
 				634DE9AA274E457A000FC6E2 /* ImageDataLoaderCacheDecoratorTests+DecorateeSpy.swift in Sources */,
 				634DE9A6274E4487000FC6E2 /* ImageDataLoaderCacheDecoratorTests+TestHelpers.swift in Sources */,
+				634DE9B0274F540A000FC6E2 /* UserDetailUIIntegrationTests.swift in Sources */,
 				634DE9A2274D0752000FC6E2 /* ImageDataLoaderCacheDecoratorTests.swift in Sources */,
 				634DE9A4274E29F8000FC6E2 /* Helpers.swift in Sources */,
 				6325F2B9274138A600C02429 /* SceneDelegateTests.swift in Sources */,
