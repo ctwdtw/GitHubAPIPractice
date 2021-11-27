@@ -130,45 +130,18 @@ public class DetailFieldCell: UITableViewCell {
         }
     }
     
-    private let standardSpace: CGFloat = 8.0
-    
-    private let iconSize: CGFloat = 30.0
-    
-    private lazy var iconImageView: UIImageView = {
-        let view = UIImageView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        contentView.addSubview(view)
-        
-        NSLayoutConstraint.activate([
-            view.heightAnchor.constraint(equalTo: view.widthAnchor),
-            view.heightAnchor.constraint(equalToConstant: iconSize),
-            view.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: standardSpace),
-        ])
-        
-        view.image = icon
-        return view
-    }()
-    
     public var text: String = "" {
         didSet {
             rightView.text = text
         }
     }
     
-    private lazy var rightView: RightLabelView = {
-        let view = RightLabelView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        contentView.addSubview(view)
-        
-        NSLayoutConstraint.activate([
-            view.leadingAnchor.constraint(equalTo: iconImageView.trailingAnchor, constant: standardSpace),
-            view.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -standardSpace),
-            view.topAnchor.constraint(equalTo: contentView.topAnchor, constant: standardSpace),
-            view.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -standardSpace),
-            view.centerYAnchor.constraint(equalTo: iconImageView.centerYAnchor)
-        ])
-        
-        return view
+    private let iconImageView = UIImageView()
+    
+    private let rightView = RightLabelView()
+    
+    private lazy var layout: LeftRightLayout = {
+        LeftRightLayout(leftView: iconImageView, rightView: rightView)
     }()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -182,14 +155,11 @@ public class DetailFieldCell: UITableViewCell {
     }
     
     private func commonInit() {
-        _ = iconImageView
-        _ = rightView
         selectionStyle = .none
+        layout.layout(on: contentView)
     }
     
 }
-
-
 
 class SiteAdminView: UIView {
     private let standardSpace: CGFloat = 8.0
