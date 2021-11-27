@@ -31,7 +31,7 @@ struct LeftRightLayout {
         NSLayoutConstraint.activate([
             leftView.heightAnchor.constraint(equalTo: leftView.widthAnchor),
             leftView.heightAnchor.constraint(equalToConstant: leftViewSize),
-            leftView.leadingAnchor.constraint(equalTo: superView.leadingAnchor, constant: standardSpace),
+            leftView.leadingAnchor.constraint(equalTo: superView.leadingAnchor, constant: standardSpace*4),
         ])
         
         NSLayoutConstraint.activate([

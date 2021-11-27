@@ -8,21 +8,33 @@
 import UIKit
 
 public class SiteAdminCell: UITableViewCell {
-    public var icon: UIImage? = nil {
-        didSet {
-            iconImageView.image = icon
+    public var icon: UIImage? {
+        set {
+            iconImageView.image = newValue
+        }
+        
+        get {
+            iconImageView.image
         }
     }
     
-    public var loginText: String = "" {
-        didSet {
-            siteAdminView.loginText = loginText
+    public var loginText: String {
+        set {
+            siteAdminView.loginText = newValue
+        }
+        
+        get {
+            siteAdminView.loginText
         }
     }
     
-    public var isSiteAdmin: Bool = false {
-        didSet {
-            siteAdminView.isSiteAdmin = isSiteAdmin
+    public var isSiteAdmin: Bool {
+        set {
+            siteAdminView.isSiteAdmin = newValue
+        }
+        
+        get {
+            siteAdminView.isSiteAdmin
         }
     }
     

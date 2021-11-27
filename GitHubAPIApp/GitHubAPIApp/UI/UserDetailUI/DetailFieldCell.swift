@@ -8,15 +8,33 @@
 import UIKit
 
 public class DetailFieldCell: UITableViewCell {
-    public var icon: UIImage? = nil {
-        didSet {
-            iconImageView.image = icon
+    public var icon: UIImage? {
+        set {
+            iconImageView.image = newValue
+        }
+        
+        get {
+            iconImageView.image
         }
     }
     
-    public var text: String = "" {
-        didSet {
-            rightView.text = text
+    public var text: String {
+        set {
+            rightView.text = newValue
+        }
+        
+        get {
+            rightView.text
+        }
+    }
+    
+    public var textColor: UIColor {
+        set {
+            rightView.textColor = newValue
+        }
+        
+        get {
+            rightView.textColor
         }
     }
     
@@ -54,6 +72,12 @@ private class RightLabelView: UIView {
         }
     }
     
+    var textColor: UIColor = .secondaryLabel {
+        didSet {
+            label.textColor = textColor
+        }
+    }
+    
     private lazy var label: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -70,7 +94,7 @@ private class RightLabelView: UIView {
         label.textAlignment = .left
         label.numberOfLines = 0
         label.font = UIFont.systemFont(ofSize: 18.0)
-
+        label.textColor = textColor
         
         return label
     }()
