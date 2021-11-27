@@ -35,17 +35,15 @@ class UserDetailSnapshotTests: XCTestCase {
 }
 
 public class SiteAdminCell: UITableViewCell {
-    private let standardSpace: CGFloat = 8.0
-    
-    private let iconDetailLabelSpace: CGFloat = 24.0
-    
-    private let iconSize: CGFloat = 30.0
-    
     public var icon: UIImage? = nil {
         didSet {
             iconImageView.image = icon
         }
     }
+    
+    private let standardSpace: CGFloat = 8.0
+    
+    private let iconSize: CGFloat = 30.0
     
     private lazy var iconImageView: UIImageView = {
         let view = UIImageView()
@@ -120,21 +118,15 @@ public class SiteAdminCell: UITableViewCell {
 }
 
 public class DetailFieldCell: UITableViewCell {
-    private let standardSpace: CGFloat = 8.0
-    
-    private let iconDetailLabelSpace: CGFloat = 24.0
-    
-    private let iconSize: CGFloat = 30.0
-    
-    private let detailTextSize: CGFloat = 18.0
-    
-    private let fieldLabelHeight: CGFloat = 50.0
-    
     public var icon: UIImage? = nil {
         didSet {
             iconImageView.image = icon
         }
     }
+    
+    private let standardSpace: CGFloat = 8.0
+    
+    private let iconSize: CGFloat = 30.0
     
     private lazy var iconImageView: UIImageView = {
         let view = UIImageView()
@@ -153,28 +145,24 @@ public class DetailFieldCell: UITableViewCell {
     
     public var text: String = "" {
         didSet {
-            fieldLabel.text = text
+            rightView.text = text
         }
     }
     
-    private lazy var fieldLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        contentView.addSubview(label)
+    private lazy var rightView: RightLabelView = {
+        let view = RightLabelView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(view)
         
         NSLayoutConstraint.activate([
-            label.leadingAnchor.constraint(equalTo: iconImageView.trailingAnchor, constant: iconDetailLabelSpace),
-            label.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -standardSpace),
-            label.topAnchor.constraint(equalTo: contentView.topAnchor, constant: standardSpace),
-            label.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -standardSpace),
-            label.heightAnchor.constraint(equalToConstant: fieldLabelHeight),
-            label.centerYAnchor.constraint(equalTo: iconImageView.centerYAnchor)
+            view.leadingAnchor.constraint(equalTo: iconImageView.trailingAnchor, constant: standardSpace),
+            view.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -standardSpace),
+            view.topAnchor.constraint(equalTo: contentView.topAnchor, constant: standardSpace),
+            view.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -standardSpace),
+            view.centerYAnchor.constraint(equalTo: iconImageView.centerYAnchor)
         ])
         
-        label.textAlignment = .left
-        label.numberOfLines = 0
-        label.font = UIFont.systemFont(ofSize: detailTextSize)
-        return label
+        return view
     }()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -189,7 +177,7 @@ public class DetailFieldCell: UITableViewCell {
     
     private func commonInit() {
         _ = iconImageView
-        _ = fieldLabel
+        _ = rightView
         selectionStyle = .none
     }
     
@@ -296,3 +284,34 @@ class SiteAdminView: UIView {
     }
 }
 
+class RightLabelView: UIView {
+    private let standardSpace: CGFloat = 8.0
+    
+    var text: String = "" {
+        didSet {
+            label.text = text
+        }
+    }
+    
+    private lazy var label: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(label)
+        
+        NSLayoutConstraint.activate([
+            label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16.0),
+            label.trailingAnchor.constraint(equalTo: trailingAnchor),
+            label.topAnchor.constraint(equalTo: topAnchor),
+            label.bottomAnchor.constraint(equalTo: bottomAnchor),
+            label.heightAnchor.constraint(greaterThanOrEqualToConstant: 68)
+        ])
+        
+        label.textAlignment = .left
+        label.numberOfLines = 0
+        label.font = UIFont.systemFont(ofSize: 18.0)
+
+        
+        return label
+    }()
+    
+}
