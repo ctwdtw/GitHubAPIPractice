@@ -34,6 +34,45 @@ class UserDetailSnapshotTests: XCTestCase {
     }
 }
 
+struct LeftRightLayout {
+    private let standardSpace: CGFloat = 8.0
+    
+    private let leftViewSize: CGFloat = 30.0
+    
+    private let leftView: UIView
+    
+    private let rightView: UIView
+    
+    init(leftView: UIView, rightView: UIView) {
+        self.leftView = leftView
+        self.rightView = rightView
+    }
+    
+    func layout(on superView: UIView) {
+        leftView.translatesAutoresizingMaskIntoConstraints = false
+        rightView.translatesAutoresizingMaskIntoConstraints = false
+        
+        superView.addSubview(leftView)
+        superView.addSubview(rightView)
+        
+        NSLayoutConstraint.activate([
+            leftView.heightAnchor.constraint(equalTo: leftView.widthAnchor),
+            leftView.heightAnchor.constraint(equalToConstant: leftViewSize),
+            leftView.leadingAnchor.constraint(equalTo: superView.leadingAnchor, constant: standardSpace),
+        ])
+        
+        NSLayoutConstraint.activate([
+            rightView.leadingAnchor.constraint(equalTo: leftView.trailingAnchor, constant: standardSpace),
+            rightView.trailingAnchor.constraint(equalTo: superView.trailingAnchor, constant: -standardSpace),
+            rightView.topAnchor.constraint(equalTo: superView.topAnchor, constant: standardSpace),
+            rightView.bottomAnchor.constraint(equalTo: superView.bottomAnchor, constant: -standardSpace),
+            rightView.centerYAnchor.constraint(equalTo: leftView.centerYAnchor)
+        ])
+        
+    }
+    
+}
+
 public class SiteAdminCell: UITableViewCell {
     public var icon: UIImage? = nil {
         didSet {
@@ -41,24 +80,11 @@ public class SiteAdminCell: UITableViewCell {
         }
     }
     
-    private let standardSpace: CGFloat = 8.0
-    
-    private let iconSize: CGFloat = 30.0
-    
-    private lazy var iconImageView: UIImageView = {
-        let view = UIImageView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        contentView.addSubview(view)
-        
-        NSLayoutConstraint.activate([
-            view.heightAnchor.constraint(equalTo: view.widthAnchor),
-            view.heightAnchor.constraint(equalToConstant: iconSize),
-            view.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: standardSpace),
-        ])
-        
-        view.image = icon
-        return view
-    }()
+    public var loginText: String = "" {
+        didSet {
+            siteAdminView.loginText = loginText
+        }
+    }
     
     public var isSiteAdmin: Bool = false {
         didSet {
@@ -72,26 +98,12 @@ public class SiteAdminCell: UITableViewCell {
         }
     }
     
-    public var loginText: String = "" {
-        didSet {
-            siteAdminView.loginText = loginText
-        }
-    }
+    private let iconImageView = UIImageView()
     
-    private lazy var siteAdminView: SiteAdminView = {
-        let view = SiteAdminView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        contentView.addSubview(view)
-        
-        NSLayoutConstraint.activate([
-            view.leadingAnchor.constraint(equalTo: iconImageView.trailingAnchor, constant: standardSpace),
-            view.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -standardSpace),
-            view.topAnchor.constraint(equalTo: contentView.topAnchor, constant: standardSpace),
-            view.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -standardSpace),
-            view.centerYAnchor.constraint(equalTo: iconImageView.centerYAnchor)
-        ])
-        
-        return view
+    private let siteAdminView = SiteAdminView()
+    
+    private lazy var layout: LeftRightLayout = {
+        LeftRightLayout(leftView: iconImageView, rightView: siteAdminView)
     }()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -106,15 +118,9 @@ public class SiteAdminCell: UITableViewCell {
     
     private func commonInit() {
         selectionStyle = .none
-        _ = iconImageView
-        _ = siteAdminView
+        layout.layout(on: contentView)
     }
-    
-    public override func layoutSubviews() {
-        super.layoutSubviews()
-        siteAdminView.setNeedsLayout()
-    }
-    
+
 }
 
 public class DetailFieldCell: UITableViewCell {
