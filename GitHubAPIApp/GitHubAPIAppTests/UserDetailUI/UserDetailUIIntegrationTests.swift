@@ -111,11 +111,11 @@ class UserDetailUIIntegrationTests: XCTestCase {
         sut.loadViewIfNeeded()
         loaderSpy.complete(with: makeUserDetail(), at: 0)
         
-        let view0 = sut.simulateAvatarViewIsVisible()
-        XCTAssertEqual(view0?.isShowingImageLoadingIndicator, true, "Expect loading indicator for avatar view while loading avatar image")
+        let avatarView = sut.simulateAvatarViewIsVisible()
+        XCTAssertEqual(avatarView?.isShowingImageLoadingIndicator, true, "Expect loading indicator for avatar view while loading avatar image")
         
         loaderSpy.completeImageLoading(with: .success(randomImageData()), at: 0)
-        XCTAssertEqual(view0?.isShowingImageLoadingIndicator, false, "Expect no loading indicator for avatar view once avatar loading complete successfully")
+        XCTAssertEqual(avatarView?.isShowingImageLoadingIndicator, false, "Expect no loading indicator for avatar view once avatar loading complete successfully")
         
         sut.userInitiatedLoadAction()
         let view1 = sut.simulateAvatarViewIsVisible()
@@ -124,30 +124,24 @@ class UserDetailUIIntegrationTests: XCTestCase {
         loaderSpy.completeImageLoading(with: .failure(anyNSError()), at: 1)
         XCTAssertEqual(view1?.isShowingImageLoadingIndicator, false, "Expect no loading indicator when avatar loading complete with error")
     }
-    /*
-    override func test__renderLoadedImage__onImageDataLoadingComplete() {
+    
+    func test__renderLoadedImage__onImageDataLoadingComplete() {
         let image0 = UIImage.image(with: .red).pngData()!
-        let image1 = UIImage.image(with: .blue).pngData()!
         
         let (sut, loaderSpy) = makeSUT()
         
         sut.loadViewIfNeeded()
-        loaderSpy.complete(with: [makeUserDetail(), makeUserDetail()], at: 0)
+        loaderSpy.complete(with: makeUserDetail(), at: 0)
         
-        let view0 = sut.simulateUserDetailViewIsVisible(at: 0)
-        let view1 = sut.simulateUserDetailViewIsVisible(at: 1)
-        XCTAssertNil(view0?.renderedImage, "Expect no rendered image on first view until first image loading is complete successfully")
-        XCTAssertNil(view1?.renderedImage, "Expect no rendered image on second view until second image loading is complete successfully")
+        let avatarView = sut.simulateAvatarViewIsVisible()
+        
+        XCTAssertNil(avatarView?.renderedImage, "Expect no rendered image on avatar view until image loading is complete successfully")
         
         loaderSpy.completeImageLoading(with: .success(image0), at: 0)
-        XCTAssertEqual(view0?.renderedImage, image0, "Expect rendered image0 on first view when first image loading is complete successfully")
-        XCTAssertNil(view1?.renderedImage, "Expect no image rendering state changed for second view when first image loading is complete successfully")
-        
-        loaderSpy.completeImageLoading(with: .success(image1), at: 1)
-        XCTAssertEqual(view0?.renderedImage, image0, "Expect no image rendering state changed for first view when second image loading is complete successfully")
-        XCTAssertEqual(view1?.renderedImage, image1, "Expect render image1 on second view when second image loading is complete successfully")
+        XCTAssertEqual(avatarView?.renderedImage, image0, "Expect rendered image0 on avatar view when first image loading is complete successfully")
     }
     
+    /*
     override func test__showRetryActionView__onImageDataLoadingCompleteWithError() {
         let image0 = UIImage.image(with: .red).pngData()!
         let (sut, loaderSpy) = makeSUT()
