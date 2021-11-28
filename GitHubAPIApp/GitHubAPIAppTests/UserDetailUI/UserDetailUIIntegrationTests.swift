@@ -141,7 +141,6 @@ class UserDetailUIIntegrationTests: XCTestCase {
         XCTAssertEqual(avatarView?.renderedImage, image0, "Expect rendered image0 on avatar view when first image loading is complete successfully")
     }
     
-    
     func test__showRetryActionView__onImageDataLoadingCompleteWithError() {
         let image0 = UIImage.image(with: .red).pngData()!
         let (sut, loaderSpy) = makeSUT()
@@ -164,7 +163,6 @@ class UserDetailUIIntegrationTests: XCTestCase {
         XCTAssertEqual(avatarView1?.isShowingRetryView, true, "Expect retry action view visible for avatar view when image loading complete with error")
     }
     
-    
     func test__showRetryActionView__onLoadedInvalidImageData() {
         let invalidImage = Data()
         let (sut, loaderSpy) = makeSUT()
@@ -179,22 +177,21 @@ class UserDetailUIIntegrationTests: XCTestCase {
         XCTAssertEqual(avatarView?.isShowingRetryView, false, "Expect no change of retry action view visibility for first view when complete loading second image with error")
     }
      
-    /*
-    override func test__retryImageLoadingAction__onTapRetryActionView() {
+    func test__retryImageLoadingAction__onTapRetryActionView() {
         let item0 = makeUserDetail()
         let (sut, loaderSpy) = makeSUT()
         sut.loadViewIfNeeded()
-        loaderSpy.complete(with: [item0], at: 0)
+        loaderSpy.complete(with: item0, at: 0)
         
-        let view0 = sut.simulateUserDetailViewIsVisible(at: 0)
-        XCTAssertEqual(loaderSpy.avatarUrls, [item0.avatarUrl], "Expect one avatar url request for the visible profile view")
+        let avatarView = sut.simulateAvatarViewIsVisible()
+        XCTAssertEqual(loaderSpy.avatarUrls, [item0.avatarUrl], "Expect one avatar url request for the avatar view")
         
         loaderSpy.completeImageLoading(with: .failure(anyNSError()), at: 0)
         XCTAssertEqual(loaderSpy.avatarUrls, [item0.avatarUrl], "Expect no change of avatar url request before user initiate a retry action")
         
-        view0?.simulateTapRetryView()
-        XCTAssertEqual(loaderSpy.avatarUrls, [item0.avatarUrl, item0.avatarUrl], "Expect two avatar url request for the visible profile view when user initiate a retry action")
-    }*/
+        avatarView?.simulateTapRetryView()
+        XCTAssertEqual(loaderSpy.avatarUrls, [item0.avatarUrl, item0.avatarUrl], "Expect two avatar url request for the avatar view when user initiate a retry action")
+    }
     
     private func makeUserDetail(
         id: Int = { Int.random(in: 0...999)  }(),
