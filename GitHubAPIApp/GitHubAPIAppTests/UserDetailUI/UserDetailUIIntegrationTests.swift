@@ -69,24 +69,25 @@ class UserDetailUIIntegrationTests: UserProfileUIIntegrationTests {
         assertThat(sut, hasViewConfiguredFor: item0)
     }
     
-    /*
-    override func test__loadImage__whenUserDetailViewIsVisible() {
+    func test__requestImage__whenAvatarViewIsVisible() {
         let item0 = makeUserDetail(avatarUrl: URL(string: "https://a-avatar-url.com")!)
-        let item1 = makeUserDetail(avatarUrl: URL(string: "https://another-avatar-url.com")!)
         
         let (sut, loaderSpy) = makeSUT()
         sut.loadViewIfNeeded()
-        loaderSpy.complete(with: [item0, item1], at: 0)
+        loaderSpy.complete(with: item0, at: 0)
         
-        XCTAssertEqual(loaderSpy.avatarUrls, [], "Expect no avatar url request until user profile view become visible")
+        XCTAssertEqual(loaderSpy.avatarUrls, [], "Expect no avatar url request until avatar view become visible")
         
-        sut.simulateUserDetailViewIsVisible(at: 0)
-        XCTAssertEqual(loaderSpy.avatarUrls, [item0.avatarUrl], "Expect first avatar url request when first user profile view become visible")
+        sut.simulateAvatarViewIsVisible()
+        XCTAssertEqual(loaderSpy.avatarUrls, [item0.avatarUrl], "Expect one avatar url request when first user profile view become visible")
         
-        sut.simulateUserDetailViewIsVisible(at: 1)
-        XCTAssertEqual(loaderSpy.avatarUrls, [item0.avatarUrl, item1.avatarUrl], "Expect second request avatar url when second user profile view also become visible")
+        sut.userInitiatedLoadAction()
+        loaderSpy.complete(with: item0, at: 1)
+        sut.simulateAvatarViewIsVisible()
+        XCTAssertEqual(loaderSpy.avatarUrls, [item0.avatarUrl, item0.avatarUrl], "Expect request avatar url when reload and avatar view is visible again")
     }
     
+    /*
     override func test__cancelLoadImage__whenUserDetailViewIsNotVisibleAnymore() {
         let item0 = makeUserDetail(avatarUrl: URL(string: "https://a-avatar-url.com")!)
         let item1 = makeUserDetail(avatarUrl: URL(string: "https://another-avatar-url.com")!)

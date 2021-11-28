@@ -121,6 +121,14 @@ extension ListViewController {
         return 0
     }
     
+    var avatarSection: Int {
+        return 0
+    }
+    
+    var avatarRow: Int {
+        return 0
+    }
+    
     func avatarView() -> AvatarCell? {
         userDetailView(at: 0) as? AvatarCell
     }
@@ -142,9 +150,9 @@ extension ListViewController {
     }
     
     @discardableResult
-    func simulateUserDetailViewIsVisible(at idx: Int) -> UserProfileCell? {
-        let indexPath = IndexPath(row: idx, section: userProfileSection)
-        let cell = userProfileView(at: idx) as? UserProfileCell
+    func simulateAvatarViewIsVisible() -> AvatarCell? {
+        let indexPath = IndexPath(row: avatarRow, section: avatarSection)
+        let cell = avatarView()
         tableView.delegate?.tableView?(tableView, willDisplay: cell!, forRowAt: indexPath)
         return cell
     }
