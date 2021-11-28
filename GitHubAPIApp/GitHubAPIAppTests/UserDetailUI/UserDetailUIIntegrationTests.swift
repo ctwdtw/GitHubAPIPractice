@@ -111,18 +111,18 @@ class UserDetailUIIntegrationTests: XCTestCase {
         sut.loadViewIfNeeded()
         loaderSpy.complete(with: makeUserDetail(), at: 0)
         
-        let avatarView = sut.simulateAvatarViewIsVisible()
-        XCTAssertEqual(avatarView?.isShowingImageLoadingIndicator, true, "Expect loading indicator for avatar view while loading avatar image")
+        let avatarView0 = sut.simulateAvatarViewIsVisible()
+        XCTAssertEqual(avatarView0?.isShowingImageLoadingIndicator, true, "Expect loading indicator for avatar view while loading avatar image")
         
         loaderSpy.completeImageLoading(with: .success(randomImageData()), at: 0)
-        XCTAssertEqual(avatarView?.isShowingImageLoadingIndicator, false, "Expect no loading indicator for avatar view once avatar loading complete successfully")
+        XCTAssertEqual(avatarView0?.isShowingImageLoadingIndicator, false, "Expect no loading indicator for avatar view once avatar loading complete successfully")
         
         sut.userInitiatedLoadAction()
-        let view1 = sut.simulateAvatarViewIsVisible()
-        XCTAssertEqual(view1?.isShowingImageLoadingIndicator, true, "Expect loading indicator for avatar view after reloading user detail and avatar view become visible again")
+        let avatarView1 = sut.simulateAvatarViewIsVisible()
+        XCTAssertEqual(avatarView1?.isShowingImageLoadingIndicator, true, "Expect loading indicator for avatar view after reloading user detail and avatar view become visible again")
         
         loaderSpy.completeImageLoading(with: .failure(anyNSError()), at: 1)
-        XCTAssertEqual(view1?.isShowingImageLoadingIndicator, false, "Expect no loading indicator when avatar loading complete with error")
+        XCTAssertEqual(avatarView1?.isShowingImageLoadingIndicator, false, "Expect no loading indicator when avatar loading complete with error")
     }
     
     func test__renderLoadedImage__onImageDataLoadingComplete() {
