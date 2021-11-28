@@ -1,5 +1,5 @@
 //
-//  UserDetailCellController.swift
+//  AvatarCellController.swift
 //  GitHubAPIApp
 //
 //  Created by Paul Lee on 2021/11/25.
@@ -8,7 +8,7 @@
 import UIKit
 import GitHubAPI
 
-class UserDetailCellController: NSObject, UITableViewDataSourcePrefetching, UITableViewDelegate, UITableViewDataSource {
+class AvatarCellController: NSObject, UITableViewDataSourcePrefetching, UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         tableView.dummyNumberOfSection
@@ -22,23 +22,23 @@ class UserDetailCellController: NSObject, UITableViewDataSourcePrefetching, UITa
         return cell!
     }
     
-    private let viewModel: UserDetailViewModel<UIImage>
+    private let viewModel: AvatarViewModel<UIImage>
     
-    private var cell: UserDetailCell?
+    private var cell: AvatarCell?
     
-    init(viewModel: UserDetailViewModel<UIImage>) {
+    init(viewModel: AvatarViewModel<UIImage>) {
         self.viewModel = viewModel
     }
     
-    private func binded(_ cell: UserDetailCell) -> UserDetailCell {
-        cell.loginLabel.text = viewModel.loginAccountText
-        cell.siteAdminLabel.isHidden = !viewModel.shouldShowSiteAdminLabel
+    private func binded(_ cell: AvatarCell) -> AvatarCell {
+        cell.name = viewModel.name
+        
         cell.onRetry = viewModel.loadImageData
         
         viewModel.onImageLoadingStart = { [weak self] in
             guard let cell = self?.cell else { return }
             
-            cell.avatarImageView.image = nil
+            cell.avatarImage = nil
             cell.isLoadingImage = true
             cell.retryButton.isHidden = true
         }
@@ -46,7 +46,7 @@ class UserDetailCellController: NSObject, UITableViewDataSourcePrefetching, UITa
         viewModel.onImageLoadingSuccess = { [weak self] image in
             guard let cell = self?.cell else { return }
             
-            cell.avatarImageView.image = image
+            cell.avatarImage = image
             cell.isLoadingImage = false
             
         }

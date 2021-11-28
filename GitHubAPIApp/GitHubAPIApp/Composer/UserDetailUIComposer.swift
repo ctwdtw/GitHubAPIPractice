@@ -33,7 +33,9 @@ public class UserDetailUIComposer {
             userDetailController?.display(tableModel)
         }
         
-        userDetailController.prototypeCellInstances = [UserDetailCell()]
+        userDetailController.prototypeCellInstances = [
+            AvatarCell(), SiteAdminCell(), DetailFieldCell()
+        ]
         
         return userDetailController
     }

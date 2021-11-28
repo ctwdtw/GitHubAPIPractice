@@ -18,7 +18,7 @@ public class DetailFieldCell: UITableViewCell {
         }
     }
     
-    public var text: String {
+    public var detailText: String? {
         set {
             rightView.text = newValue
         }
@@ -66,9 +66,13 @@ public class DetailFieldCell: UITableViewCell {
 private class RightLabelView: UIView {
     private let standardSpace: CGFloat = 8.0
     
-    var text: String = "" {
-        didSet {
-            label.text = text
+    public var text: String? {
+        set {
+            label.text = newValue
+        }
+        
+        get {
+            label.text
         }
     }
     

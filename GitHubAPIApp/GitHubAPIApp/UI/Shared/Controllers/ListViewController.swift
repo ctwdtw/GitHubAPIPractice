@@ -18,7 +18,7 @@ public class ListViewController: UITableViewController, UITableViewDataSourcePre
     
     private var refresher: RefreshController?
 
-    private var tableModel: TableModel = [[]] {
+    public private(set) var tableModel: TableModel = [[]] {
         didSet {
             tableView.reloadData()
         }

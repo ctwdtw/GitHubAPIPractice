@@ -41,15 +41,19 @@ class UserDetailUIIntegrationTests: UserProfileUIIntegrationTests {
     }
     
     func test__renderingUserDetail__onLoaderComplete() {
-        let item0 = makeUserDetail(id: 0, avatarUrl: URL(string: "https://any-url.com")!, login: "user-login-account", siteAdmin: false)
+        let item = makeUserDetail(id: 0, avatarUrl: URL(string: "https://any-url.com")!, login: "user-login-account", siteAdmin: false)
+        let backendUpdatedItem = makeUserDetail(id: 0, avatarUrl: URL(string: "https://any-url.com")!, login: "user-login-account", siteAdmin: true)
         
         let (sut, loaderSpy) = makeSUT()
         sut.loadViewIfNeeded()
-        assertThat(sut, rendering: [])
+        assertThat(sut, doesNotYetHaveViewConfiguredFor: item)
+        
+        loaderSpy.complete(with: item, at: 0)
+        assertThat(sut, hasViewConfiguredFor: item)
         
         sut.userInitiatedLoadAction()
-        loaderSpy.complete(with: item0, at: 1)
-        assertThat(sut, rendering: [item0])
+        loaderSpy.complete(with: backendUpdatedItem, at: 1)
+        assertThat(sut, hasViewConfiguredFor: backendUpdatedItem)
     }
     
     func test__doesNotAlterRenderedUserDetail__onLoaderCompleteWithFailure() {
@@ -58,11 +62,11 @@ class UserDetailUIIntegrationTests: UserProfileUIIntegrationTests {
         let (sut, loaderSpy) = makeSUT()
         sut.loadViewIfNeeded()
         loaderSpy.complete(with: item0, at: 0)
-        assertThat(sut, rendering: [item0])
+        assertThat(sut, hasViewConfiguredFor: item0)
         
         sut.userInitiatedLoadAction()
         loaderSpy.complete(with: anyNSError(), at: 1)
-        assertThat(sut, rendering: [item0])
+        assertThat(sut, hasViewConfiguredFor: item0)
     }
     
     /*
@@ -242,27 +246,26 @@ class UserDetailUIIntegrationTests: UserProfileUIIntegrationTests {
         return (sut, loaderSpy)
     }
     
-    func assertThat(_ sut: ListViewController,
-                            rendering userDetails: [UserDetail],
-                            file: StaticString = #filePath,
-                            line: UInt = #line
-    ) {
-        XCTAssertEqual(sut.numberOfRenderedUserDetail, userDetails.count, "receive \(sut.numberOfRenderedUserDetail) user profiles, but expect \(userDetails.count)", file: file, line: line)
+    func assertThat(_ sut: ListViewController, hasViewConfiguredFor userDetail: UserDetail, file: StaticString = #filePath, line: UInt = #line) {
+                
+        let avatarView = sut.avatarView()
+        XCTAssertEqual(avatarView?.biography, userDetail.biography, "biography", file: file, line: line)
+        XCTAssertEqual(avatarView?.name, userDetail.name, "name", file: file, line: line)
         
-        userDetails.enumerated().forEach { (idx, userDetail) in
-            assertThat(sut, hasViewConfiguredFor: userDetail, at: idx, file: file, line: line)
-        }
+        let siteAdminView = sut.siteAdminView()
+        XCTAssertEqual(siteAdminView?.loginText, userDetail.login, "login account text", file: file, line: line)
+        XCTAssertEqual(siteAdminView?.isSiteAdmin, userDetail.siteAdmin, "site admin", file: file, line: line)
+        
+        let locationView = sut.locationView()
+        XCTAssertEqual(locationView?.detailText, userDetail.location, "location", file: file, line: line)
+        
+        let blogView = sut.blogView()
+        XCTAssertEqual(blogView?.detailText, userDetail.blog?.absoluteString, "blog address", file: file, line: line)
     }
-
-    func assertThat(_ sut: ListViewController, hasViewConfiguredFor userDetail: UserDetail, at idx: Int, file: StaticString = #filePath, line: UInt = #line) {
-        let view = sut.userDetailView(at: idx)
-        guard let cell =  view as? UserDetailCell else {
-            return XCTFail("receive \(String(describing: view)) instead, but expect it to be \(UserDetailCell.self) instance at index: \(idx), but got", file: file, line: line)
-        }
-        
-        XCTAssertEqual(cell.loginAccountText, userDetail.login, "receive login account text \(String(describing: cell.loginAccountText)), but expect it to be \(userDetail.login) instead.", file: file, line: line)
-        
-        XCTAssertEqual(cell.showSiteAdminLabel, userDetail.siteAdmin, "receive show site admin label to be \(cell.showSiteAdminLabel), but expect it to be \(userDetail.siteAdmin) ", file: file, line: line)
+    
+    func assertThat(_ sut: ListViewController, doesNotYetHaveViewConfiguredFor userDetail: UserDetail, file: StaticString = #filePath, line: UInt = #line) {
+        XCTAssertEqual(sut.numberOfRenderedSections, 1, "one empty section", file: file, line: line)
+        XCTAssertTrue(sut.tableModel[0].isEmpty, "empty rows", file: file, line: line)
     }
     
     class LoaderSpy: UserDetailLoader, ImageDataLoader {

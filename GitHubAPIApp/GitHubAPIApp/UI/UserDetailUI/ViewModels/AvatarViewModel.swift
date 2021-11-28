@@ -1,5 +1,5 @@
 //
-//  UserDetailViewModel.swift
+//  AvatarViewModel.swift
 //  GitHubAPIApp
 //
 //  Created by Paul Lee on 2021/11/25.
@@ -8,7 +8,7 @@
 import Foundation
 import GitHubAPI
 
-class UserDetailViewModel<Image> {
+class AvatarViewModel<Image> {
     private let model: UserDetail
     
     private let imageLoader: ImageDataLoader
@@ -29,12 +29,12 @@ class UserDetailViewModel<Image> {
         self.imageMapping = imageMapping
     }
     
-    var loginAccountText: String {
-        return model.login
+    var name: String? {
+        return model.name
     }
     
-    var shouldShowSiteAdminLabel: Bool {
-        return model.siteAdmin
+    var biography: String? {
+        return model.biography
     }
     
     func loadImageData() {

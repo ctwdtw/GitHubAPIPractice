@@ -42,20 +42,24 @@ class UserDetailLoaderViewModelAdapter {
     }
     
     private func cellControllers(_ resource: UserDetailLoader.Resource) -> ListViewController.TableModel {
-        let detailCellController = UserDetailCellController(
-            viewModel: UserDetailViewModel(
-                model: resource,
-                imageLoader: imageLoader,
-                imageMapping: { data in
-                    if let image = UIImage(data: data) {
-                        return image
-                    } else {
-                        throw ImageDecodingError()
-                    }
-                }
-            )
-        )
+        let controllers = [
+            AvatarCellController(
+                viewModel: AvatarViewModel(
+                    model: resource,
+                    imageLoader: imageLoader,
+                    imageMapping: { data in
+                        if let image = UIImage(data: data) {
+                            return image
+                        } else {
+                            throw ImageDecodingError()
+                        }
+                    })),
+            SiteAdminCellController(viewModel: SiteAdminViewModel(model: resource)),
+            LocationCellController(viewModel: LocationViewModel(model: resource)),
+            BlogCellController(viewModel: BlogViewModel(model: resource))
             
-        return [[CellController(dataSource: detailCellController)]]
+        ].map(CellController.init(dataSource:))
+        
+        return [controllers]
     }
 }

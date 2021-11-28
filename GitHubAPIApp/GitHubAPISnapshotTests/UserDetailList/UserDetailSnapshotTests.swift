@@ -12,7 +12,7 @@ class UserDetailSnapshotTests: XCTestCase {
     func test_detailFieldCell() {
         let sut = TableViewCellSnapshotContainer<DetailFieldCell>(width: .iPhone11, cellConfigurator: { cell in
             cell.icon = UIImage(systemName: "mappin.and.ellipse")
-            cell.text = "San Fransisco"
+            cell.detailText = "San Fransisco"
         })
         
         assert(snapshot: sut.defaultSizeSnapshot(style: .dark), named: "detail-field-cell-dark")
@@ -98,7 +98,7 @@ class UserDetailSnapshotTests: XCTestCase {
         func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
             let cell = DetailFieldCell()
             cell.icon = UIImage(systemName: "mappin.and.ellipse")
-            cell.text = "San Fransisco"
+            cell.detailText = "San Fransisco"
             return cell
         }
     }
@@ -111,7 +111,7 @@ class UserDetailSnapshotTests: XCTestCase {
         func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
             let cell = DetailFieldCell()
             cell.icon = UIImage(systemName: "link")
-            cell.text = "http://chriswanstrath.com/"
+            cell.detailText = "http://chriswanstrath.com/"
             cell.textColor = .link
             return cell
         }

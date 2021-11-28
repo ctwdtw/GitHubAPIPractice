@@ -8,21 +8,13 @@
 import UIKit
 import GitHubAPIApp
 
-extension UserDetailCell {
-    var loginAccountText: String? {
-        return loginLabel.text
-    }
-    
-    var showSiteAdminLabel: Bool {
-        return !siteAdminLabel.isHidden
-    }
-    
+extension AvatarCell {
     var isShowingImageLoadingIndicator: Bool {
         isLoadingImage
     }
     
     var renderedImage: Data? {
-        avatarImageView.image?.pngData()
+        avatarImage?.pngData()
     }
     
     var isShowingRetryView: Bool {
@@ -32,5 +24,13 @@ extension UserDetailCell {
     func simulateTapRetryView() {
         retryButton.sendActions(for: .touchUpInside)
     }
+    
+//    var loginAccountText: String? {
+//        return loginLabel.text
+//    }
+//
+//    var showSiteAdminLabel: Bool {
+//        return !siteAdminLabel.isHidden
+//    }
 }
 

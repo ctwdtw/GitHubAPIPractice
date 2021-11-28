@@ -64,9 +64,66 @@ public class AvatarCell: UITableViewCell {
         return view
     }()
     
-    public var name: String = "" {
-        didSet {
-            nameLabel.text = name
+    public var isLoadingImage: Bool {
+        set {
+            if newValue {
+                imageLoadingIndicator.startAnimating()
+                
+            } else {
+                imageLoadingIndicator.stopAnimating()
+                
+            }
+        }
+        
+        get {
+            imageLoadingIndicator.isAnimating
+        }
+    }
+    
+    private lazy var imageLoadingIndicator: UIActivityIndicatorView = {
+        let view = UIActivityIndicatorView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        avatarImageView.addSubview(view)
+        
+        NSLayoutConstraint.activate([
+            view.centerXAnchor.constraint(equalTo: avatarImageView.centerXAnchor),
+            view.centerYAnchor.constraint(equalTo: avatarImageView.centerYAnchor)
+        ])
+        
+        return view
+    }()
+    
+    private let retryButtonWidth: CGFloat = 80.0
+    
+    public private(set) lazy var retryButton: UIButton = {
+        let btn = UIButton()
+        btn.addTarget(self, action: #selector(retryButtonTouchUpInside), for: .touchUpInside)
+        btn.translatesAutoresizingMaskIntoConstraints = false
+        avatarImageView.addSubview(btn)
+        
+        NSLayoutConstraint.activate([
+            btn.centerXAnchor.constraint(equalTo: avatarImageView.centerXAnchor),
+            btn.centerYAnchor.constraint(equalTo: avatarImageView.centerYAnchor),
+            btn.widthAnchor.constraint(equalToConstant: retryButtonWidth),
+            btn.heightAnchor.constraint(equalTo: btn.widthAnchor)
+        ])
+        
+        return btn
+    }()
+    
+    @objc private func retryButtonTouchUpInside() {
+        onRetry?()
+    }
+    
+    var onRetry: (() -> Void)?
+    
+    public var name: String? {
+        set {
+            nameLabel.text = newValue
+        }
+        
+        get {
+            nameLabel.text
         }
     }
     
@@ -77,9 +134,13 @@ public class AvatarCell: UITableViewCell {
         return label
     }()
     
-    public var biography: String = "" {
-        didSet {
-            biographyLabel.text = biography
+    public var biography: String? {
+        set {
+            biographyLabel.text = newValue
+        }
+        
+        get {
+            biographyLabel.text
         }
     }
     

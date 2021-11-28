@@ -117,15 +117,27 @@ extension ListViewController {
 
 //MARK: - UserDetail
 extension ListViewController {
-    var numberOfRenderedUserDetail: Int {
-        return tableView.numberOfRows(inSection: userDetailSection)
-    }
-    
     var userDetailSection: Int {
         return 0
     }
     
-    func userDetailView(at row: Int) -> UITableViewCell? {
+    func avatarView() -> AvatarCell? {
+        userDetailView(at: 0) as? AvatarCell
+    }
+    
+    func siteAdminView() -> SiteAdminCell? {
+        userDetailView(at: 1) as? SiteAdminCell
+    }
+    
+    func locationView() -> DetailFieldCell? {
+        userDetailView(at: 2) as? DetailFieldCell
+    }
+    
+    func blogView() -> DetailFieldCell? {
+        userDetailView(at: 3) as? DetailFieldCell
+    }
+    
+    private func userDetailView(at row: Int) -> UITableViewCell? {
         return tableView.dataSource?.tableView(tableView, cellForRowAt: IndexPath(row: row, section: userDetailSection))
     }
     
