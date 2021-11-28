@@ -29,7 +29,7 @@ class UserDetailSnapshotTests: XCTestCase {
         assert(snapshot: sut.defaultSizeSnapshot(style: .dark), named: "site-admin-cell-dark")
     }
     
-    func test_AvatarCell() {
+    func test_avatarCell() {
         let sut = TableViewCellSnapshotContainer<AvatarCell>(width: .iPhone11, cellConfigurator: { cell in
             cell.name = "Chris Wanstrath"
             cell.biography = "🍔"
@@ -37,6 +37,16 @@ class UserDetailSnapshotTests: XCTestCase {
         })
         
         assert(snapshot: sut.defaultSizeSnapshot(style: .dark), named: "avatar-cell-dark")
+    }
+    
+    func test_avatarCell_Retry() {
+        let sut = TableViewCellSnapshotContainer<AvatarCell>(width: .iPhone11, cellConfigurator: { cell in
+            cell.name = "Chris Wanstrath"
+            cell.biography = "🍔"
+            cell.shouldRetry = true
+        })
+        
+        assert(snapshot: sut.defaultSizeSnapshot(style: .dark), named: "avatar-cell-retry-dark")
     }
     
     func test_UserDetailViewController() {

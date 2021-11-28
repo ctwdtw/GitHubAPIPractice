@@ -40,7 +40,7 @@ class AvatarCellController: NSObject, UITableViewDataSourcePrefetching, UITableV
             
             cell.avatarImage = nil
             cell.isLoadingImage = true
-            cell.retryButton.isHidden = true
+            cell.shouldRetry = false
         }
         
         viewModel.onImageLoadingSuccess = { [weak self] image in
@@ -55,7 +55,7 @@ class AvatarCellController: NSObject, UITableViewDataSourcePrefetching, UITableV
             guard let cell = self?.cell else { return }
             
             cell.isLoadingImage = false
-            cell.retryButton.isHidden = false
+            cell.shouldRetry = true
         }
         
         return cell

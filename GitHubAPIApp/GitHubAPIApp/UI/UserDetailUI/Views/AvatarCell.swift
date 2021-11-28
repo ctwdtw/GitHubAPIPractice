@@ -95,6 +95,16 @@ public class AvatarCell: UITableViewCell {
     
     private let retryButtonWidth: CGFloat = 80.0
     
+    public var shouldRetry: Bool {
+        get {
+            !retryButton.isHidden
+        }
+        
+        set {
+            retryButton.isHidden = !newValue
+        }
+    }
+    
     public private(set) lazy var retryButton: UIButton = {
         let btn = UIButton()
         btn.addTarget(self, action: #selector(retryButtonTouchUpInside), for: .touchUpInside)
@@ -161,10 +171,21 @@ public class AvatarCell: UITableViewCell {
         commonInit()
     }
     
+    public override func layoutSubviews() {
+        super.layoutSubviews()
+        retryButton.roundCorner(radius: retryButtonWidth/2.0)
+    }
+    
     private func commonInit() {
         _ = stackView
         backgroundColor = UIColor.systemBackground
-        
+        stylingRetryButton()
+    }
+    
+    private func stylingRetryButton() {
+        retryButton.setTitle("Retry", for: .normal)
+        retryButton.backgroundColor = .pink
+        retryButton.isHidden = true
     }
     
 }
