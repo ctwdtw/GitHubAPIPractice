@@ -258,6 +258,64 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		6306CEE627533A6900FC49DD /* UserDetailList */ = {
+			isa = PBXGroup;
+			children = (
+				6306CEE727533A8A00FC49DD /* snapshots */,
+				632EAE882750C7D100803593 /* UserDetailSnapshotTests.swift */,
+			);
+			path = UserDetailList;
+			sourceTree = "<group>";
+		};
+		6306CEE727533A8A00FC49DD /* snapshots */ = {
+			isa = PBXGroup;
+			children = (
+				6306CEE02753330300FC49DD /* avatar-cell-dark.png */,
+				632EAE8D275124D000803593 /* site-admin-cell-dark.png */,
+				6306CEE22753335400FC49DD /* detail-field-cell-dark.png */,
+				6306CED827527DB500FC49DD /* user-detail-dark.png */,
+				6306CED927527DB500FC49DD /* user-detail-light.png */,
+			);
+			path = snapshots;
+			sourceTree = "<group>";
+		};
+		6306CEE827533AA900FC49DD /* UserProfileList */ = {
+			isa = PBXGroup;
+			children = (
+				6306CEE927533AE600FC49DD /* snapshots */,
+				6325F2C52742A16E00C02429 /* UserProfileViewControllerSnapshotTests.swift */,
+			);
+			path = UserProfileList;
+			sourceTree = "<group>";
+		};
+		6306CEE927533AE600FC49DD /* snapshots */ = {
+			isa = PBXGroup;
+			children = (
+				6325F2C72742A6A000C02429 /* EmptyUserProfiles-dark.png */,
+				6325F2C82742A6A000C02429 /* EmptyUserProfiles-light.png */,
+				6325F2CB27434E8A00C02429 /* UserProfilesWithContent-dark.png */,
+				6325F2CC27434E8A00C02429 /* UserProfilesWithContent-light.png */,
+				6325F2CF2743EC7900C02429 /* UserProfileWithFailedAvatarLoading-dark.png */,
+				6325F2D02743EC7900C02429 /* UserProfileWithFailedAvatarLoading-light.png */,
+				6325F2D72744C88E00C02429 /* UserProfileWhileAvatarLoading-dark.png */,
+				6325F2D82744C88E00C02429 /* UserProfileWhileAvatarLoading-light.png */,
+				63D146C127462A5200C3DB7E /* UserProfileWithLoadMoreIndicator-dark.png */,
+				63D146C227462A5200C3DB7E /* UserProfileWithLoadMoreIndicator-light.png */,
+				63D146C92746319700C3DB7E /* UserProfileWithLoadMoreError-dark.png */,
+				63D146CA2746319700C3DB7E /* UserProfileWithLoadMoreError-light.png */,
+			);
+			path = snapshots;
+			sourceTree = "<group>";
+		};
+		6306CEEA27533AF900FC49DD /* UserProfileCell */ = {
+			isa = PBXGroup;
+			children = (
+				63923163273D593A000532C5 /* snapshots */,
+				63923161273D57BA000532C5 /* UserProfileCellSnapshotTest.swift */,
+			);
+			path = UserProfileCell;
+			sourceTree = "<group>";
+		};
 		6325F2B5274107A000C02429 /* UseProfileUI */ = {
 			isa = PBXGroup;
 			children = (
@@ -412,23 +470,6 @@
 				6392316C273E6ED7000532C5 /* UserProfileCell-avatarLoading.png */,
 				63923169273E6807000532C5 /* UserProfileCell-siteAdmin.png */,
 				63923168273E6807000532C5 /* UserProfileCell.png */,
-				6325F2C72742A6A000C02429 /* EmptyUserProfiles-dark.png */,
-				6325F2C82742A6A000C02429 /* EmptyUserProfiles-light.png */,
-				6325F2CB27434E8A00C02429 /* UserProfilesWithContent-dark.png */,
-				6325F2CC27434E8A00C02429 /* UserProfilesWithContent-light.png */,
-				6325F2CF2743EC7900C02429 /* UserProfileWithFailedAvatarLoading-dark.png */,
-				6325F2D02743EC7900C02429 /* UserProfileWithFailedAvatarLoading-light.png */,
-				6325F2D72744C88E00C02429 /* UserProfileWhileAvatarLoading-dark.png */,
-				6325F2D82744C88E00C02429 /* UserProfileWhileAvatarLoading-light.png */,
-				63D146C127462A5200C3DB7E /* UserProfileWithLoadMoreIndicator-dark.png */,
-				63D146C227462A5200C3DB7E /* UserProfileWithLoadMoreIndicator-light.png */,
-				63D146C92746319700C3DB7E /* UserProfileWithLoadMoreError-dark.png */,
-				63D146CA2746319700C3DB7E /* UserProfileWithLoadMoreError-light.png */,
-				6306CEE02753330300FC49DD /* avatar-cell-dark.png */,
-				632EAE8D275124D000803593 /* site-admin-cell-dark.png */,
-				6306CEE22753335400FC49DD /* detail-field-cell-dark.png */,
-				6306CED827527DB500FC49DD /* user-detail-dark.png */,
-				6306CED927527DB500FC49DD /* user-detail-light.png */,
 			);
 			path = snapshots;
 			sourceTree = "<group>";
@@ -437,10 +478,9 @@
 			isa = PBXGroup;
 			children = (
 				63D146BC2746131700C3DB7E /* TestHelpers */,
-				63923163273D593A000532C5 /* snapshots */,
-				63923161273D57BA000532C5 /* UserProfileCellSnapshotTest.swift */,
-				6325F2C52742A16E00C02429 /* UserProfileViewControllerSnapshotTests.swift */,
-				632EAE882750C7D100803593 /* UserDetailSnapshotTests.swift */,
+				6306CEEA27533AF900FC49DD /* UserProfileCell */,
+				6306CEE827533AA900FC49DD /* UserProfileList */,
+				6306CEE627533A6900FC49DD /* UserDetailList */,
 			);
 			path = GitHubAPISnapshotTests;
 			sourceTree = "<group>";
