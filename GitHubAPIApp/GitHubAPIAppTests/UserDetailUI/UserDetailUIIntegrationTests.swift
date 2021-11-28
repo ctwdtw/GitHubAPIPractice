@@ -141,33 +141,30 @@ class UserDetailUIIntegrationTests: XCTestCase {
         XCTAssertEqual(avatarView?.renderedImage, image0, "Expect rendered image0 on avatar view when first image loading is complete successfully")
     }
     
-    /*
-    override func test__showRetryActionView__onImageDataLoadingCompleteWithError() {
+    
+    func test__showRetryActionView__onImageDataLoadingCompleteWithError() {
         let image0 = UIImage.image(with: .red).pngData()!
         let (sut, loaderSpy) = makeSUT()
         
         sut.loadViewIfNeeded()
-        loaderSpy.complete(with: [makeUserDetail(), makeUserDetail()], at: 0)
+        loaderSpy.complete(with: makeUserDetail(), at: 0)
         
-        let view0 = sut.simulateUserDetailViewIsVisible(at: 0)
-        let view1 = sut.simulateUserDetailViewIsVisible(at: 1)
-        
-        XCTAssertEqual(view0?.isShowingRetryView, false, "Expect no retry action view for first view while loading image data")
-        XCTAssertEqual(view1?.isShowingRetryView, false, "Expect no retry action view for second view while loading image data")
+        let avatarView0 = sut.simulateAvatarViewIsVisible()
+        XCTAssertEqual(avatarView0?.isShowingRetryView, false, "Expect no retry action view for avatar view while loading image data")
         
         loaderSpy.completeImageLoading(with: .success(image0), at: 0)
-        XCTAssertEqual(view0?.isShowingRetryView, false, "Expect no retry action view for first view when complete loading first image data successfully")
-        XCTAssertEqual(view1?.isShowingRetryView, false, "Expect no change of retry action view visibility for second view when complete loading first image data successfully")
+        XCTAssertEqual(avatarView0?.isShowingRetryView, false, "Expect no retry action view for avatar view when complete loading first image data successfully")
+        
+        
+        sut.userInitiatedLoadAction()
+        let avatarView1 = sut.simulateAvatarViewIsVisible()
+        XCTAssertEqual(avatarView1?.isShowingRetryView, false, "Expect no retry action view visibility for avatar view when reload user detail and before image loading complete")
         
         loaderSpy.completeImageLoading(with: .failure(anyNSError()), at: 1)
-        XCTAssertEqual(view0?.isShowingRetryView, false, "Expect no change of retry action view visibility for first view when complete loading second image with error")
-        XCTAssertEqual(view1?.isShowingRetryView, true, "Expect retry action view for second view when complete loading second image with error")
-        
-        view1?.simulateTapRetryView()
-        XCTAssertEqual(view0?.isShowingRetryView, false, "Expect no change of retry action view visibility for the first view when user initiate a retry action for the second view")
-        XCTAssertEqual(view1?.isShowingRetryView, false, "Expect no retry action view for the second view when user initiate a retry action for the second view")
+        XCTAssertEqual(avatarView1?.isShowingRetryView, true, "Expect retry action view visible for avatar view when image loading complete with error")
     }
     
+    /*
     override func test__showRetryActionView__onLoadedInvalidImageData() {
         let image0 = UIImage.image(with: .red).pngData()!
         let invalidImage = Data()
