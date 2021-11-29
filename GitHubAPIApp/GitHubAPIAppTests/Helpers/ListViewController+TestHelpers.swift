@@ -158,9 +158,9 @@ extension ListViewController {
     }
     
     @discardableResult
-    func simulateUserDetailViewIsNotVisible(at idx: Int) -> UserProfileCell? {
-        let indexPath = IndexPath(row: idx, section: userProfileSection)
-        let cell = simulateUserProfileViewIsVisible(at: idx)
+    func simulateAvatarViewIsNotVisible() -> AvatarCell? {
+        let indexPath = IndexPath(row: avatarRow, section: avatarSection)
+        let cell = simulateAvatarViewIsVisible()
         tableView.delegate?.tableView?(tableView, didEndDisplaying: cell!, forRowAt: indexPath)
         return cell
     }

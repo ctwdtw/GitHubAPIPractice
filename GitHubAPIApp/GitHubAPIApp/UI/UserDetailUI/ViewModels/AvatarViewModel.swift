@@ -58,4 +58,8 @@ class AvatarViewModel<Image> {
         task?.cancel()
         task = nil
     }
+    
+    deinit {
+        cancelLoadImageData()
+    }
 }

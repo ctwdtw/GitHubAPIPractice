@@ -87,23 +87,35 @@ class UserDetailUIIntegrationTests: XCTestCase {
         XCTAssertEqual(loaderSpy.avatarUrls, [item0.avatarUrl, item0.avatarUrl], "Expect request avatar url when reload and avatar view is visible again")
     }
     
-    /*
-    override func test__cancelLoadImage__whenUserDetailViewIsNotVisibleAnymore() {
+    func test__cancelLoadImage__whenUserDetailViewIsNotVisibleAnymore() {
         let item0 = makeUserDetail(avatarUrl: URL(string: "https://a-avatar-url.com")!)
-        let item1 = makeUserDetail(avatarUrl: URL(string: "https://another-avatar-url.com")!)
         
         let (sut, loaderSpy) = makeSUT()
         sut.loadViewIfNeeded()
-        loaderSpy.complete(with: [item0, item1], at: 0)
+        loaderSpy.complete(with: item0, at: 0)
         
-        XCTAssertEqual(loaderSpy.cancelledAvatarUrls, [], "Expect no cancelled avatar url request until user profile view is not visible")
+        XCTAssertEqual(loaderSpy.cancelledAvatarUrls, [], "Expect no cancelled avatar url request until avatar view is not visible")
         
-        sut.simulateUserDetailViewIsNotVisible(at: 0)
+        sut.simulateAvatarViewIsNotVisible()
         XCTAssertEqual(loaderSpy.cancelledAvatarUrls, [item0.avatarUrl], "Expect first cancelled avatar url request when first user profile view become not visible anymore")
+    }
+    
+    func test_deinit_cancelsRunningRequest() {
+        let item0 = makeUserDetail()
+        let loaderSpy = LoaderSpy()
+        var sut: ListViewController?
+    
+        autoreleasepool {
+            sut = UserDetailUIComposer.make(userDetailLoaderFactory: { loaderSpy }, avatarImageDataLoader: loaderSpy)
+            sut?.loadViewIfNeeded()
+            loaderSpy.complete(with: makeUserDetail(), at: 0)
+            sut?.simulateAvatarViewIsVisible()
+            XCTAssertEqual(loaderSpy.avatarUrls, [item0.avatarUrl], "Expect one avatar url request when first user profile view become visible")
+        }
         
-        sut.simulateUserDetailViewIsNotVisible(at: 1)
-        XCTAssertEqual(loaderSpy.cancelledAvatarUrls, [item0.avatarUrl, item1.avatarUrl], "Expect second cancelled avatar url request when second user profile view become not visible anymore")
-    }*/
+        sut = nil
+        XCTAssertEqual(loaderSpy.cancelledAvatarUrls, [item0.avatarUrl])
+    }
     
     func test__displayImageLoadingIndicator_whileLoadingImage() {
         let (sut, loaderSpy) = makeSUT()
@@ -308,5 +320,5 @@ class UserDetailUIIntegrationTests: XCTestCase {
             cancelCallback = nil
         }
     }
-
+    
 }
