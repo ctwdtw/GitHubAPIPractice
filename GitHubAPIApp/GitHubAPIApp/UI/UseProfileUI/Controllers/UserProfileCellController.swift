@@ -26,8 +26,11 @@ class UserProfileCellController: NSObject, UITableViewDataSourcePrefetching, UIT
     
     private var cell: UserProfileCell?
     
-    init(viewModel: UserProfileViewModel<UIImage>) {
+    private let selection: () -> Void
+    
+    init(viewModel: UserProfileViewModel<UIImage>, selection: @escaping () -> Void) {
         self.viewModel = viewModel
+        self.selection = selection
     }
     
     private func binded(_ cell: UserProfileCell) -> UserProfileCell {
@@ -71,6 +74,10 @@ class UserProfileCellController: NSObject, UITableViewDataSourcePrefetching, UIT
     
     func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         cancelLoad()
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        selection()
     }
     
     private func preload() {

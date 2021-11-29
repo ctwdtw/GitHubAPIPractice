@@ -43,10 +43,17 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let imageDataLoader = RemoteImageDataLoader(session: session)
         let remoteImageDataLoaderWithCache = ImageDataLoaderCacheDecorator(decoratee: imageDataLoader)
         
-        let vc = UserProfileUIComposer.make(userProfileLoaderFactory: factory, avatarImageDataLoader: remoteImageDataLoaderWithCache)
+        let vc = UserProfileUIComposer.make(
+            onSelectProfile: showUserDetail(for:),
+            userProfileLoaderFactory: factory,
+            avatarImageDataLoader: remoteImageDataLoaderWithCache)
+        
         window?.rootViewController = vc
         window?.makeKeyAndVisible()
-
+    }
+    
+    func showUserDetail(for userProfile: UserProfile) {
+        
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

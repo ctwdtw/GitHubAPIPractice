@@ -113,6 +113,11 @@ extension ListViewController {
         
         return cell
     }
+    
+    func simulateTapOnProfile(at idx: Int) {
+        let indexPath = IndexPath(row: idx, section: userProfileSection)
+        tableView.delegate?.tableView?(tableView, didSelectRowAt: indexPath)
+    }
 }
 
 //MARK: - UserDetail
