@@ -18,6 +18,28 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         return Session(configuration: config)
     }()
     
+    lazy var imageDataLoader = RemoteImageDataLoader(session: session)
+    
+    lazy var remoteImageDataLoaderWithCache = ImageDataLoaderCacheDecorator(decoratee: imageDataLoader)
+    
+    lazy var firstProfilePageURL = URL(string: "https://api.github.com/users?since=0&per_page=20")!
+    
+    lazy var profileLoaderFactory = { [session, firstProfilePageURL] in
+        PaginatedRemoteUserProfileLoader(
+            url: firstProfilePageURL,
+            session: session,
+            mapping: UserProfileMapper().map(_:))
+    }
+    
+    lazy var navigationController: UINavigationController = {
+        let vc = UserProfileUIComposer.make(
+            onSelectProfile: showUserDetail(for:),
+            userProfileLoaderFactory: profileLoaderFactory,
+            avatarImageDataLoader: remoteImageDataLoaderWithCache)
+        
+        return UINavigationController(rootViewController: vc)
+    }()
+    
     convenience init(session: Session) {
         self.init()
         self.session = session
@@ -33,21 +55,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
     
     func configureWindow() {
-        let url = URL(string: "https://api.github.com/users?since=0&per_page=20")!
-    
-        let factory = { [session] in PaginatedRemoteUserProfileLoader(url: url, session: session, mapping: UserProfileMapper().map(_:)) }
-        
-        let imageDataLoader = RemoteImageDataLoader(session: session)
-        let remoteImageDataLoaderWithCache = ImageDataLoaderCacheDecorator(decoratee: imageDataLoader)
-        
-        let vc = UserProfileUIComposer.make(
-            onSelectProfile: showUserDetail(for:),
-            userProfileLoaderFactory: factory,
-            avatarImageDataLoader: remoteImageDataLoaderWithCache)
-        
-        let navc = UINavigationController(rootViewController: vc)
-        
-        window?.rootViewController = navc
+        window?.rootViewController = navigationController
         window?.makeKeyAndVisible()
     }
     
