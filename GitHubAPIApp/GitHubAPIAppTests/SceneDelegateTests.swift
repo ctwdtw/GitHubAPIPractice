@@ -18,10 +18,9 @@ class SceneDelegateTests: XCTestCase {
         sut.configureWindow()
         
         let root = sut.window?.rootViewController
-        let top = (root as? UINavigationController)?.topViewController
-        
         XCTAssertTrue(sut.window?.rootViewController is UINavigationController, "Expected `UINavigationController` as root, got \(String(describing: root)) instead")
         
+        let top = (root as? UINavigationController)?.topViewController
         XCTAssertTrue(top is ListViewController, "Expect `ListViewController` as top view controller but got \(String(describing: top)) instead")
     }
     
