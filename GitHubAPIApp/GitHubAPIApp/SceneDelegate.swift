@@ -60,8 +60,17 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
     
     func showUserDetail(for userProfile: UserProfile) {
+        let url = URL(string: "https://api.github.com/users/\(userProfile.login)")!
+        let vc = UserDetailUIComposer.make(
+            userDetailLoaderFactory:
+                { RemoteUserDetailLoader(
+                    url: url,
+                    mapping: UserDetailMapper().map(_:))
+                },
+            avatarImageDataLoader: imageDataLoader
+        )
         
-        
+        navigationController.pushViewController(vc, animated: true)
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
