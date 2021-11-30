@@ -34,10 +34,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     func configureWindow() {
         let url = URL(string: "https://api.github.com/users?since=0&per_page=20")!
-        
-        //let loader = RemoteLoader<UserProfileURLPackage>(url: url, session: session, mapping: UserProfileMapper().map(_:))
-        //let loader = PaginatedRemoteUserProfileLoader(url: url, session: session, mapping: UserProfileMapper().map(_:))
-        
+    
         let factory = { [session] in PaginatedRemoteUserProfileLoader(url: url, session: session, mapping: UserProfileMapper().map(_:)) }
         
         let imageDataLoader = RemoteImageDataLoader(session: session)
@@ -48,11 +45,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             userProfileLoaderFactory: factory,
             avatarImageDataLoader: remoteImageDataLoaderWithCache)
         
-        window?.rootViewController = vc
+        let navc = UINavigationController(rootViewController: vc)
+        
+        window?.rootViewController = navc
         window?.makeKeyAndVisible()
     }
     
     func showUserDetail(for userProfile: UserProfile) {
+        
         
     }
 
