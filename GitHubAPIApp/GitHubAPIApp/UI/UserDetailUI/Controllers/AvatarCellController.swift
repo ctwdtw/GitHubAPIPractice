@@ -16,7 +16,7 @@ class AvatarCellController: NSObject, UITableViewDataSourcePrefetching, UITableV
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         cell = binded(tableView.dequeueReusableCell(for: indexPath))
-        
+        cell?.accessibilityIdentifier = "avatar-cell"
         viewModel.loadImageData()
         
         return cell!
