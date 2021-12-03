@@ -6,17 +6,47 @@
 //
 
 import UIKit
+import GitHubAPI
+import Alamofire
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
-
-
+    
+    lazy var session: Session = {
+        let config = URLSessionConfiguration.ephemeral
+        return Session(configuration: config)
+    }()
+    
+    convenience init(session: Session) {
+        self.init()
+        self.session = session
+    }
+    
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
-        guard let _ = (scene as? UIWindowScene) else { return }
+        guard let scene = (scene as? UIWindowScene) else { return }
+        window = UIWindow(windowScene: scene)
+        configureWindow()
+    }
+    
+    func configureWindow() {
+        let url = URL(string: "https://api.github.com/users?since=0&per_page=20")!
+        
+        //let loader = RemoteLoader<UserProfileURLPackage>(url: url, session: session, mapping: UserProfileMapper().map(_:))
+        //let loader = PaginatedRemoteUserProfileLoader(url: url, session: session, mapping: UserProfileMapper().map(_:))
+        
+        let factory = { [session] in PaginatedRemoteUserProfileLoader(url: url, session: session, mapping: UserProfileMapper().map(_:)) }
+        
+        let imageDataLoader = RemoteImageDataLoader(session: session)
+        let remoteImageDataLoaderWithCache = ImageDataLoaderCacheDecorator(decoratee: imageDataLoader)
+        
+        let vc = UserProfileUIComposer.make(userProfileLoaderFactory: factory, avatarImageDataLoader: remoteImageDataLoaderWithCache)
+        window?.rootViewController = vc
+        window?.makeKeyAndVisible()
+
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
@@ -50,3 +80,4 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 }
 
+extension PaginatedRemoteUserProfileLoader: UserProfileLoader {}
