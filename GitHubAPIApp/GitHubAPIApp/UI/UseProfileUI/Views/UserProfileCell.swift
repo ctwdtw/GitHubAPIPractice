@@ -184,11 +184,3 @@ public class UserProfileCell: UITableViewCell {
     
 }
 
-extension UIView {
-    func roundCorner(radius cornerRadius: CGFloat) {
-        layer.masksToBounds = true
-        layer.cornerRadius = cornerRadius
-    }
-}
-
-

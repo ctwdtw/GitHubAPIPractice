@@ -367,13 +367,32 @@ class UserProfileUIIntegrationTests: XCTestCase {
         XCTAssertNil(queuedReusableCell?.avatarImageView.image)
     }
     
+    func test_notifySelectionHandler_onProfileSelected() {
+        let item0 = makeUserProfile()
+        let item1 = makeUserProfile()
+        let item2 = makeUserProfile()
+        
+        var selectedProfile: [UserProfile] = []
+        let (sut, loaderSpy) = makeSUT(selection: { selectedProfile.append($0)  })
+        sut.loadViewIfNeeded()
+        loaderSpy.complete(with: [item0, item1, item2], at: 0)
+        
+        sut.simulateTapOnProfile(at: 1)
+        
+        XCTAssertEqual(selectedProfile, [item1])
+    }
+    
     private func makeUserProfile(id: Int = { Int.random(in: 0...999)  }(), login: String = "a-user-login-account", avatarUrl: URL = URL(string: "https://any-avatar-url")!, siteAdmin: Bool = false) -> UserProfile {
         return UserProfile(id: id, login: login, avatarUrl: avatarUrl, siteAdmin: siteAdmin)
     }
     
-    private func makeSUT(file: StaticString = #file, line: UInt = #line) -> (ListViewController, LoaderSpy) {
+    private func makeSUT(selection: @escaping (UserProfile) -> Void = { _ in }, file: StaticString = #file, line: UInt = #line) -> (ListViewController, LoaderSpy) {
         let loaderSpy = LoaderSpy()
-        let sut = UserProfileUIComposer.make(userProfileLoaderFactory: { loaderSpy }, avatarImageDataLoader: loaderSpy)
+        let sut = UserProfileUIComposer.make(
+            onSelectProfile: selection,
+            userProfileLoaderFactory: { loaderSpy },
+            avatarImageDataLoader: loaderSpy
+        )
         trackForMemoryLeak(loaderSpy, file: file, line: line)
         trackForMemoryLeak(sut, file: file, line: line)
         return (sut, loaderSpy)

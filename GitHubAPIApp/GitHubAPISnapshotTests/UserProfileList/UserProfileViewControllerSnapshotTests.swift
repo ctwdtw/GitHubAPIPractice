@@ -170,8 +170,7 @@ class UserProfileViewControllerSnapshotTests: XCTestCase {
         
         func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
             cell.isLoading = isLoading
-            cell.errorMessageLabel.isHidden = errorMessage == nil
-            cell.errorMessageLabel.text = errorMessage
+            cell.message = errorMessage
             
             return cell
         }

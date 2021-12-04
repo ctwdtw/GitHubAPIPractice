@@ -17,12 +17,16 @@ extension ListViewController {
         return refreshControl?.isRefreshing == true
     }
     
-    var numberOfRenderedUserProfile: Int {
-        return tableView.numberOfRows(inSection: userProfileSection)
-    }
-    
     var numberOfRenderedSections: Int {
         return tableView.numberOfSections
+    }
+    
+}
+
+//MARK: - UserProfile
+extension ListViewController {
+    var numberOfRenderedUserProfile: Int {
+        return tableView.numberOfRows(inSection: userProfileSection)
     }
     
     var userProfileSection: Int {
@@ -107,6 +111,62 @@ extension ListViewController {
             return nil
         }
         
+        return cell
+    }
+    
+    func simulateTapOnProfile(at idx: Int) {
+        let indexPath = IndexPath(row: idx, section: userProfileSection)
+        tableView.delegate?.tableView?(tableView, didSelectRowAt: indexPath)
+    }
+}
+
+//MARK: - UserDetail
+extension ListViewController {
+    var userDetailSection: Int {
+        return 0
+    }
+    
+    var avatarSection: Int {
+        return 0
+    }
+    
+    var avatarRow: Int {
+        return 0
+    }
+    
+    func avatarView() -> AvatarCell? {
+        userDetailView(at: 0) as? AvatarCell
+    }
+    
+    func siteAdminView() -> SiteAdminCell? {
+        userDetailView(at: 1) as? SiteAdminCell
+    }
+    
+    func locationView() -> DetailFieldCell? {
+        userDetailView(at: 2) as? DetailFieldCell
+    }
+    
+    func blogView() -> DetailFieldCell? {
+        userDetailView(at: 3) as? DetailFieldCell
+    }
+    
+    private func userDetailView(at row: Int) -> UITableViewCell? {
+        return tableView.dataSource?.tableView(tableView, cellForRowAt: IndexPath(row: row, section: userDetailSection))
+    }
+    
+    @discardableResult
+    func simulateAvatarViewIsVisible() -> AvatarCell? {
+        let indexPath = IndexPath(row: avatarRow, section: avatarSection)
+        let cell = avatarView()
+        tableView.delegate?.tableView?(tableView, willDisplay: cell!, forRowAt: indexPath)
+        return cell
+    }
+    
+    @discardableResult
+    func simulateAvatarViewIsNotVisible() -> AvatarCell? {
+        let indexPath = IndexPath(row: avatarRow, section: avatarSection)
+        let cell = simulateAvatarViewIsVisible()
+        tableView.delegate?.tableView?(tableView, didEndDisplaying: cell!, forRowAt: indexPath)
         return cell
     }
     
