@@ -28,6 +28,7 @@ class BlogCellController: NSObject, UITableViewDataSource {
     private func binded(_ cell: DetailFieldCell) -> DetailFieldCell {
         cell.icon = UIImage(systemName: "link")
         cell.detailText = viewModel.siteAddress
+        cell.textColor = .link
         
         return cell
     }

@@ -250,10 +250,10 @@ class UserDetailUIIntegrationTests: XCTestCase {
         XCTAssertEqual(locationView?.detailText, userDetail.location, "location", file: file, line: line)
         XCTAssertNotNil(locationView?.icon, "location view icon", file: file, line: line)
         
-        
         let blogView = sut.blogView()
         XCTAssertEqual(blogView?.detailText, userDetail.blog?.absoluteString, "blog address", file: file, line: line)
         XCTAssertNotNil(blogView?.icon, "blog view icon", file: file, line: line)
+        XCTAssertNotEqual(blogView?.textColor, UILabel().textColor, "should set text color for blog view", file: file, line: line)
     }
     
     func assertThat(_ sut: ListViewController, doesNotYetHaveViewConfiguredFor userDetail: UserDetail, file: StaticString = #filePath, line: UInt = #line) {
