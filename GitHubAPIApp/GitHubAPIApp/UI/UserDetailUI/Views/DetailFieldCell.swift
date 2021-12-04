@@ -66,7 +66,7 @@ public class DetailFieldCell: UITableViewCell {
 private class RightLabelView: UIView {
     private let standardSpace: CGFloat = 8.0
     
-    public var text: String? {
+    var text: String? {
         set {
             label.text = newValue
         }
@@ -76,9 +76,13 @@ private class RightLabelView: UIView {
         }
     }
     
-    var textColor: UIColor = .secondaryLabel {
-        didSet {
-            label.textColor = textColor
+    var textColor: UIColor {
+        set {
+            label.textColor = newValue
+        }
+        
+        get {
+            label.textColor
         }
     }
     
@@ -98,7 +102,6 @@ private class RightLabelView: UIView {
         label.textAlignment = .left
         label.numberOfLines = 0
         label.font = UIFont.systemFont(ofSize: 18.0)
-        label.textColor = textColor
         
         return label
     }()
