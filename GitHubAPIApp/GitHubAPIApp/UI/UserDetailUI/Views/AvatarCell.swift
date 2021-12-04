@@ -27,12 +27,14 @@ public class AvatarCell: UITableViewCell {
         view.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(view)
         
+        let heightConstraint = view.heightAnchor.constraint(equalToConstant: stackViewHeight)
+        heightConstraint.priority = UILayoutPriority(999)
         NSLayoutConstraint.activate([
             view.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             view.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             view.topAnchor.constraint(equalTo: contentView.topAnchor, constant: upPadding),
             view.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -downPadding),
-            view.heightAnchor.constraint(equalToConstant: stackViewHeight)
+            heightConstraint
         ])
         
         view.axis = .vertical
