@@ -244,12 +244,16 @@ class UserDetailUIIntegrationTests: XCTestCase {
         let siteAdminView = sut.siteAdminView()
         XCTAssertEqual(siteAdminView?.loginText, userDetail.login, "login account text", file: file, line: line)
         XCTAssertEqual(siteAdminView?.isSiteAdmin, userDetail.siteAdmin, "site admin", file: file, line: line)
+        XCTAssertNotNil(siteAdminView?.icon, "site admin icon", file: file, line: line)
         
         let locationView = sut.locationView()
         XCTAssertEqual(locationView?.detailText, userDetail.location, "location", file: file, line: line)
+        XCTAssertNotNil(locationView?.icon, "location view icon", file: file, line: line)
+        
         
         let blogView = sut.blogView()
         XCTAssertEqual(blogView?.detailText, userDetail.blog?.absoluteString, "blog address", file: file, line: line)
+        XCTAssertNotNil(blogView?.icon, "blog view icon", file: file, line: line)
     }
     
     func assertThat(_ sut: ListViewController, doesNotYetHaveViewConfiguredFor userDetail: UserDetail, file: StaticString = #filePath, line: UInt = #line) {

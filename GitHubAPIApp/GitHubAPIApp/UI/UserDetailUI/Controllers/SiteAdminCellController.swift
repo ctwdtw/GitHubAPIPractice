@@ -26,6 +26,7 @@ class SiteAdminCellController: NSObject, UITableViewDataSource {
     }
     
     private func binded(_ cell: SiteAdminCell) -> SiteAdminCell {
+        cell.icon = UIImage(systemName: "person.fill")
         cell.loginText = viewModel.loginText
         cell.isSiteAdmin = viewModel.isSiteAdmin
         
