@@ -16,6 +16,7 @@ class UserProfileCellController: NSObject, UITableViewDataSourcePrefetching, UIT
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         cell = binded(tableView.dequeueReusableCell(for: indexPath))
+        cell?.accessibilityIdentifier = "user-profile-cell-\(indexPath.row)"
         
         viewModel.loadImageData()
         
