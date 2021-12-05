@@ -128,6 +128,7 @@ private class SiteAdminView: UIView {
     var isSiteAdmin: Bool = false {
         didSet {
             siteAdminLabel.isHidden = !isSiteAdmin
+            if isSiteAdmin { siteAdminLabel.setNeedsLayout() }
         }
     }
     
