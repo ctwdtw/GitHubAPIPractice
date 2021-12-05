@@ -49,16 +49,6 @@
                ReferencedContainer = "container:GitHubAPIApp.xcodeproj">
             </BuildableReference>
          </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "6306CEFF2756291B00FC49DD"
-               BuildableName = "GitHubAPIUITest.xctest"
-               BlueprintName = "GitHubAPIUITest"
-               ReferencedContainer = "container:GitHubAPIApp.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
