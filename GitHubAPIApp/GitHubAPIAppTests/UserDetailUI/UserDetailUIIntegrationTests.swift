@@ -56,6 +56,29 @@ class UserDetailUIIntegrationTests: XCTestCase {
         assertThat(sut, hasViewConfiguredFor: backendUpdatedItem)
     }
     
+    func test__renderUserDetail__onProfileWithoutLocation() {
+        let item = detailHasNoLocation()
+        
+        let (sut, loaderSpy) = makeSUT()
+        sut.loadViewIfNeeded()
+        
+        loaderSpy.complete(with: item, at: 0)
+        assertThat(sut, hasViewConfigurationExceptLocationFor: item)
+    }
+    
+    private func detailHasNoLocation() -> UserDetail {
+        return UserDetail(
+            id: 0,
+            avatarUrl: anyURL(),
+            name: nil,
+            biography: "a-biography",
+            login: "a-login-text",
+            siteAdmin: false,
+            location: nil,
+            blog: anyURL()
+        )
+    }
+    
     func test__doesNotAlterRenderedUserDetail__onLoaderCompleteWithFailure() {
         let item0 = makeUserDetail()
         
@@ -236,29 +259,47 @@ class UserDetailUIIntegrationTests: XCTestCase {
     }
     
     func assertThat(_ sut: ListViewController, hasViewConfiguredFor userDetail: UserDetail, file: StaticString = #filePath, line: UInt = #line) {
-                
-        let avatarView = sut.avatarView()
-        XCTAssertEqual(avatarView?.biography, userDetail.biography, "biography", file: file, line: line)
-        XCTAssertEqual(avatarView?.name, userDetail.name, "name", file: file, line: line)
-        
-        let siteAdminView = sut.siteAdminView()
-        XCTAssertEqual(siteAdminView?.loginText, userDetail.login, "login account text", file: file, line: line)
-        XCTAssertEqual(siteAdminView?.isSiteAdmin, userDetail.siteAdmin, "site admin", file: file, line: line)
-        XCTAssertNotNil(siteAdminView?.icon, "site admin icon", file: file, line: line)
-        
-        let locationView = sut.locationView()
-        XCTAssertEqual(locationView?.detailText, userDetail.location, "location", file: file, line: line)
-        XCTAssertNotNil(locationView?.icon, "location view icon", file: file, line: line)
-        
-        let blogView = sut.blogView()
-        XCTAssertEqual(blogView?.detailText, userDetail.blog?.absoluteString, "blog address", file: file, line: line)
-        XCTAssertNotNil(blogView?.icon, "blog view icon", file: file, line: line)
-        XCTAssertNotEqual(blogView?.textColor, UILabel().textColor, "should set text color for blog view", file: file, line: line)
+        assertThat(sut, renderAvatarViewAt: 0, for: userDetail, file: file, line: line)
+        assertThat(sut, renderSiteAdminViewAt: 1, for: userDetail, file: file, line: line)
+        assertThat(sut, renderLocationViewAt: 2, for: userDetail, file: file, line: line)
+        assertThat(sut, renderBlogViewAt: 3, for: userDetail, file: file, line: line)
+    }
+
+    func assertThat(_ sut: ListViewController, hasViewConfigurationExceptLocationFor userDetail: UserDetail, file: StaticString = #filePath, line: UInt = #line) {
+        assertThat(sut, renderAvatarViewAt: 0, for: userDetail, file: file, line: line)
+        assertThat(sut, renderSiteAdminViewAt: 1, for: userDetail, file: file, line: line)
+        assertThat(sut, renderBlogViewAt: 2, for: userDetail, file: file, line: line)
     }
     
     func assertThat(_ sut: ListViewController, doesNotYetHaveViewConfiguredFor userDetail: UserDetail, file: StaticString = #filePath, line: UInt = #line) {
         XCTAssertEqual(sut.numberOfRenderedSections, 1, "one empty section", file: file, line: line)
         XCTAssertTrue(sut.tableModel[0].isEmpty, "empty rows", file: file, line: line)
+    }
+    
+    private func assertThat(_ sut: ListViewController, renderAvatarViewAt idx: Int = 0, `for` userDetail: UserDetail, file: StaticString = #filePath, line: UInt = #line) {
+        let avatarView = sut.avatarView(at: idx)
+        XCTAssertEqual(avatarView?.biography, userDetail.biography, "biography", file: file, line: line)
+        XCTAssertEqual(avatarView?.name, userDetail.name, "name", file: file, line: line)
+    }
+    
+    private func assertThat(_ sut: ListViewController, renderSiteAdminViewAt idx: Int = 1, `for` userDetail: UserDetail, file: StaticString = #filePath, line: UInt = #line) {
+        let siteAdminView = sut.siteAdminView(at: idx)
+        XCTAssertEqual(siteAdminView?.loginText, userDetail.login, "login account text", file: file, line: line)
+        XCTAssertEqual(siteAdminView?.isSiteAdmin, userDetail.siteAdmin, "site admin", file: file, line: line)
+        XCTAssertNotNil(siteAdminView?.icon, "site admin icon", file: file, line: line)
+    }
+    
+    private func assertThat(_ sut: ListViewController, renderLocationViewAt idx: Int = 2, `for` userDetail: UserDetail, file: StaticString = #filePath, line: UInt = #line) {
+        let locationView = sut.locationView(at: idx)
+        XCTAssertEqual(locationView?.detailText, userDetail.location, "location", file: file, line: line)
+        XCTAssertNotNil(locationView?.icon, "location view icon", file: file, line: line)
+    }
+    
+    private func assertThat(_ sut: ListViewController, renderBlogViewAt idx: Int = 3, `for` userDetail: UserDetail, file: StaticString = #filePath, line: UInt = #line) {
+        let blogView = sut.blogView(at: idx)
+        XCTAssertEqual(blogView?.detailText, userDetail.blog?.absoluteString, "blog address", file: file, line: line)
+        XCTAssertNotNil(blogView?.icon, "blog view icon", file: file, line: line)
+        XCTAssertNotEqual(blogView?.textColor, UILabel().textColor, "should set text color for blog view", file: file, line: line)
     }
     
     class LoaderSpy: UserDetailLoader, ImageDataLoader {
