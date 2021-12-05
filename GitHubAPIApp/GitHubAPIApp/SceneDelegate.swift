@@ -18,6 +18,28 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         return Session(configuration: config)
     }()
     
+    lazy var imageDataLoader = RemoteImageDataLoader(session: session)
+    
+    lazy var remoteImageDataLoaderWithCache = ImageDataLoaderCacheDecorator(decoratee: imageDataLoader)
+    
+    lazy var firstProfilePageURL = URL(string: "https://api.github.com/users?since=0&per_page=20")!
+    
+    lazy var profileLoaderFactory = { [session, firstProfilePageURL] in
+        PaginatedRemoteUserProfileLoader(
+            url: firstProfilePageURL,
+            session: session,
+            mapping: UserProfileMapper().map(_:))
+    }
+    
+    lazy var navigationController: UINavigationController = {
+        let vc = UserProfileUIComposer.make(
+            onSelectProfile: showUserDetail(for:),
+            userProfileLoaderFactory: profileLoaderFactory,
+            avatarImageDataLoader: remoteImageDataLoaderWithCache)
+        
+        return UINavigationController(rootViewController: vc)
+    }()
+    
     convenience init(session: Session) {
         self.init()
         self.session = session
@@ -33,20 +55,22 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
     
     func configureWindow() {
-        let url = URL(string: "https://api.github.com/users?since=0&per_page=20")!
-        
-        //let loader = RemoteLoader<UserProfileURLPackage>(url: url, session: session, mapping: UserProfileMapper().map(_:))
-        //let loader = PaginatedRemoteUserProfileLoader(url: url, session: session, mapping: UserProfileMapper().map(_:))
-        
-        let factory = { [session] in PaginatedRemoteUserProfileLoader(url: url, session: session, mapping: UserProfileMapper().map(_:)) }
-        
-        let imageDataLoader = RemoteImageDataLoader(session: session)
-        let remoteImageDataLoaderWithCache = ImageDataLoaderCacheDecorator(decoratee: imageDataLoader)
-        
-        let vc = UserProfileUIComposer.make(userProfileLoaderFactory: factory, avatarImageDataLoader: remoteImageDataLoaderWithCache)
-        window?.rootViewController = vc
+        window?.rootViewController = navigationController
         window?.makeKeyAndVisible()
-
+    }
+    
+    func showUserDetail(for userProfile: UserProfile) {
+        let url = URL(string: "https://api.github.com/users/\(userProfile.login)")!
+        let vc = UserDetailUIComposer.make(
+            userDetailLoaderFactory:
+                { RemoteUserDetailLoader(
+                    url: url,
+                    mapping: UserDetailMapper().map(_:))
+                },
+            avatarImageDataLoader: imageDataLoader
+        )
+        
+        navigationController.pushViewController(vc, animated: true)
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
@@ -81,3 +105,5 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 }
 
 extension PaginatedRemoteUserProfileLoader: UserProfileLoader {}
+
+extension RemoteUserDetailLoader: UserDetailLoader {}

@@ -1,5 +1,5 @@
 //
-//  LoadUserDetailProfileFromRemoteUseCaseTests.swift
+//  LoadUserDetailFromRemoteUseCaseTests.swift
 //  GitHubAPITests
 //
 //  Created by Paul Lee on 2021/10/18.
@@ -9,67 +9,65 @@ import XCTest
 import GitHubAPI
 import Alamofire
 
-class LoadUserDetailProfileFromRemoteUseCaseTests: XCTestCase {
+class LoadUserDetailFromRemoteUseCaseTests: XCTestCase {
     func test__load__delivers_connectivity_error_on_stubbed_error() {
         let sut = makeSUT().stub(data: nil, response: nil, error: anyNSError())
         
-        assertThat(sut.load(complete:), receive: .failure(UserDetailProfileMapper.Error.connectivity))
+        assertThat(sut.load(complete:), receive: .failure(UserDetailMapper.Error.connectivity))
     }
     
     func test__load___delivers_invalidData_error_on_un_contracted_status_code() {
         let sut = makeSUT().stub(data: nil, response: anyHTTPURLResponse(statusCode: 199), error: nil)
         
-        assertThat(sut.load(complete:), receive: .failure(UserDetailProfileMapper.Error.invalidData))
+        assertThat(sut.load(complete:), receive: .failure(UserDetailMapper.Error.invalidData))
     }
     
     func test__load__delivers_invalidData_error_on_non_json() {
         let data = "any-non-json".data(using: .utf8)!
         let sut = makeSUT().stub(data: data, response: anyHTTPURLResponse(statusCode: 200), error: nil)
     
-        assertThat(sut.load(complete:), receive: .failure(UserDetailProfileMapper.Error.invalidData))
+        assertThat(sut.load(complete:), receive: .failure(UserDetailMapper.Error.invalidData))
     }
     
     func test__load__delivers_invalidData_error_on_un_contracted_json() {
         let data = "{\"key\": \"value\"}".data(using: .utf8)!
         let sut = makeSUT().stub(data: data, response: anyHTTPURLResponse(statusCode: 200), error: nil)
         
-        assertThat(sut.load(complete:), receive: .failure(UserDetailProfileMapper.Error.invalidData))
+        assertThat(sut.load(complete:), receive: .failure(UserDetailMapper.Error.invalidData))
     }
     
     func test__load__delivers_resourceNotFound_error_on_404_status_code() {
         let sut = makeSUT().stub(data: nil, response: anyHTTPURLResponse(statusCode: 404), error: nil)
         
-        assertThat(sut.load(complete:), receive: .failure(UserDetailProfileMapper.Error.resourceNotFound))
+        assertThat(sut.load(complete:), receive: .failure(UserDetailMapper.Error.resourceNotFound))
     }
     
     func test__load__delivers_invalidData_on_valid_jsons_with_non_contracted_status_code() {
-        let (_, json1) = makeUserDetailProfile()
-        let (_, json2) = makeUserDetailProfile()
-        let data = makeUserDetailProfilesJSON(profiles: [json1, json2])
+        let (_, json) = makeUserDetail()
+        let data = makeUserDetailJSON(detail: json)
         let sut = makeSUT().stub(data: data, response: anyHTTPURLResponse(statusCode: 199), error: nil)
         
-        assertThat(sut.load(complete:), receive: .failure(UserDetailProfileMapper.Error.invalidData))
+        assertThat(sut.load(complete:), receive: .failure(UserDetailMapper.Error.invalidData))
     }
     
-    func test__load__delivers_userProfiles_on_valid_json() {
-        let (model1, json1) = makeUserDetailProfile()
-        let (model2, json2) = makeUserDetailProfile()
-        let data = makeUserDetailProfilesJSON(profiles: [json1, json2])
+    func test__load__delivers_userDetail_on_valid_json() {
+        let (model, json) = makeUserDetail()
+        let data = makeUserDetailJSON(detail: json)
         let sut = makeSUT().stub(data: data, response: anyHTTPURLResponse(statusCode: 200), error: nil)
         
-        assertThat(sut.load(complete:), receive: .success([model1, model2]))
+        assertThat(sut.load(complete:), receive: .success(model))
     }
             
-    func makeSUT(url: URL? = nil) -> RemoteUserDetailProfileLoader {
+    func makeSUT(url: URL? = nil) -> RemoteUserDetailLoader {
         let url = url == nil ? anyURL() : url!
         let config = URLSessionConfiguration.af.default
         config.protocolClasses = [URLProtocolStub.self] + (config.protocolClasses ?? [])
         let session = Session(configuration: config)
-        return RemoteUserDetailProfileLoader(url: url, session: session, mapping: UserDetailProfileMapper().map(_:))
+        return RemoteUserDetailLoader(url: url, session: session, mapping: UserDetailMapper().map(_:))
     }
     
     //MARK: - helpers
-    private typealias LoadAction = ((@escaping RemoteUserDetailProfileLoader.Complete) -> Void)
+    private typealias LoadAction = ((@escaping RemoteUserDetailLoader.Complete) -> Void)
     private func assertThat(_ loadAction: LoadAction, request url: URL, httpMethod: String = "GET", file: StaticString = #filePath, line: UInt = #line) {
         let exp = expectation(description: "wait for request")
         
@@ -87,9 +85,9 @@ class LoadUserDetailProfileFromRemoteUseCaseTests: XCTestCase {
     }
     
     @discardableResult
-    private func assertThat(_ loadAction: LoadAction, receive expectedResult:  RemoteUserDetailProfileLoader.Result, file: StaticString = #filePath, line: UInt = #line) -> RemoteUserDetailProfileLoader.Result? {
+    private func assertThat(_ loadAction: LoadAction, receive expectedResult:  RemoteUserDetailLoader.Result, file: StaticString = #filePath, line: UInt = #line) -> RemoteUserDetailLoader.Result? {
         let exp = expectation(description: "wait for result")
-        var receivedResult: RemoteUserDetailProfileLoader.Result?
+        var receivedResult: RemoteUserDetailLoader.Result?
         loadAction() { result in
             exp.fulfill()
             receivedResult = result
@@ -115,9 +113,9 @@ class LoadUserDetailProfileFromRemoteUseCaseTests: XCTestCase {
     }
 }
 
-private extension RemoteUserDetailProfileLoader {
+private extension RemoteUserDetailLoader {
     @discardableResult
-    func stub(data: Data?, response: HTTPURLResponse?, error: Swift.Error?) -> RemoteUserDetailProfileLoader {
+    func stub(data: Data?, response: HTTPURLResponse?, error: Swift.Error?) -> RemoteUserDetailLoader {
         URLProtocolStub.stub(data: data, response: response, error: error)
         return self
     }

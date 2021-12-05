@@ -1,14 +1,14 @@
 //
-//  UserProfileCellController.swift
+//  AvatarCellController.swift
 //  GitHubAPIApp
 //
-//  Created by Paul Lee on 2021/11/7.
+//  Created by Paul Lee on 2021/11/25.
 //
 
 import UIKit
 import GitHubAPI
 
-class UserProfileCellController: NSObject, UITableViewDataSourcePrefetching, UITableViewDelegate, UITableViewDataSource {
+class AvatarCellController: NSObject, UITableViewDataSourcePrefetching, UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         tableView.dummyNumberOfSection
@@ -16,41 +16,37 @@ class UserProfileCellController: NSObject, UITableViewDataSourcePrefetching, UIT
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         cell = binded(tableView.dequeueReusableCell(for: indexPath))
-        cell?.accessibilityIdentifier = "user-profile-cell-\(indexPath.row)"
-        
+        cell?.accessibilityIdentifier = "avatar-cell"
         viewModel.loadImageData()
         
         return cell!
     }
     
-    private let viewModel: UserProfileViewModel<UIImage>
+    private let viewModel: AvatarViewModel<UIImage>
     
-    private var cell: UserProfileCell?
+    private var cell: AvatarCell?
     
-    private let selection: () -> Void
-    
-    init(viewModel: UserProfileViewModel<UIImage>, selection: @escaping () -> Void) {
+    init(viewModel: AvatarViewModel<UIImage>) {
         self.viewModel = viewModel
-        self.selection = selection
     }
     
-    private func binded(_ cell: UserProfileCell) -> UserProfileCell {
-        cell.loginLabel.text = viewModel.loginAccountText
-        cell.siteAdminLabel.isHidden = !viewModel.shouldShowSiteAdminLabel
+    private func binded(_ cell: AvatarCell) -> AvatarCell {
+        cell.name = viewModel.name
+        
         cell.onRetry = viewModel.loadImageData
         
         viewModel.onImageLoadingStart = { [weak self] in
             guard let cell = self?.cell else { return }
             
-            cell.avatarImageView.image = nil
+            cell.avatarImage = nil
             cell.isLoadingImage = true
-            cell.retryButton.isHidden = true
+            cell.shouldRetry = false
         }
         
         viewModel.onImageLoadingSuccess = { [weak self] image in
             guard let cell = self?.cell else { return }
             
-            cell.avatarImageView.image = image
+            cell.avatarImage = image
             cell.isLoadingImage = false
             
         }
@@ -59,7 +55,7 @@ class UserProfileCellController: NSObject, UITableViewDataSourcePrefetching, UIT
             guard let cell = self?.cell else { return }
             
             cell.isLoadingImage = false
-            cell.retryButton.isHidden = false
+            cell.shouldRetry = true
         }
         
         return cell
@@ -75,10 +71,6 @@ class UserProfileCellController: NSObject, UITableViewDataSourcePrefetching, UIT
     
     func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         cancelLoad()
-    }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        selection()
     }
     
     private func preload() {

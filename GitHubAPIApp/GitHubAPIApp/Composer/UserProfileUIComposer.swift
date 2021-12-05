@@ -12,6 +12,7 @@ import UIKit
 public class UserProfileUIComposer {
     private init() {}
     public static func make(
+        onSelectProfile: @escaping (UserProfile) -> Void,
         userProfileLoaderFactory: @escaping () -> UserProfileLoader,
         avatarImageDataLoader: ImageDataLoader
     ) -> ListViewController {
@@ -20,7 +21,8 @@ public class UserProfileUIComposer {
         let profileViewModelAdapter = UserProfileLoaderViewModelAdapter(
             loaderFactory: userProfileLoaderFactory,
             viewModel: refreshViewModel,
-            imageLoader: avatarImageDataLoader
+            imageLoader: avatarImageDataLoader,
+            onSelectProfile: onSelectProfile
         )
         
         refreshViewModel.loadAction = profileViewModelAdapter.load

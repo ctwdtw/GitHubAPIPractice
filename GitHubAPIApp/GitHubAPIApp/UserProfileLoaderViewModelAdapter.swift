@@ -18,10 +18,17 @@ class UserProfileLoaderViewModelAdapter {
     
     private let imageLoader: ImageDataLoader
     
-    init(loaderFactory: @escaping () -> UserProfileLoader, viewModel: RefreshViewModel, imageLoader: ImageDataLoader) {
+    private let onSelectProfile: (UserProfile) -> Void
+    
+    init(loaderFactory: @escaping () -> UserProfileLoader,
+         viewModel: RefreshViewModel,
+         imageLoader: ImageDataLoader,
+         onSelectProfile: @escaping (UserProfile) -> Void
+    ) {
         self.loaderFactory = loaderFactory
         self.viewModel = viewModel
         self.imageLoader = imageLoader
+        self.onSelectProfile = onSelectProfile
     }
     
     struct ImageDecodingError: Error {}
@@ -45,13 +52,17 @@ class UserProfileLoaderViewModelAdapter {
         var tableModel: ListViewController.TableModel = []
         
         let profileControllers = resource.userProfiles.map { profile in
-            UserProfileCellController(viewModel: UserProfileViewModel(model: profile, imageLoader: imageLoader, imageMapping: { data in
+            UserProfileCellController(
+                viewModel: UserProfileViewModel(model: profile, imageLoader: imageLoader, imageMapping: { data in
                 if let image = UIImage(data: data) {
                     return image
                 } else {
                     throw ImageDecodingError()
+                }}),
+                selection: { [onSelectProfile] in
+                    onSelectProfile(profile)
                 }
-            }))
+            )
         }.map(CellController.init(dataSource:))
         
         tableModel.append(profileControllers)

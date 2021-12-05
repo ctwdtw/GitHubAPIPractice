@@ -24,12 +24,12 @@ func makeUserProfile(
     return (model, json)
 }
 
-func makeUserDetailProfilesJSON(profiles: [[String: Any?]]) -> Data {
-    let data = try! JSONSerialization.data(withJSONObject: profiles, options: .prettyPrinted)
+func makeUserDetailJSON(detail: [String: Any?]) -> Data {
+    let data = try! JSONSerialization.data(withJSONObject: detail, options: .prettyPrinted)
     return data
 }
 
-func makeUserDetailProfile(
+func makeUserDetail(
     id: Int = Int.random(in: 1...1000),
     avatarUrl: String = "https://any-url.com",
     name: String? = nil,
@@ -38,7 +38,7 @@ func makeUserDetailProfile(
     siteAdmin: Bool = false,
     location: String? = nil,
     blog: String? = nil
-) -> (model: UserDetailProfile, json: [String: Any?]) {
+) -> (model: UserDetail, json: [String: Any?]) {
     let json: [String: Any?] =
     [ "id": id,
       "avatar_url": avatarUrl,
@@ -55,7 +55,7 @@ func makeUserDetailProfile(
         url = URL(string: blog)
     }
     
-    let model = UserDetailProfile(
+    let model = UserDetail(
         id: id,
         avatarUrl: URL(string: avatarUrl)!,
         name: name,

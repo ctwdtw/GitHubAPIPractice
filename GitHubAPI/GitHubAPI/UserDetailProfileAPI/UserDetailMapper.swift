@@ -1,5 +1,5 @@
 //
-//  UserDetailProfileMapper.swift
+//  UserDetailMapper.swift
 //  GitHubAPI
 //
 //  Created by Paul Lee on 2021/10/18.
@@ -8,7 +8,7 @@
 import Foundation
 import Alamofire
 
-public class UserDetailProfileMapper {
+public class UserDetailMapper {
     public enum Error: Swift.Error {
         case connectivity
         case invalidData
@@ -36,24 +36,22 @@ public class UserDetailProfileMapper {
     
     public init() {}
     
-    public func map(_ response: DataResponse<Data, AFError>) throws -> [UserDetailProfile] {
+    public func map(_ response: DataResponse<Data, AFError>) throws -> UserDetail {
         
         do {
             try validateStatusCode(for: response)
             let data = try response.result.get()
-            let remoteProfiles = try decode(of: [RemoteUserDetailProfile].self, data: data)
-            return remoteProfiles.map {
-                UserDetailProfile(
-                    id: $0.id,
-                    avatarUrl: $0.avatar_url,
-                    name: $0.name,
-                    biography: $0.bio,
-                    login: $0.login,
-                    siteAdmin: $0.site_admin,
-                    location: $0.location,
-                    blog: $0.blog
-                    
-                )}
+            let remoteDetail = try decode(of: RemoteUserDetailProfile.self, data: data)
+            return UserDetail(
+                id: remoteDetail.id,
+                avatarUrl: remoteDetail.avatar_url,
+                name: remoteDetail.name,
+                biography: remoteDetail.bio,
+                login: remoteDetail.login,
+                siteAdmin: remoteDetail.site_admin,
+                location: remoteDetail.location,
+                blog: remoteDetail.blog
+            )
             
         } catch {
             throw error
