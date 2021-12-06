@@ -6,6 +6,8 @@
 //
 
 import Foundation
+import GitHubAPI
+
 class LoadMoreViewModel {
     var onLoadMoreStart: (() -> Void)?
     
