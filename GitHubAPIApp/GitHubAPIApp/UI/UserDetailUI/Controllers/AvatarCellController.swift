@@ -32,6 +32,7 @@ class AvatarCellController: NSObject, UITableViewDataSourcePrefetching, UITableV
     
     private func binded(_ cell: AvatarCell) -> AvatarCell {
         cell.name = viewModel.name
+        cell.biography = viewModel.biography
         
         cell.onRetry = viewModel.loadImageData
         

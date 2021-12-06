@@ -235,8 +235,8 @@ class UserDetailUIIntegrationTests: XCTestCase {
         biography: String? = nil,
         login: String = "a-user-login-account",
         siteAdmin: Bool = false,
-        location: String? = nil,
-        blog: URL? = nil
+        location: String? = "any-location",
+        blog: URL? = URL(string: "https://any-blog-url")
     ) -> UserDetail {
         return UserDetail(
             id: id,
