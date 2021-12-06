@@ -16,4 +16,4 @@ GitHubAPIUIAcceptanceTests: The scheme to run the slowest UI tests.
 ![architecture overview](https://github.com/ctwdtw/GitHubAPIPractice/blob/504a3c4cb112decf2b7a059d24e9ffc976d3e935/class-diagram.png)
 
 2. Navigation, a simplified coordinator pattern
-<img width="945" alt="navigation-class-diagram" src="https://user-images.githubusercontent.com/7893446/144791400-ca483932-b6cf-4e7c-a240-da6cb716e9d4.png">
+<img width="949" alt="Screen Shot 2021-12-06 at 9 29 54 PM" src="https://user-images.githubusercontent.com/7893446/144854831-cf8ff345-0f81-4eb6-a2c8-fafdf0374946.png">
