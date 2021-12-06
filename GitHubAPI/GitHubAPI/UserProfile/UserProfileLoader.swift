@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import GitHubAPI
 
 public protocol UserProfileLoader {
     typealias Resource = PaginatedUserProfile
