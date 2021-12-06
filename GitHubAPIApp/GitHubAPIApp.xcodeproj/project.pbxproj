@@ -354,7 +354,7 @@
 			path = UserProfileCell;
 			sourceTree = "<group>";
 		};
-		6306CEF72753ADB700FC49DD /* ViewModels */ = {
+		6306CEF72753ADB700FC49DD /* UserDetailPresentation */ = {
 			isa = PBXGroup;
 			children = (
 				634DE9B6274FAB1F000FC6E2 /* AvatarViewModel.swift */,
@@ -362,7 +362,7 @@
 				6306CEF127538D1E00FC49DD /* LocationViewModel.swift */,
 				6306CEF527539C7200FC49DD /* BlogViewModel.swift */,
 			);
-			path = ViewModels;
+			path = UserDetailPresentation;
 			sourceTree = "<group>";
 		};
 		6306CEF82753AE5800FC49DD /* Controllers */ = {
@@ -399,11 +399,19 @@
 			path = GitHubAPIUITest;
 			sourceTree = "<group>";
 		};
+		630EE254275DC0070075F203 /* Presentation */ = {
+			isa = PBXGroup;
+			children = (
+				6306CEF72753ADB700FC49DD /* UserDetailPresentation */,
+				63737FDF274BB9FD003FD251 /* UserProfilePresentaion */,
+			);
+			path = Presentation;
+			sourceTree = "<group>";
+		};
 		6325F2B5274107A000C02429 /* UseProfileUI */ = {
 			isa = PBXGroup;
 			children = (
 				6325F2D52744009100C02429 /* ColorPalette.swift */,
-				63737FDF274BB9FD003FD251 /* ViewModels */,
 				63737FE0274BBCE3003FD251 /* Controllers */,
 				63737FDE274BB9D2003FD251 /* Views */,
 			);
@@ -492,7 +500,6 @@
 		634DE9AD274F51DF000FC6E2 /* UserDetailUI */ = {
 			isa = PBXGroup;
 			children = (
-				6306CEF72753ADB700FC49DD /* ViewModels */,
 				6306CEF82753AE5800FC49DD /* Controllers */,
 				6306CEF92753AE6600FC49DD /* Views */,
 			);
@@ -524,13 +531,13 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
-		63737FDF274BB9FD003FD251 /* ViewModels */ = {
+		63737FDF274BB9FD003FD251 /* UserProfilePresentaion */ = {
 			isa = PBXGroup;
 			children = (
 				632B0C88273A78C600AA290E /* UserProfileViewModel.swift */,
 				63737FDC274B5167003FD251 /* LoadMoreViewModel.swift */,
 			);
-			path = ViewModels;
+			path = UserProfilePresentaion;
 			sourceTree = "<group>";
 		};
 		63737FE0274BBCE3003FD251 /* Controllers */ = {
@@ -609,6 +616,7 @@
 				63737FDA274B50DD003FD251 /* ImageDataLoaderCacheDecorator.swift */,
 				63F55350270FF26C0002FA50 /* AppDelegate.swift */,
 				63F55352270FF26C0002FA50 /* SceneDelegate.swift */,
+				630EE254275DC0070075F203 /* Presentation */,
 				6325F2B6274107C500C02429 /* UI */,
 				63F55359270FF26E0002FA50 /* Assets.xcassets */,
 				63F5535B270FF26E0002FA50 /* LaunchScreen.storyboard */,
