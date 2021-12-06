@@ -134,20 +134,20 @@ extension ListViewController {
         return 0
     }
     
-    func avatarView() -> AvatarCell? {
-        userDetailView(at: 0) as? AvatarCell
+    func avatarView(at idx: Int = 0) -> AvatarCell? {
+        userDetailView(at: idx) as? AvatarCell
     }
     
-    func siteAdminView() -> SiteAdminCell? {
-        userDetailView(at: 1) as? SiteAdminCell
+    func siteAdminView(at idx: Int = 1) -> SiteAdminCell? {
+        userDetailView(at: idx) as? SiteAdminCell
     }
     
-    func locationView() -> DetailFieldCell? {
-        userDetailView(at: 2) as? DetailFieldCell
+    func locationView(at idx: Int = 2) -> DetailFieldCell? {
+        userDetailView(at: idx) as? DetailFieldCell
     }
     
-    func blogView() -> DetailFieldCell? {
-        userDetailView(at: 3) as? DetailFieldCell
+    func blogView(at idx: Int = 3) -> DetailFieldCell? {
+        userDetailView(at: idx) as? DetailFieldCell
     }
     
     private func userDetailView(at row: Int) -> UITableViewCell? {
