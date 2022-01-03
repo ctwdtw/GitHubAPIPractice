@@ -13,7 +13,7 @@ GitHubAPIUIAcceptanceTests: The scheme to run the slowest UI tests.
 ### Architecture Overview
 
 1. MVVM with adapter pattern
-![architecture overview](https://github.com/ctwdtw/GitHubAPIPractice/blob/504a3c4cb112decf2b7a059d24e9ffc976d3e935/class-diagram.png)
+![architecture overview](https://github.com/ctwdtw/GitHubAPIPractice/blob/develop/mvvm-class-diagram.png)
 
-2. Navigation, a simplified coordinator pattern
-<img width="949" alt="Screen Shot 2021-12-06 at 9 29 54 PM" src="https://user-images.githubusercontent.com/7893446/144854831-cf8ff345-0f81-4eb6-a2c8-fafdf0374946.png">
+2. Navigation, view controllers are decoupled. This can be viewd as a simplified coordinator pattern.
+![navigation architecture overview](https://github.com/ctwdtw/GitHubAPIPractice/blob/develop/navigation-class-diagram.png)
